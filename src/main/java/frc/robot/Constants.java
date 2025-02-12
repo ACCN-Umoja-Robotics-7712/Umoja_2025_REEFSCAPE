@@ -122,10 +122,18 @@ public final class Constants {
         public static final double kPDrift = 0.1;
     }
 
-    public static final class IntakeConstants {
-        public static final int frontWheelID = 42;
-        public static final int leftWheelID = 41;
-        public static final int rightWheelID = 40;
+    public static final class CoralConstants {
+
+        public static final int CoralMotorId = 2;
+        public static final int CoralIntakeEncoder = 1;
+
+    }
+
+    public static final class AlgaeConstants {
+
+        public static final int AlgaeMotorId = 4;
+        public static final int AlgaeIntakeEncoder = 3;
+        
     }
 
     public static final class LEDConstants {
