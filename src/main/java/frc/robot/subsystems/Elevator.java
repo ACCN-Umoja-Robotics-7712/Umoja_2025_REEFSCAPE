@@ -11,25 +11,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
-    public static final SparkMax elevatorMotor = new SparkMax(Constants.ElevatorConstants.elevatorMotorID, MotorType.kBrushless);
+    public static final SparkMax elevatorMotor1 = new SparkMax(Constants.ElevatorConstants.elevatorMotor1ID, MotorType.kBrushless);
+    public static final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
 
-    public static final RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
-    
+    public static final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
 
     public Elevator() {
         SparkMaxConfig elevatorConfig = new SparkMaxConfig();
+        SparkMaxConfig elevator2Config = new SparkMaxConfig();
 
         elevatorConfig.idleMode(IdleMode.kBrake);
         elevatorConfig.inverted(false);
-        elevatorMotor.configure(elevatorConfig,null,null);
+        elevatorMotor1.configure(elevatorConfig,null,null);
+
+        elevator2Config.idleMode(IdleMode.kBrake);
+        elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
+        elevatorMotor2.configure(elevator2Config, null, null);
     }
 
+
     public void runElevator(double percent){
-        elevatorMotor.set(percent);
+        elevatorMotor1.set(percent);
     }
 
     public void stop(){
-        elevatorMotor.set(0);
+        elevatorMotor1.set(0);
     }
 
     @Override
@@ -37,6 +43,6 @@ public class Elevator extends SubsystemBase {
         // TODO Auto-generated method stub
         super.periodic();
 
-        SmartDashboard.putNumber("ELEVATOR ENCODER", elevatorEncoder.getPosition());
+        SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
     }
 }
