@@ -140,6 +140,7 @@ public final class Constants {
         public static final int algaeArmMotorID = 4; 
         public static final double kP = 0.1;
         public static final double armPickupPosition = 0;
+        public static final double armLimiter = 0.05;
     }
 
     public static final class ElevatorConstants {

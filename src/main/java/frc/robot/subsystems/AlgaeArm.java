@@ -30,7 +30,7 @@ public class AlgaeArm extends SubsystemBase {
     }
     
     public void runIntake(double percent){
-        algaeArmMotor.set(percent);
+        algaeArmMotor.set(percent*Constants.AlgaeConstants.armLimiter);
     }
 
     @Override
