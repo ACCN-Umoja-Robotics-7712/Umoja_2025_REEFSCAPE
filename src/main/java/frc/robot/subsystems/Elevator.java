@@ -9,13 +9,15 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.math.controller.PIDController;
 
 public class Elevator extends SubsystemBase {
-    public static final SparkMax elevatorMotor1 = new SparkMax(Constants.ElevatorConstants.elevatorMotor1ID, MotorType.kBrushless);
-    public static final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
+    private final SparkMax elevatorMotor1 = new SparkMax(Constants.ElevatorConstants.elevatorMotor1ID, MotorType.kBrushless);
+    private final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
 
-    public static final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
-
+    private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
+    private final PIDController PID = new PIDController(0, 0, 0);
+    
     public Elevator() {
         SparkMaxConfig elevatorConfig = new SparkMaxConfig();
         SparkMaxConfig elevator2Config = new SparkMaxConfig();

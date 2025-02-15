@@ -126,13 +126,29 @@ public final class Constants {
 
         public static final int coralIntakeMotorID = 1;
         public static final int coralArmMotorID = 2;
+        public static final double kP = 0.1;
+        public static final double armPickupPosition = 0;
+
+        public static final double shootPositionL1 = 0;
+        public static final double shootPositionL23 = 0;
+        public static final double shootPositionL4 = 0;
     }
 
     public static final class AlgaeConstants {
 
         public static final int algaeIntakeMotorID = 3;
         public static final int algaeArmMotorID = 4; 
-        
+        public static final double kP = 0.1;
+        public static final double armPickupPosition = 0;
+    }
+
+    public static final class ElevatorConstants {
+        public static final int leftMotorID = 50;
+        public static final int rightMotorID = 51;
+        public static final double kP =  0.1;
+        public static final int elevatorMotor1ID = 8; // Check this
+        public static final int elevatorMotor2ID = 9; // Check this
+        public static final double elevatorPickupPosition = 0;
     }
 
     public static final class LEDConstants {
@@ -146,55 +162,6 @@ public final class Constants {
         public static final int TeleOp = 2;
     }
 
-    // public static final class ArmConstants {
-    //     public static final int leftMotorID = 43;
-    //     public static final int rightMotorID = 44;
-    //     public static final double kP =  0.1;
-    //     public static final double kD =  0.01;
-    //     public static final double speakerEncoder = -34; //-30;
-    //     public static final double farSpeakerEncoder = -52; // 50->45, might need to adjust TO-DO
-    //     public static final double ampEncoder = -150;
-    //     public static final double armStartingPos = -120; 
-    //     public static final double armHover = -2;
-    // }
-
-    public static final class PoseEstimatorConstants {
-        // See
-        // https://firstfrc.blob.core.windows.net/frc2020/PlayingField/2020FieldDrawing-SeasonSpecific.pdf
-        // page 208
-        public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
-
-        // See
-        // https://firstfrc.blob.core.windows.net/frc2020/PlayingField/2020FieldDrawing-SeasonSpecific.pdf
-        // page 197
-        public static final double targetHeight = Units.inchesToMeters(98.19) - Units.inchesToMeters(81.19); // meters
-
-        // See https://firstfrc.blob.core.windows.net/frc2020/PlayingField/LayoutandMarkingDiagram.pdf
-        // pages 4 and 5
-        public static final double kFarTgtXPos = Units.feetToMeters(54);
-        public static final double kFarTgtYPos = Units.feetToMeters(27 / 2) - Units.inchesToMeters(43.75) - Units.inchesToMeters(48.0 / 2.0);
-        public static final double kFarTgtZPos = (Units.inchesToMeters(98.19) - targetHeight) / 2 + targetHeight;
-
-        public static final Pose3d kFarTargetPose =
-            new Pose3d(
-                new Translation3d(kFarTgtXPos, kFarTgtYPos, kFarTgtZPos),
-                new Rotation3d(0.0, 0.0, Units.degreesToRadians(180))
-        );
-
-        public static final Transform3d kCameraToRobot = 
-            new Transform3d(
-                new Translation3d(-0.33,-0.17,0.36), 
-                new Rotation3d(0,-45,180)
-        );
-    }
-
-    public static final class ElevatorConstants {
-        public static final int leftMotorID = 50;
-        public static final int rightMotorID = 51;
-        public static final double kP =  1 / 1;
-        public static final int elevatorMotor1ID = 8; // Check this
-        public static final int elevatorMotor2ID = 9; // Check this
-    }
 
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 8;
