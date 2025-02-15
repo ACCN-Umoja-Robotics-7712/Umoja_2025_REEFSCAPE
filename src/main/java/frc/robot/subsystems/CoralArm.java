@@ -10,26 +10,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 // Intake for the 2025 robot
-public class CoralIntake extends SubsystemBase {
+public class CoralArm extends SubsystemBase {
 
-    SparkMax coralIntakeMotor;
-    RelativeEncoder coralIntakeEncoder;  
+    SparkMax coralArmMotor;
+    RelativeEncoder coralArmEncoder;  
     
-    public CoralIntake(){
+    public CoralArm(){
 
-        SparkMaxConfig intakeConfig = new SparkMaxConfig();
-        intakeConfig.idleMode(IdleMode.kBrake);
-        intakeConfig.inverted(false);
+        SparkMaxConfig coralArmConfig = new SparkMaxConfig();
+        coralArmConfig.idleMode(IdleMode.kBrake);
+        coralArmConfig.inverted(false);
 
-        coralIntakeMotor = new SparkMax(Constants.CoralConstants.coralIntakeMotorID, MotorType.kBrushless); 
-        coralIntakeMotor.configure(intakeConfig, null, null);
+        coralArmMotor = new SparkMax(Constants.CoralConstants.coralArmMotorID, MotorType.kBrushless); 
+        coralArmMotor.configure(coralArmConfig, null, null);
         
-        coralIntakeEncoder = coralIntakeMotor.getEncoder();
+        coralArmEncoder = coralArmMotor.getEncoder();
         
     }
     
     public void runIntake(double percent){
-        coralIntakeMotor.set(percent);
+        coralArmMotor.set(percent);
     }
 
     @Override

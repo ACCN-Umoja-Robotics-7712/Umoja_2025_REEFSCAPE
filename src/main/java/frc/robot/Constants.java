@@ -124,15 +124,14 @@ public final class Constants {
 
     public static final class CoralConstants {
 
-        public static final int CoralMotorId = 2;
-        public static final int CoralIntakeEncoder = 1;
-
+        public static final int coralIntakeMotorID = 1;
+        public static final int coralArmMotorID = 2;
     }
 
     public static final class AlgaeConstants {
 
-        public static final int AlgaeMotorId = 4;
-        public static final int AlgaeIntakeEncoder = 3;
+        public static final int algaeIntakeMotorID = 3;
+        public static final int algaeArmMotorID = 4; 
         
     }
 

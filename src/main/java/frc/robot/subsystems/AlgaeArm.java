@@ -11,32 +11,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 // Intake for the 2025 robot
-public class AlgaeIntake extends SubsystemBase {
+public class AlgaeArm extends SubsystemBase {
 
-    SparkMax algaeIntakeMotor;
-    RelativeEncoder algaeIntakeEncoder;
+    SparkMax algaeArmMotor;
+    RelativeEncoder algaeArmEncoder;
     
-    public AlgaeIntake(){
+    public AlgaeArm(){
 
-        SparkMaxConfig algaeIntakeConfig = new SparkMaxConfig();
-        algaeIntakeConfig.idleMode(IdleMode.kBrake);
-        algaeIntakeConfig.inverted(false);
+        SparkMaxConfig algaeArmConfig = new SparkMaxConfig();
+        algaeArmConfig.idleMode(IdleMode.kBrake);
+        algaeArmConfig.inverted(false);
 
-        algaeIntakeMotor = new SparkMax(Constants.AlgaeConstants.algaeIntakeMotorID, MotorType.kBrushless); 
-        algaeIntakeMotor.configure(algaeIntakeConfig, null, null);
+        algaeArmMotor = new SparkMax(Constants.AlgaeConstants.algaeIntakeMotorID, MotorType.kBrushless); 
+        algaeArmMotor.configure(algaeArmConfig, null, null);
         
-        algaeIntakeEncoder = algaeIntakeMotor.getEncoder();
+        algaeArmEncoder = algaeArmMotor.getEncoder();
         
     }
     
     public void runIntake(double percent){
-        algaeIntakeMotor.set(percent);
+        algaeArmMotor.set(percent);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Intake Pos", algaeIntakeEncoder.getPosition());
+        SmartDashboard.putNumber("Intake Pos", algaeArmEncoder.getPosition());
     }
 }
 
