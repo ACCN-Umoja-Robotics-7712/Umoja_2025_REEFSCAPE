@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -23,6 +24,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -253,6 +255,8 @@ public class SwerveSubsystem extends SubsystemBase {
     StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
     StructArrayPublisher<SwerveModuleState> swerveStatePublisher = NetworkTableInstance.getDefault()
 .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+    StructArrayPublisher<Pose2d> allPointsPublisher = NetworkTableInstance.getDefault()
+.getStructArrayTopic("AllPosesArray", Pose2d.struct).publish();
 
     @Override
     public void periodic() {
@@ -296,7 +300,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
             // lined up angle perfectly (turn off limelight)
             // TODO: Move this number to constants file
-            Boolean alignedYaw = targetYaw <= 0.25;
+            Boolean alignedYaw = targetYaw <= 0.25 || (targetYaw >= 59.75 && targetYaw <= 60.25);
             Boolean alignedX = Math.abs(targetX) <= 0.02;
             if (alignedX && alignedYaw){
                 // TODO: Replace with LEDs ready for game
@@ -326,11 +330,7 @@ public class SwerveSubsystem extends SubsystemBase {
             }
             if (!doRejectUpdate)
             {
-                if (RobotContainer.gameState == GameConstants.Robot) {
-                    poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0,0,9999999));
-                } else {
-                    poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-                }
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0,0,9999999));
                 poseEstimator.addVisionMeasurement(
                     mt2.pose,
                     mt2.timestampSeconds);
@@ -338,6 +338,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     
         posePublisher.set(poseEstimator.getEstimatedPosition());
+        publishRobotPositions();
     }
 
     public void stopModules() {
@@ -360,37 +361,81 @@ public class SwerveSubsystem extends SubsystemBase {
         setModuleStates(moduleStates);
     }
 
-    public Trajectory getNearestTagTrajectory() {
-        // 2. Generate trajectory
+    public Trajectory getNearestTagTrajectory(boolean isProcessor, boolean hasCoral) {
+        Pose2d nearestPoint = nearestPoint(isProcessor, hasCoral);
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
             List.of(),
-            Constants.RobotPositions.redCenterSafe,
+            nearestPoint,
             trajectoryConfig);
         return trajectory;
     }
 
-    public Command goToNearestTagCommand() {
-        System.out.println("GOING TO NEAREST TAG");
-        // 2. Generate trajectory
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-            List.of(),
-            Constants.RobotPositions.redCenterSafe,
-            trajectoryConfig);
+    public void publishRobotPositions() {
+        ArrayList<Pose2d> allPoints = new ArrayList<>();
+        for (Pose2d point: Constants.bluePickUpPositions) {
+            allPoints.add(point);
+            allPoints.add(offsetPoint(point, 3*Constants.Measurements.coralStationDivotOffset));
+            allPoints.add(offsetPoint(point, -3*Constants.Measurements.coralStationDivotOffset));
+        }
+        for (Pose2d point: Constants.blueReefPositions) {
+            allPoints.add(point);
+            allPoints.add(offsetPoint(point, Constants.Measurements.branchOffset));
+            allPoints.add(offsetPoint(point, -Constants.Measurements.branchOffset));
+        }
+        allPoints.add(Constants.blueProcessorPosition);
+        
+        for (Pose2d point: Constants.redPickUpPositions) {
+            allPoints.add(point);
+            allPoints.add(offsetPoint(point, 3*Constants.Measurements.coralStationDivotOffset));
+            allPoints.add(offsetPoint(point, -3*Constants.Measurements.coralStationDivotOffset));
+        }
+        for (Pose2d point: Constants.redReefPositions) {
+            allPoints.add(point);
+            allPoints.add(offsetPoint(point, Constants.Measurements.branchOffset));
+            allPoints.add(offsetPoint(point, -Constants.Measurements.branchOffset));
+        }
+        allPoints.add(Constants.redProcessorPosition);
+        allPointsPublisher.set(allPoints.toArray(new Pose2d[0]));
+    }
 
-        // 4. Construct command to follow trajectory
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                trajectory,
-                this::getPose,
-                DriveConstants.kDriveKinematics,
-                xController,
-                yController,
-                thetaController,
-                this::setModuleStates,
-                this);
+    public Pose2d nearestPoint(boolean isProcessor, boolean hasCoral) {
+        boolean isBlue = true;
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            if (alliance.get() == DriverStation.Alliance.Red) {
+                isBlue = false;
+            }
+        }
 
-        // 5. Add some init and wrap-up, and return everything
-        return swerveControllerCommand;
+        if (isProcessor) {
+            if (isBlue) {
+                return Constants.blueProcessorPosition;
+            } else {
+                return Constants.redProcessorPosition;
+            }
+        }
+
+        List<Pose2d> pointsToCheck;
+        if (hasCoral) {
+            if (isBlue) {
+                pointsToCheck = List.of(Constants.blueReefPositions);
+            } else {
+                pointsToCheck = List.of(Constants.redReefPositions);
+            }
+        } else {
+            if (isBlue) {
+                pointsToCheck = List.of(Constants.bluePickUpPositions);
+            } else {
+                pointsToCheck = List.of(Constants.redPickUpPositions);
+            }
+            
+        }
+        return poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
+    }
+
+    public Pose2d offsetPoint(Pose2d pose, double offset) {
+        Transform2d transform = new Transform2d(0, offset, new Rotation2d(0));
+        return pose.transformBy(transform);
     }
 }
