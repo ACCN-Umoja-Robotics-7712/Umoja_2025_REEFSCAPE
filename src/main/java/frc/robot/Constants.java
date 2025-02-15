@@ -189,11 +189,13 @@ public final class Constants {
         );
     }
 
-    // public static final class ClimbConstants {
-    //     public static final int leftMotorID = 50;
-    //     public static final int rightMotorID = 51;
-    //     public static final double kP =  1 / 1;
-    // }
+    public static final class ElevatorConstants {
+        public static final int leftMotorID = 50;
+        public static final int rightMotorID = 51;
+        public static final double kP =  1 / 1;
+        public static final int elevatorMotor1ID = 8; // Check this
+        public static final int elevatorMotor2ID = 9; // Check this
+    }
 
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 8;
