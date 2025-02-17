@@ -6,9 +6,11 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralArm;
+import frc.robot.subsystems.RobotState;
+import frc.robot.subsystems.CoralIntake;
 
 public class TeleCommandGroup extends ParallelCommandGroup{
-    public TeleCommandGroup(SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorController, Elevator elevatorSubsystem, CoralArm coralArmSubsystem){
+    public TeleCommandGroup(RobotState robotState, SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorController, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem){
         
         //Driver Command
         addCommands(
@@ -22,7 +24,7 @@ public class TeleCommandGroup extends ParallelCommandGroup{
 
                 // operator
         addCommands(
-            new OperatorJoystick(elevatorSubsystem, coralArmSubsystem, operatorController)
+            new OperatorJoystick(robotState, elevatorSubsystem, coralArmSubsystem, operatorController)
                 );
     }
 }

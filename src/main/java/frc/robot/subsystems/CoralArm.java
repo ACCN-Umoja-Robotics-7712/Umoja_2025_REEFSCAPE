@@ -18,7 +18,7 @@ public class CoralArm extends SubsystemBase {
 
     SparkMax coralArmMotor;
     RelativeEncoder coralArmEncoder;  
-    double state = Constants.CoralArmStates.pickup;
+    private double state = Constants.CoralArmStates.PICKUP;
     PIDController coralArmPID = new PIDController(Constants.CoralConstants.kP, 0, 0);
 
     public CoralArm(){
@@ -35,12 +35,22 @@ public class CoralArm extends SubsystemBase {
     }
     
     public void runArm(double percent){
-        coralArmMotor.set(percent);
+        if (coralArmEncoder.getPosition() >= Constants.CoralConstants.coralArmTopLimit && percent > 0){
+            coralArmMotor.set(0);
+        }
+        else if (coralArmEncoder.getPosition() <= Constants.CoralConstants.coralArmBottomLimit && percent < 0){
+            coralArmMotor.set(0);
+        } else {
+            coralArmMotor.set(percent);
+        }
     }
     public void setState(double coralArmState) {
         state = coralArmState;
     }
 
+    public double getState(){
+        return state;
+    }
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

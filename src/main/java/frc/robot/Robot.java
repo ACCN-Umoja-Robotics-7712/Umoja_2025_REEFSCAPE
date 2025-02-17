@@ -119,11 +119,13 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     RobotContainer.swerveSubsystem.setDefaultCommand(
       new TeleCommandGroup(
+        RobotContainer.robotState,
         RobotContainer.swerveSubsystem,
         RobotContainer.driverController,
         RobotContainer.operatorController,
         RobotContainer.elevatorSubsystem,
-        RobotContainer.coralArmSubsystem
+        RobotContainer.coralArmSubsystem,
+        RobotContainer.coralIntakeSubsystem
       )
     );
     if (m_autonomousCommand != null) {

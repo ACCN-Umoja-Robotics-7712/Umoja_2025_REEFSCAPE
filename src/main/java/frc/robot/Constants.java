@@ -122,24 +122,49 @@ public final class Constants {
         public static final double kPDrift = 0.1;
     }
 
+
+    public static final class RobotStates{
+        public static final int NONE = -1;
+        public static final int PICKUP = 0;
+        public static final int L1 = 1;
+        public static final int L2 = 2;
+        public static final int L3 = 3;
+        public static final int L4 = 4; 
+    }
     public static final class CoralConstants {
 
         public static final int coralIntakeMotorID = 1;
         public static final int coralArmMotorID = 2;
+
+        public static final double coralArmBottomLimit = 0.0;
+        public static final double coralArmTopLimit = 3.0;
+
         public static final double kP = 0.1;
+        
         public static final double armPickupPosition = 0;
 
         public static final double shootPositionL1 = 0;
         public static final double shootPositionL23 = 0;
         public static final double shootPositionL4 = 0;
+
+        public static final double coralCurrent = 0;
     }
 
     public static final class CoralArmStates {
         
-        public static final double pickup = 0;
+        public static final double PICKUP = 0;
         public static final double L1 = 0;
         public static final double L23 = 0;
         public static final double L4 = 0;
+    }
+
+    public static final class CoralIntakeStates {
+        
+        public static final double NONE = -1;
+        public static final double INTAKE = 1;
+        public static final double READY = 2;
+        public static final double SHOOTING = 3;
+
     }
 
     public static final class AlgaeConstants {
@@ -154,6 +179,9 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int leftMotorID = 50;
         public static final int rightMotorID = 51;
+
+        public static final double elevatorTopLimit = 5.0;
+        public static final double elevatorBottomLimit = 0.0;
 
         public static final double kP =  0.1;
 

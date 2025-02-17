@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
     private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
     PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, 0, 0);
 
-    private double state = -1;
+    private double state = Constants.ElevatorStates.NONE;
     
     public Elevator() {
         SparkMaxConfig elevatorConfig = new SparkMaxConfig();
@@ -35,16 +35,27 @@ public class Elevator extends SubsystemBase {
 
         elevator2Config.idleMode(IdleMode.kBrake);
         elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
-        elevatorMotor2.configure(elevator2Config, null, null);
+        elevatorMotor2.configure(elevator2Config, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
     }
 
     public void runElevator(double percent){
-        elevatorMotor1.set(percent);
+        if (elevator1Encoder.getPosition() >= Constants.ElevatorConstants.elevatorTopLimit && percent > 0){
+            elevatorMotor1.set(0);
+        }
+        else if (elevator1Encoder.getPosition() <= Constants.ElevatorConstants.elevatorBottomLimit && percent < 0){
+            elevatorMotor1.set(0);
+        } else {
+            elevatorMotor1.set(percent);
+        }
     }
 
-    public void setState(double elevatorPosition) {
-        state = elevatorPosition;
+    public void setState(double state) {
+        this.state = state;
+    }
+
+    public double getState(){
+        return state;
     }
 
     public void stop(){
