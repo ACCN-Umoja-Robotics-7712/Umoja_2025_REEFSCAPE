@@ -23,7 +23,7 @@ public class OperatorJoystick extends Command {
     @Override
     public void execute(){
 
-        //Climber Logic
+        //Elevator Logic
         if(j.getRawAxis(OIConstants.RT) > 0.5){
             elevatorSubsystem.runElevator(-0.3);
         } else if(j.getRawAxis(OIConstants.LT) > 0.5) {
@@ -31,5 +31,7 @@ public class OperatorJoystick extends Command {
         } else {
             elevatorSubsystem.runElevator(0);
         }
+        double elevatorSpeed = Math.abs(j.getRawAxis(OIConstants.LY)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.LY) * 0.3 : 0.0;
+
     }
 }
