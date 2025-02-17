@@ -146,11 +146,27 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int leftMotorID = 50;
         public static final int rightMotorID = 51;
+
         public static final double kP =  0.1;
+
         public static final int elevatorMotor1ID = 8; // Check this
         public static final int elevatorMotor2ID = 9; // Check this
+
         public static final double elevatorPickupPosition = 0;
+
+        public static final double shootPositionL1 = 0;
+        public static final double shootPositionL2 = 0;
+        public static final double shootPositionL3 = 0;
+        public static final double shootPositionL4 = 0;
     }
+
+    public static final class ElevatorPositions {
+        public static final double NONE = -1;
+        public static final double L1 = 0;
+        public static final double L2 = 0;
+        public static final double L3 = 0;
+        public static final double L4 = 0;
+    };
 
     public static final class LEDConstants {
         public static final int numLEDsPerStrip = 36;
