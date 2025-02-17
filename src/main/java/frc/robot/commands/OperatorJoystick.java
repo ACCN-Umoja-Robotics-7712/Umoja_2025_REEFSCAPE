@@ -3,18 +3,20 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ElevatorPositions;
+import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.USB;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.CoralArm;
 
 public class OperatorJoystick extends Command {
     //Defining subsystems
     Elevator elevatorSubsystem;
+    CoralArm coralArmSubsystem;
 
     Joystick j = new Joystick(USB.OPERATOR_CONTROLLER);
 
-    public OperatorJoystick(Elevator elevatorSubsystem, Joystick j){
+    public OperatorJoystick(Elevator elevatorSubsystem, CoralArm coralArmSubsystem, Joystick j){
         this.elevatorSubsystem = elevatorSubsystem;
 
         //Add subsystem dependencies
@@ -31,22 +33,23 @@ public class OperatorJoystick extends Command {
             elevatorSubsystem.runElevator(-0.3);
         } else if(j.getRawAxis(OIConstants.LT) > 0.5) {
             elevatorSubsystem.runElevator(0.3);
-            elevatorSubsystem.goToPosition(ElevatorPositions.NONE);
+            elevatorSubsystem.setState(ElevatorStates.NONE);
         } else {
             elevatorSubsystem.runElevator(0);
-            elevatorSubsystem.goToPosition(ElevatorPositions.NONE);
+            elevatorSubsystem.setState(ElevatorStates.NONE);
         }
 
         if (j.getRawButtonPressed(OIConstants.A)){
-            elevatorSubsystem.goToPosition(ElevatorPositions.L1);
+            elevatorSubsystem.setState(ElevatorStates.L1);
+            
         } else if (j.getRawButtonPressed(OIConstants.X)){
-            elevatorSubsystem.goToPosition(ElevatorPositions.L2);      
+            elevatorSubsystem.setState(ElevatorStates.L2);      
         } else if(j.getRawButtonPressed(OIConstants.B)){
-            elevatorSubsystem.goToPosition(ElevatorPositions.L3);       
+            elevatorSubsystem.setState(ElevatorStates.L3);       
         } else if(j.getRawButtonPressed(OIConstants.A)){
-            elevatorSubsystem.goToPosition(ElevatorPositions.L4);
+            elevatorSubsystem.setState(ElevatorStates.L4);
         } else {
-            elevatorSubsystem.goToPosition(ElevatorPositions.NONE);
+            elevatorSubsystem.setState(ElevatorStates.NONE);
         }
 
     }

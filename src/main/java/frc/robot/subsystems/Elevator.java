@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -10,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.ElevatorPositions;
+import frc.robot.Constants.ElevatorStates;
 import edu.wpi.first.math.controller.PIDController;
 
 public class Elevator extends SubsystemBase {
@@ -29,7 +31,7 @@ public class Elevator extends SubsystemBase {
 
         elevatorConfig.idleMode(IdleMode.kBrake);
         elevatorConfig.inverted(false);
-        elevatorMotor1.configure(elevatorConfig,null,null);
+        elevatorMotor1.configure(elevatorConfig,ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
         elevator2Config.idleMode(IdleMode.kBrake);
         elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
@@ -41,7 +43,7 @@ public class Elevator extends SubsystemBase {
         elevatorMotor1.set(percent);
     }
 
-    public void goToPosition(double elevatorPosition) {
+    public void setState(double elevatorPosition) {
         state = elevatorPosition;
     }
 
@@ -54,7 +56,7 @@ public class Elevator extends SubsystemBase {
         // TODO Auto-generated method stub
         super.periodic();
 
-        if (state != ElevatorPositions.NONE) {
+        if (state != ElevatorStates.NONE) {
             runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
         }
 

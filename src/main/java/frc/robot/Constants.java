@@ -134,6 +134,14 @@ public final class Constants {
         public static final double shootPositionL4 = 0;
     }
 
+    public static final class CoralArmStates {
+        
+        public static final double pickup = 0;
+        public static final double L1 = 0;
+        public static final double L23 = 0;
+        public static final double L4 = 0;
+    }
+
     public static final class AlgaeConstants {
 
         public static final int algaeIntakeMotorID = 3;
@@ -151,16 +159,9 @@ public final class Constants {
 
         public static final int elevatorMotor1ID = 8; // Check this
         public static final int elevatorMotor2ID = 9; // Check this
-
-        public static final double elevatorPickupPosition = 0;
-
-        public static final double shootPositionL1 = 0;
-        public static final double shootPositionL2 = 0;
-        public static final double shootPositionL3 = 0;
-        public static final double shootPositionL4 = 0;
     }
 
-    public static final class ElevatorPositions {
+    public static final class ElevatorStates {
         public static final double NONE = -1;
         public static final double L1 = 0;
         public static final double L2 = 0;

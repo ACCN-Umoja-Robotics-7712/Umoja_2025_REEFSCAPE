@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -22,7 +24,7 @@ public class CoralIntake extends SubsystemBase {
         intakeConfig.inverted(false);
 
         coralIntakeMotor = new SparkMax(Constants.CoralConstants.coralIntakeMotorID, MotorType.kBrushless); 
-        coralIntakeMotor.configure(intakeConfig, null, null);
+        coralIntakeMotor.configure(intakeConfig, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
         
         coralIntakeEncoder = coralIntakeMotor.getEncoder();
         

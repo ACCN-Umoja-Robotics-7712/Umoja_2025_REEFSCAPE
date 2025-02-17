@@ -5,10 +5,14 @@
 package frc.robot;
 
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.CoralArm;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.USB;
+
+
 
 import java.util.List;
 
@@ -43,6 +47,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   public final static Joystick driverController = new Joystick(USB.DRIVER_CONTROLLER);
+  public final static Joystick operatorController = new Joystick(USB.OPERATOR_CONTROLLER);
+  public final static Elevator elevatorSubsystem = new Elevator();
+  public final static CoralArm coralArmSubsystem = new CoralArm();
 
   public static double wantedAngle = -1;
   public static int gameState = GameConstants.Robot;
