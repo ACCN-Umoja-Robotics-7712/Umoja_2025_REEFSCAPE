@@ -10,6 +10,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.PIDController;
 
 
 // Intake for the 2025 robot
@@ -17,6 +18,8 @@ public class AlgaeArm extends SubsystemBase {
 
     SparkMax algaeArmMotor;
     RelativeEncoder algaeArmEncoder;
+    PIDController algaeArmPID = new PIDController(Constants.AlgaeConstants.kP, 0,0);
+    private double state = Constants.AlgaeModeStates.NONE;
     
     public AlgaeArm(){
 
@@ -31,7 +34,7 @@ public class AlgaeArm extends SubsystemBase {
         
     }
     
-    public void runIntake(double percent){
+    public void runAlgaeArm(double percent){
         algaeArmMotor.set(percent*Constants.AlgaeConstants.armLimiter);
     }
 
@@ -39,6 +42,10 @@ public class AlgaeArm extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("Intake Pos", algaeArmEncoder.getPosition());
+
+        if (state != Constants.AlgaeModeStates.NONE){
+            runAlgaeArm(algaeArmPID.calculate(algaeArmEncoder.getPosition(), state));
+        }
     }
 }
 

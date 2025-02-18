@@ -124,6 +124,7 @@ public final class Constants {
 
 
     public static final class RobotStates{
+
         public static final int NONE = -1;
         public static final int PICKUP = 0;
         public static final int L1 = 1;
@@ -131,6 +132,15 @@ public final class Constants {
         public static final int L3 = 3;
         public static final int L4 = 4; 
     }
+
+    public static final class AlgaeModeStates{
+
+        public static final double NONE = -1;
+        public static final double PICKUP = 0;
+        public static final double READY = 1;
+        public static final double SHOOTING = 2;
+    }
+
     public static final class CoralConstants {
 
         public static final int coralIntakeMotorID = 1;
@@ -176,6 +186,13 @@ public final class Constants {
         public static final double armLimiter = 0.05;
     }
 
+    public static final class AlgaeArmStates {
+
+        public static final double PICKUP = 0.0;
+        public static final double READY = 0;
+        public static final double SHOOTING = 0;
+    }
+
     public static final class ElevatorConstants {
         public static final int leftMotorID = 50;
         public static final int rightMotorID = 51;
@@ -190,6 +207,7 @@ public final class Constants {
     }
 
     public static final class ElevatorStates {
+
         public static final double NONE = -1;
         public static final double L1 = 0;
         public static final double L2 = 0;

@@ -60,7 +60,7 @@ public class CoralIntake extends SubsystemBase {
         SmartDashboard.putNumber("Coral current: ", coralIntakeMotor.getOutputCurrent());
 
         if (state == Constants.CoralIntakeStates.INTAKE) {
-            runIntake(0.05);
+            runIntake(0.05); 
         } else if (state == Constants.CoralIntakeStates.READY || state == Constants.CoralIntakeStates.NONE) {
             runIntake(0);
         } else if (state == Constants.CoralIntakeStates.SHOOTING) {
