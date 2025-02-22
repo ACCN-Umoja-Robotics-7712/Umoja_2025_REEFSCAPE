@@ -131,8 +131,25 @@ public final class Constants {
         public static final int L2 = 2;
         public static final int L3 = 3;
         public static final int L4 = 4; 
+        public static final int CLIMB_READY = 5;
+        public static final int CLIMBING = 6;
+        public static final int REMOVE = 7;
     }
 
+    public static final class DeepClimbStates{
+        
+        public static final double NONE = 01; 
+        public static final double ZERO = 0; 
+        public static final double READY = 0; // encoder value
+        public static final double CLIMBING = 0; // encoder value
+    }
+
+    public static final class DeepClimbConstants{
+
+        public static final int climbMotorID = 3;
+        public static final double kP = 0;
+        public static final double kI = 0;
+    }
     public static final class AlgaeModeStates{
 
         public static final double NONE = -1;
@@ -166,6 +183,8 @@ public final class Constants {
         public static final double L1 = 0;
         public static final double L23 = 0;
         public static final double L4 = 0;
+        public static final double CLIMB = 0;
+        public static final double REMOVE = 0;
     }
 
     public static final class CoralIntakeStates {
@@ -204,6 +223,7 @@ public final class Constants {
 
         public static final int elevatorMotor1ID = 8; // Check this
         public static final int elevatorMotor2ID = 9; // Check this
+
     }
 
     public static final class ElevatorStates {
@@ -213,6 +233,7 @@ public final class Constants {
         public static final double L2 = 0;
         public static final double L3 = 0;
         public static final double L4 = 0;
+        public static final double CLIMB = 0;
     };
 
     public static final class LEDConstants {

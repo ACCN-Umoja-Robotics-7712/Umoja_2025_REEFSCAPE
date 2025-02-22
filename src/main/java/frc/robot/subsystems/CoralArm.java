@@ -44,6 +44,11 @@ public class CoralArm extends SubsystemBase {
             coralArmMotor.set(percent);
         }
     }
+
+    public boolean isClimbReady(){
+        return coralArmEncoder.getPosition() > Constants.CoralArmStates.CLIMB; // To-do: subtract number for leeway
+    }
+
     public void setState(double coralArmState) {
         state = coralArmState;
     }

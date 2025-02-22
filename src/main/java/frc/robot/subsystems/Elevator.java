@@ -50,6 +50,10 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    public boolean isClimbReady(){
+        return elevator1Encoder.getPosition() >= Constants.ElevatorStates.CLIMB; // To-do: Subtract number for leeway
+    }
+
     public void setState(double state) {
         this.state = state;
     }

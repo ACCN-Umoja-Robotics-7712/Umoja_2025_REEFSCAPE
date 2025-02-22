@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.USB;
@@ -53,7 +54,9 @@ public class OperatorJoystick extends Command {
     
 
         if (j.getRawButtonPressed(OIConstants.A)){
-            robotState.setState(RobotStates.L1);
+            if (robotState.getState() != RobotStates.CLIMBING || robotState.getState() != RobotStates.CLIMB_READY){
+                robotState.setState(RobotStates.L1);
+            }
         } else if (j.getRawButtonPressed(OIConstants.X)){
             robotState.setState(RobotStates.L2);
         } else if(j.getRawButtonPressed(OIConstants.B)){

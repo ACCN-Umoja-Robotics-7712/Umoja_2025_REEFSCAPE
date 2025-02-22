@@ -9,6 +9,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.RobotState;
+import frc.robot.subsystems.DeepClimb;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
@@ -53,7 +54,8 @@ public class RobotContainer {
   public final static Elevator elevatorSubsystem = new Elevator();
   public final static CoralArm coralArmSubsystem = new CoralArm();
   public final static CoralIntake coralIntakeSubsystem = new CoralIntake();
-  public final static RobotState robotState = new RobotState(elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem);
+  public final static DeepClimb deepClimbSubsystem = new DeepClimb();
+  public final static RobotState robotState = new RobotState(swerveSubsystem, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
 
   public static double wantedAngle = -1;
   public static int gameState = GameConstants.Robot;

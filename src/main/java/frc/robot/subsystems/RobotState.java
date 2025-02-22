@@ -8,12 +8,17 @@ public class RobotState {
     Elevator elevatorSubSystem;
     CoralArm coralArmSubsystem;
     CoralIntake coralIntakeSubsystem;
+    DeepClimb deepClimbSubsystem;
+    SwerveSubsystem swerveSubsystem;
+
     private int state = Constants.RobotStates.NONE;
 
-    public RobotState(Elevator elevatorSubsystem, CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem){
+    public RobotState(SwerveSubsystem swerveSubsystem, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem, DeepClimb deepClimbSubsystem){
+        this.swerveSubsystem = swerveSubsystem;
         this.elevatorSubSystem = elevatorSubsystem;
         this.coralArmSubsystem = coralArmSubsystem;
         this.coralIntakeSubsystem = coralIntakeSubsystem;
+        this.deepClimbSubsystem = deepClimbSubsystem;
     }
 
     public void setState(int state){
@@ -41,7 +46,7 @@ public class RobotState {
                 state = Constants.RobotStates.PICKUP;
                 return;
             }
-            // if in position switch CORAL INTAKE to SHOOTING state
+            // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L1);
             coralArmSubsystem.setState(Constants.CoralArmStates.L1);
@@ -52,44 +57,62 @@ public class RobotState {
                 state = Constants.RobotStates.PICKUP;
                 return;
             }
-            // if in position switch CORAL INTAKE to SHOOTING state
+            // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L1);
             coralArmSubsystem.setState(Constants.CoralArmStates.L1);
             coralIntakeSubsystem.setState(Constants.CoralIntakeStates.READY);
+            deepClimbSubsystem.setState(Constants.DeepClimbStates.ZERO);
         } else if (state == Constants.RobotStates.L2){
             // in case we lose coral (robot hits us)
             if (!coralIntakeSubsystem.hasCoral()) {
                 state = Constants.RobotStates.PICKUP;
                 return;
             }
-            // if in position switch CORAL INTAKE to SHOOTING state
+            // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L2);
             coralArmSubsystem.setState(Constants.CoralArmStates.L23);
             coralIntakeSubsystem.setState(Constants.CoralIntakeStates.READY);
+            deepClimbSubsystem.setState(Constants.DeepClimbStates.ZERO);
         } else if (state == Constants.RobotStates.L3){
             // in case we lose coral (robot hits us)
             if (!coralIntakeSubsystem.hasCoral()) {
                 state = Constants.RobotStates.PICKUP;
                 return;
             }
-            // if in position switch CORAL INTAKE to SHOOTING state
+            // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L3);
             coralArmSubsystem.setState(Constants.CoralArmStates.L23);
             coralIntakeSubsystem.setState(Constants.CoralIntakeStates.READY);
+            deepClimbSubsystem.setState(Constants.DeepClimbStates.ZERO);
         } else if (state == Constants.RobotStates.L4){
             // in case we lose coral (robot hits us)
             if (!coralIntakeSubsystem.hasCoral()) {
                 state = Constants.RobotStates.PICKUP;
                 return;
             }
-            // if in position switch CORAL INTAKE to SHOOTING state
+            // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L4);
             coralArmSubsystem.setState(Constants.CoralArmStates.L4);
             coralIntakeSubsystem.setState(Constants.CoralIntakeStates.READY);
+            deepClimbSubsystem.setState(Constants.DeepClimbStates.ZERO);
         } // ADD Algae
+
+        else if (state == Constants.RobotStates.CLIMB_READY){
+            deepClimbSubsystem.setState(Constants.DeepClimbStates.READY);
+            elevatorSubSystem.setState(Constants.ElevatorStates.CLIMB);
+            if (elevatorSubSystem.isClimbReady()){
+                coralArmSubsystem.setState(Constants.CoralArmStates.CLIMB);
+            }
+        }
+        else if (state == Constants.RobotStates.CLIMBING){
+            deepClimbSubsystem.setState(Constants.DeepClimbStates.CLIMBING);
+        }
+        else if (state == Constants.RobotStates.REMOVE){
+            //To-do: Finish this
+        }
     }
 }
