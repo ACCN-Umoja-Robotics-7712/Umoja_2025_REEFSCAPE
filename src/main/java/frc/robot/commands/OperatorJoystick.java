@@ -10,20 +10,23 @@ import frc.robot.Constants.USB;
 import frc.robot.Constants.RobotStates;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralArm;
+import frc.robot.subsystems.DeepClimb;
 import frc.robot.subsystems.RobotState;
 
 public class OperatorJoystick extends Command {
     //Defining subsystems
     Elevator elevatorSubsystem;
     CoralArm coralArmSubsystem;
+    DeepClimb deepClimbSubsystem;
 
     RobotState robotState;
 
     Joystick j = new Joystick(USB.OPERATOR_CONTROLLER);
 
-    public OperatorJoystick(RobotState robotState, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, Joystick j){
+    public OperatorJoystick(RobotState robotState, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, DeepClimb deepClimbSubsystem, Joystick j){
         this.elevatorSubsystem = elevatorSubsystem;
         this.coralArmSubsystem = coralArmSubsystem;
+        this.deepClimbSubsystem = deepClimbSubsystem;
 
         this.robotState = robotState;
 
@@ -34,10 +37,14 @@ public class OperatorJoystick extends Command {
     @Override
     public void execute(){
 
-        double elevatorSpeed = Math.abs(j.getRawAxis(OIConstants.LY)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.LY) * 0.3 : 0.0;
+        double elevatorSpeed = Math.abs(j.getRawAxis(OIConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LY) * 0.3 : 0.0;
         
-        double coralArmSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RY) * 0.3 : 0.0;
+        // double coralArmSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RY) * 0.3 : 0.0;
+        
+        double climbSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RY) * 0.3 : 0.0;
 
+        elevatorSubsystem.runElevator(elevatorSpeed);
+        deepClimbSubsystem.runClimber(climbSpeed);
         //Elevator Logic --> Switch to coralArm after testing
         // if(j.getRawAxis(OIConstants.RT) > 0.5){
         //     elevatorSubsystem.runElevator(-0.3);

@@ -52,7 +52,7 @@ public class DeepClimb extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Climber current: ", deepClimbMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Climber position: ", deepClimbEncoder.getPosition());
 
         if (state != DeepClimbStates.NONE) {
             runClimber(deepClimbPID.calculate(deepClimbEncoder.getPosition(), state));

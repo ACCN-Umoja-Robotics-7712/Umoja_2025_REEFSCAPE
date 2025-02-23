@@ -8,9 +8,10 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.CoralIntake;
+import frc.robot.subsystems.DeepClimb;
 
 public class TeleCommandGroup extends ParallelCommandGroup{
-    public TeleCommandGroup(RobotState robotState, SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorController, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem){
+    public TeleCommandGroup(RobotState robotState, SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorController, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem, DeepClimb deepClimbSubsystem){
         
         //Driver Command
         addCommands(
@@ -24,7 +25,7 @@ public class TeleCommandGroup extends ParallelCommandGroup{
 
                 // operator
         addCommands(
-            new OperatorJoystick(robotState, elevatorSubsystem, coralArmSubsystem, operatorController)
+            new OperatorJoystick(robotState, elevatorSubsystem, coralArmSubsystem, deepClimbSubsystem, operatorController)
                 );
     }
 }

@@ -125,7 +125,8 @@ public class Robot extends TimedRobot {
         RobotContainer.operatorController,
         RobotContainer.elevatorSubsystem,
         RobotContainer.coralArmSubsystem,
-        RobotContainer.coralIntakeSubsystem
+        RobotContainer.coralIntakeSubsystem,
+        RobotContainer.deepClimbSubsystem
       )
     );
     if (m_autonomousCommand != null) {
