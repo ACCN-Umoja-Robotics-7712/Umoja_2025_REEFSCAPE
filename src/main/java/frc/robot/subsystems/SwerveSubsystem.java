@@ -184,7 +184,7 @@ public class SwerveSubsystem extends SubsystemBase {
         ChassisSpeeds speeds = new ChassisSpeeds(
             sample.vx + xController.calculate(pose.getX(), sample.x),
             sample.vy + yController.calculate(pose.getY(), sample.y),
-            sample.omega + thetaController.calculate(pose.getRotation().getDegrees(), sample.heading)
+            sample.omega + thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(sample.heading))
         );
 
         // Apply the generated speeds
