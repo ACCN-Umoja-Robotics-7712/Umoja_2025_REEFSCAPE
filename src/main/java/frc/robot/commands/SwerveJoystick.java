@@ -216,6 +216,7 @@ public class SwerveJoystick extends Command {
               }
             }
           } else {
+            boolean hasCoral = false;
             RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();;
           }
 
