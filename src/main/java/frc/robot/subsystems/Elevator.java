@@ -31,6 +31,10 @@ public class Elevator extends SubsystemBase {
 
         elevatorConfig.idleMode(IdleMode.kBrake);
         elevatorConfig.inverted(false);
+        elevatorConfig.softLimit.forwardSoftLimitEnabled(true);
+        elevatorConfig.softLimit.reverseSoftLimitEnabled(true);
+        elevatorConfig.softLimit.forwardSoftLimit(Constants.ElevatorConstants.elevatorTopLimit);
+        elevatorConfig.softLimit.reverseSoftLimit(Constants.ElevatorConstants.elevatorBottomLimit);
         elevatorMotor1.configure(elevatorConfig,ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
         elevator2Config.idleMode(IdleMode.kBrake);
@@ -40,14 +44,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void runElevator(double percent){
-        if (elevator1Encoder.getPosition() >= Constants.ElevatorConstants.elevatorTopLimit && percent > 0){
-            elevatorMotor1.set(0);
-        }
-        else if (elevator1Encoder.getPosition() <= Constants.ElevatorConstants.elevatorBottomLimit && percent < 0){
-            elevatorMotor1.set(0);
-        } else {
-            elevatorMotor1.set(percent);
-        }
+        elevatorMotor1.set(percent);
     }
 
     public boolean isClimbReady(){
