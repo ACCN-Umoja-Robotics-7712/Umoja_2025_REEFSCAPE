@@ -10,6 +10,7 @@ import frc.robot.Constants.USB;
 import frc.robot.Constants.RobotStates;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralArm;
+import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.DeepClimb;
 import frc.robot.subsystems.RobotState;
 
@@ -17,49 +18,54 @@ public class OperatorJoystick extends Command {
     //Defining subsystems
     Elevator elevatorSubsystem;
     CoralArm coralArmSubsystem;
+    CoralIntake coralIntakeSubsystem;
     DeepClimb deepClimbSubsystem;
 
     RobotState robotState;
 
     Joystick j = new Joystick(USB.OPERATOR_CONTROLLER);
 
-    public OperatorJoystick(RobotState robotState, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, DeepClimb deepClimbSubsystem, Joystick j){
+    public OperatorJoystick(RobotState robotState, Elevator elevatorSubsystem, CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem, DeepClimb deepClimbSubsystem, Joystick j){
         this.elevatorSubsystem = elevatorSubsystem;
         this.coralArmSubsystem = coralArmSubsystem;
+        this.coralIntakeSubsystem = coralIntakeSubsystem;
         this.deepClimbSubsystem = deepClimbSubsystem;
 
         this.robotState = robotState;
 
         //Add subsystem dependencies
-        addRequirements(elevatorSubsystem, coralArmSubsystem);
+        addRequirements(elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
     }
 
     @Override
     public void execute(){
 
+        // manual controls
         double elevatorSpeed = Math.abs(j.getRawAxis(OIConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LY) * 0.3 : 0.0;
-        
-        // double coralArmSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RY) * 0.3 : 0.0;
-        
-        double climbSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RY) * 0.3 : 0.0;
+        double coralArmSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.RY) * 0.3 : 0.0;
+        double climbSpeed = Math.abs(j.getRawAxis(OIConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RT) * 0.3 : 0.0;
+        double declimbSpeed = Math.abs(j.getRawAxis(OIConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LT) * 0.3 : 0.0;
 
         elevatorSubsystem.runElevator(elevatorSpeed);
-        deepClimbSubsystem.runClimber(climbSpeed);
-        //Elevator Logic --> Switch to coralArm after testing
-        // if(j.getRawAxis(OIConstants.RT) > 0.5){
-        //     elevatorSubsystem.runElevator(-0.3);
-        // } else if(j.getRawAxis(OIConstants.LT) > 0.5) {
-        //     elevatorSubsystem.runElevator(0.3);
-        //     elevatorSubsystem.setState(ElevatorStates.NONE);
-        // } else {
-        //     elevatorSubsystem.runElevator(0);
-        //     elevatorSubsystem.setState(ElevatorStates.NONE);
-        // }
+        coralArmSubsystem.runArm(coralArmSpeed);
+        if (climbSpeed != 0) {
+            deepClimbSubsystem.runClimber(climbSpeed);
+        } else {
+            deepClimbSubsystem.runClimber(declimbSpeed);
+        }
 
-        // elevatorSubsystem.runElevator(elevatorSpeed);
-        // coralArmSubsystem.runCoralArm(coralArmSpeed);
-    
+        boolean intake = j.getRawButton(OIConstants.LB);
+        boolean shoot = j.getRawButton(OIConstants.RB);
+        if (intake) {
+            coralIntakeSubsystem.runIntake(0.3);
+        } else if (shoot) {
+            coralIntakeSubsystem.runIntake(-0.3);
+        } else {
+            coralIntakeSubsystem.runIntake(0);
+        }
 
+
+        // automated control
         if (j.getRawButtonPressed(OIConstants.A)){
             if (robotState.getState() != RobotStates.CLIMBING || robotState.getState() != RobotStates.CLIMB_READY){
                 robotState.setState(RobotStates.L1);

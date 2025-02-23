@@ -25,7 +25,7 @@ public class TeleCommandGroup extends ParallelCommandGroup{
 
                 // operator
         addCommands(
-            new OperatorJoystick(robotState, elevatorSubsystem, coralArmSubsystem, deepClimbSubsystem, operatorController)
+            new OperatorJoystick(robotState, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem, operatorController)
                 );
     }
 }
