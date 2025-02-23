@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -24,6 +25,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.USB;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveSubsystem;
+// Pass in robot states
 
 
 public class Autos {
@@ -44,11 +46,26 @@ public class Autos {
         autoFactory = new AutoFactory(
             swerveSubsystem::getPose, // A function that returns the current robot pose
             swerveSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
-            swerveSubsystem::followPath, // The drive subsystem trajectory follower 
+            swerveSubsystem::followTrajectory, // The drive subsystem trajectory follower 
             true, // If alliance flipping should be enabled 
             swerveSubsystem // The drive subsystem
         );
     }
+// Template for creating autos
+//     public Command pickupAndScoreAuto() {
+//     return Commands.sequence(
+//         autoFactory.resetOdometry("pickupGamepiece"), // 
+//         Commands.deadline(
+//             autoFactory.trajectoryCmd("pickupGamepiece"),
+//             intakeSubsystem.intake() // 
+//         ),
+//         Commands.parallel(
+//             autoFactory.trajectoryCmd("scoreGamepiece"),
+//             scoringSubsystem.getReady()
+//         )
+//         scoringSubsystem.score()
+//     );
+// }
 
     
 }

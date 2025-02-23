@@ -13,6 +13,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.studica.frc.AHRS.NavXComType;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -142,8 +143,8 @@ public class SwerveSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> setModuleStatesFromSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(Constants.ModuleConstants.kPTurning, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(Constants.DriveConstants.kPDrive, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(Constants.DriveConstants.kPTurning, 0.0, 0.0) // Rotation PID constants
                 ),
                 config,
                 () -> {
@@ -175,36 +176,19 @@ public class SwerveSubsystem extends SubsystemBase {
         holonomicDriveController = new HolonomicDriveController(xController, yController, thetaController);
     }
     // Assuming this is a method in your drive subsystem
-    public Command followPathCommand(String pathName) {
-        try{
-            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+   public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
 
-            return new FollowPathCommand(path,
-                    this::getPose, // Robot pose supplier
-                    this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                    (speeds, feedforwards) -> setModuleStatesFromSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND feedforwards
-                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-                    ),
-                    config,
-                    () -> {
-                        // Boolean supplier that controls when the path will be mirrored for the red alliance
-                        // This will flip the path being followed to the red side of the field.
-                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega + thetaController.calculate(pose.getRotation().getDegrees(), sample.heading)
+        );
 
-                        var alliance = DriverStation.getAlliance();
-                        if (alliance.isPresent()) {
-                            return alliance.get() == DriverStation.Alliance.Red;
-                        }
-                        return false;
-                    },
-                    this // Reference to this subsystem to set requirements
-                );
-        } catch (Exception e) {
-            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-        }
+        // Apply the generated speeds
+        setModuleStatesFromSpeeds(speeds);
     }
 
     public void resetEncoders(){
@@ -462,7 +446,4 @@ public class SwerveSubsystem extends SubsystemBase {
         return pose.transformBy(transform);
     }
 
-    public Command followPath(String pathplannerPathString) {
-        return followPathCommand(pathplannerPathString);
-    }
 }
