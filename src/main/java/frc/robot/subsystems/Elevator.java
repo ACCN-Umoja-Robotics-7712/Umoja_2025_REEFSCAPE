@@ -14,13 +14,15 @@ import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorStates;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 
 public class Elevator extends SubsystemBase {
     private final SparkMax elevatorMotor1 = new SparkMax(Constants.ElevatorConstants.elevatorMotor1ID, MotorType.kBrushless);
     private final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
 
     private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
-    PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, 0, 0);
+    ProfiledPIDController elevatorPID = new ProfiledPIDController(Constants.ElevatorConstants.kP, 0, 0, Constants.ElevatorConstants.elevatorFFProfile);
+    
 
     private double state = Constants.ElevatorStates.NONE;
     

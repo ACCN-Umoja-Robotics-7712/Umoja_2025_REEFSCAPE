@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -219,7 +220,11 @@ public final class Constants {
         public static final double elevatorTopLimit = 5.0;
         public static final double elevatorBottomLimit = 0.0;
 
-        public static final double kP =  0.1;
+        private static double elevatorMaxVelocity = 0;
+        private static double elevatorMaxAcceleration = 0;
+        public static final Constraints elevatorFFProfile = new TrapezoidProfile.Constraints(elevatorMaxVelocity, elevatorMaxAcceleration);
+
+        public static final double kP =  0;
 
         public static final int elevatorMotor1ID = 8; // Check this
         public static final int elevatorMotor2ID = 9; // Check this
