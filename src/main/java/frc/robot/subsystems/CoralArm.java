@@ -28,6 +28,10 @@ public class CoralArm extends SubsystemBase {
         coralArmConfig.inverted(false);
 
         coralArmMotor = new SparkMax(Constants.CoralConstants.coralArmMotorID, MotorType.kBrushless); 
+        coralArmConfig.softLimit.forwardSoftLimitEnabled(true);
+        coralArmConfig.softLimit.reverseSoftLimitEnabled(true);
+        coralArmConfig.softLimit.forwardSoftLimit(Constants.CoralConstants.coralArmTopLimit);
+        coralArmConfig.softLimit.reverseSoftLimit(Constants.CoralConstants.coralArmBottomLimit);
         coralArmMotor.configure(coralArmConfig, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
         
         coralArmEncoder = coralArmMotor.getEncoder();
@@ -35,14 +39,7 @@ public class CoralArm extends SubsystemBase {
     }
     
     public void runArm(double percent){
-        if (coralArmEncoder.getPosition() >= Constants.CoralConstants.coralArmTopLimit && percent > 0){
-            coralArmMotor.set(0);
-        }
-        else if (coralArmEncoder.getPosition() <= Constants.CoralConstants.coralArmBottomLimit && percent < 0){
-            coralArmMotor.set(0);
-        } else {
-            coralArmMotor.set(percent);
-        }
+        coralArmMotor.set(percent);
     }
 
     public boolean isClimbReady(){
