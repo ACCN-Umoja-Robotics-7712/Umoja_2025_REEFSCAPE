@@ -174,7 +174,7 @@ public final class Constants {
         public static final double shootPositionL23 = 0;
         public static final double shootPositionL4 = 0;
 
-        public static final double coralCurrent = 0;
+        public static final double coralCurrentDiff = 0.05;
     }
 
     public static final class CoralArmStates {
