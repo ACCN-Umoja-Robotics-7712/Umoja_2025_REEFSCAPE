@@ -54,8 +54,8 @@ public class SwerveModule {
         // driveMotor.getConfigurator().apply(motorConfigs);
         
         // driveMotor.setInverted(false);
-        driveMotor.setInverted(driveMotorReversed);
-        turnMotor.setInverted(turnMotorReversed);
+        driveMotor.setInverted(driveMotorReversed); // Code depriciated in 2026
+        turnMotor.setInverted(turnMotorReversed); // Code depriciated in 2026
 
         
         // driveEncoder = driveMotor.getEncoder(Type.kHallSensor, 42);

@@ -49,7 +49,6 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
-import frc.robot.Constants.PoseEstimatorConstants;
 import frc.robot.LimelightHelpers;
 
 public class SwerveSubsystem extends SubsystemBase {
