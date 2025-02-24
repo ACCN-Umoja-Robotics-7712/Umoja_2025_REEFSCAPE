@@ -25,11 +25,11 @@ public class CoralArm extends SubsystemBase {
 
         SparkMaxConfig coralArmConfig = new SparkMaxConfig();
         coralArmConfig.idleMode(IdleMode.kBrake);
-        coralArmConfig.inverted(false);
+        coralArmConfig.inverted(true);
 
         coralArmMotor = new SparkMax(Constants.CoralConstants.coralArmMotorID, MotorType.kBrushless); 
-        coralArmConfig.softLimit.forwardSoftLimitEnabled(true);
-        coralArmConfig.softLimit.reverseSoftLimitEnabled(true);
+        coralArmConfig.softLimit.forwardSoftLimitEnabled(false); //To-do: Change to true once you get limits fixed
+        coralArmConfig.softLimit.reverseSoftLimitEnabled(false);
         coralArmConfig.softLimit.forwardSoftLimit(Constants.CoralConstants.coralArmTopLimit);
         coralArmConfig.softLimit.reverseSoftLimit(Constants.CoralConstants.coralArmBottomLimit);
         coralArmMotor.configure(coralArmConfig, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
@@ -53,12 +53,14 @@ public class CoralArm extends SubsystemBase {
     public double getState(){
         return state;
     }
+    
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
         // SmartDashboard.putNumber("Intake Pos", intakeEncoder.getPosition());
+        SmartDashboard.putNumber("Coral Arm Position", coralArmEncoder.getPosition());
         if(state != -1){
-            runArm(coralArmPID.calculate(coralArmEncoder.getPosition(), state));
+            // runArm(coralArmPID.calculate(coralArmEncoder.getPosition(), state));
         }
     }
 }

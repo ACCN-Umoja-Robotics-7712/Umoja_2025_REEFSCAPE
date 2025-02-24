@@ -19,7 +19,7 @@ import frc.robot.Constants.DeepClimbConstants;;
 public class DeepClimb extends SubsystemBase {
 
     SparkMax deepClimbMotor;
-    RelativeEncoder deepClimbEncoder;  
+    RelativeEncoder deepClimbEncoder; 
     private double state = Constants.DeepClimbStates.NONE; 
     PIDController deepClimbPID = new PIDController(DeepClimbConstants.kP, DeepClimbConstants.kI, 0);
 
@@ -52,7 +52,7 @@ public class DeepClimb extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Climber position: ", deepClimbEncoder.getPosition());
+        SmartDashboard.putNumber("Climber position", deepClimbEncoder.getPosition());
 
         if (state != DeepClimbStates.NONE) {
             runClimber(deepClimbPID.calculate(deepClimbEncoder.getPosition(), state));

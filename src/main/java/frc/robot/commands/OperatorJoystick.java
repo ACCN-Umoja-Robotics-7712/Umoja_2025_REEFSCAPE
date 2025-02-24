@@ -57,28 +57,28 @@ public class OperatorJoystick extends Command {
         boolean intake = j.getRawButton(OIConstants.LB);
         boolean shoot = j.getRawButton(OIConstants.RB);
         if (intake) {
-            coralIntakeSubsystem.runIntake(0.3);
+            coralIntakeSubsystem.runIntake(0.15);
         } else if (shoot) {
-            coralIntakeSubsystem.runIntake(-0.3);
+            coralIntakeSubsystem.runIntake(-0.15);
         } else {
             coralIntakeSubsystem.runIntake(0);
         }
 
 
         // automated control
-        if (j.getRawButtonPressed(OIConstants.A)){
-            if (robotState.getState() != RobotStates.CLIMBING || robotState.getState() != RobotStates.CLIMB_READY){
-                robotState.setState(RobotStates.L1);
-            }
-        } else if (j.getRawButtonPressed(OIConstants.X)){
-            robotState.setState(RobotStates.L2);
-        } else if(j.getRawButtonPressed(OIConstants.B)){
-            robotState.setState(RobotStates.L3);
-        } else if(j.getRawButtonPressed(OIConstants.Y)){
-            robotState.setState(RobotStates.L4);
-        } else {
-            robotState.setState(RobotStates.NONE);
-        }
-
+        // if (j.getRawButtonPressed(OIConstants.A)){
+        //     if (robotState.getState() != RobotStates.CLIMBING || robotState.getState() != RobotStates.CLIMB_READY){
+        //         robotState.setState(RobotStates.L1);
+        //     }
+        // } else if (j.getRawButtonPressed(OIConstants.X)){
+        //     robotState.setState(RobotStates.L2);
+        // } else if(j.getRawButtonPressed(OIConstants.B)){
+        //     robotState.setState(RobotStates.L3);
+        // } else if(j.getRawButtonPressed(OIConstants.Y)){
+        //     robotState.setState(RobotStates.L4);
+        // } else {
+        //     robotState.setState(RobotStates.NONE);
+        // }
+// To-do: Add Climb Ready, Climbing, and remove algae
     }
 }

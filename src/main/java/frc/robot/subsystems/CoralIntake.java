@@ -37,14 +37,20 @@ public class CoralIntake extends SubsystemBase {
     }
 
     public boolean hasCoral(){
-        double diff = coralIntakeMotor.getOutputCurrent() - Constants.CoralConstants.coralCurrent;
-        if (diff < 3){
+        double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //To-do: Check if applied is in amps
+        if (diff < Constants.CoralConstants.coralCurrentDiff){
             return true;
         } 
         else{
             return false;
         }
     }
+
+    // public boolean hasCoralSensor(){
+    //     if (sensor sees Coral){
+    //         return true;
+    //     }
+    // }
 
     public double getState(){
         return state;
@@ -57,7 +63,7 @@ public class CoralIntake extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Coral current: ", coralIntakeMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Coral current", coralIntakeMotor.getAppliedOutput());
 
         if (state == Constants.CoralIntakeStates.INTAKE) {
             runIntake(0.05); 
