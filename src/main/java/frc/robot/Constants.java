@@ -164,7 +164,7 @@ public final class Constants {
         public static final int coralArmMotorID = 2;
 
         public static final double coralArmBottomLimit = 0.0;
-        public static final double coralArmTopLimit = 20.0; // Change this
+        public static final double coralArmTopLimit = 140; // Change this
 
         public static final double kP = 0.1;
         
