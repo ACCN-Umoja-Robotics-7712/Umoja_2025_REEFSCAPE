@@ -164,17 +164,18 @@ public final class Constants {
         public static final int coralArmMotorID = 2;
 
         public static final double coralArmBottomLimit = 0.0;
-        public static final double coralArmTopLimit = 20.0;
+        public static final double coralArmTopLimit = 20.0; // Change this
 
         public static final double kP = 0.1;
         
-        public static final double armPickupPosition = 0;
+        public static final double armPickupPosition = 60; //Tested!
 
         public static final double shootPositionL1 = 0;
         public static final double shootPositionL23 = 0;
         public static final double shootPositionL4 = 0;
 
         public static final double coralCurrentDiff = 0.05;
+
     }
 
     public static final class CoralArmStates {

@@ -39,7 +39,7 @@ public class CoralArm extends SubsystemBase {
     }
     
     public void runArm(double percent){
-        coralArmMotor.set(percent);
+        coralArmMotor.set(percent); // To-do: Add thing to not let it hit into robot if elevator is under a certain thing 
     }
 
     public boolean isClimbReady(){
