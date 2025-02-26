@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -122,7 +123,9 @@ public class SwerveModule {
             stop();
             return;
         }
-        state = SwerveModuleState.optimize(state, getState().angle);
+        state.optimize(getState().angle);
+        SmartDashboard.putNumber("Swerve current " + absoluteEncoderID, getState().speedMetersPerSecond);
+        SmartDashboard.putNumber("Swerve wanted " + absoluteEncoderID, state.speedMetersPerSecond);
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         // driveMotor.set(drivePIDcontroller.calculate())
         // TODO: CHANGE THIS TO PID

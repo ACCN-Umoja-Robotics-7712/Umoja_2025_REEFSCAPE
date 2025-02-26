@@ -13,14 +13,19 @@ import frc.robot.subsystems.DeepClimb;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
+import frc.robot.commands.Autos;
 import frc.robot.Constants.USB;
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> Positioning
 import java.util.List;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import choreo.Choreo;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -57,7 +62,10 @@ public class RobotContainer {
   public final static DeepClimb deepClimbSubsystem = new DeepClimb();
   public final static RobotState robotState = new RobotState(swerveSubsystem, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
 
+  public static final Autos auto = new Autos(swerveSubsystem);
+
   public static double wantedAngle = -1;
+  public static Boolean shouldAutoFixDrift = true;
   public static int gameState = GameConstants.Robot;
   public static Trajectory currentTrajectory = null;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -84,6 +92,7 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

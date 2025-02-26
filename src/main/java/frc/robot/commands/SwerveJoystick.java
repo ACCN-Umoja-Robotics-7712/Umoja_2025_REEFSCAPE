@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.LimelightHelpers;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
@@ -64,8 +65,6 @@ public class SwerveJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      
-    
     if (j.getRawButton(OIConstants.Y)) {
       double KpDistance = -0.1f;  // Proportional control constant for distance
       double current_distance = Estimate_Distance();  // see the 'Case Study: Estimating Distance'
@@ -125,7 +124,7 @@ public class SwerveJoystick extends Command {
       Boolean aButtonPressed = j.getRawButton(OIConstants.A);
       if (aButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
-            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory();
+            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(false, true);
         }
         // double curTime = swerveSubsystem.timer.get();
         // var desiredState = RobotContainer.currentTrajectory.sample(curTime);
@@ -163,8 +162,9 @@ public class SwerveJoystick extends Command {
           double joystickY = ySpeed;
           double joystickTurn = turningSpeed;
       
+          boolean isRobotOrientatedDrive = RobotContainer.driverController.getRawAxis(OIConstants.RT) >= 0.5;
           // 3. Make the driving smoother
-          if (RobotContainer.driverController.getRawButton(OIConstants.kDriverRB)){
+          if (RobotContainer.driverController.getRawButton(OIConstants.kDriverRB) || isRobotOrientatedDrive){
             xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.kSlowButtonDriveModifier);
             ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.kSlowButtonDriveModifier);
             turningSpeed = turningLimiter.calculate(turningSpeed) * (DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond * DriveConstants.kSlowButtonTurnModifier);
@@ -176,10 +176,16 @@ public class SwerveJoystick extends Command {
       
           // set current angle
           if (RobotContainer.wantedAngle == -1) {
-            RobotContainer.wantedAngle = swerveSubsystem.getHeading();
+            // change hasCoral to be based on intake hasCoral
+            boolean hasCoral = false;
+            RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
           }
 
-          if (joystickTurn == 0) {
+          if (RobotContainer.shouldAutoFixDrift && joystickTurn == 0) {
+            // Fixes negative angles from Pose2d
+            if (RobotContainer.wantedAngle < 0) {
+              RobotContainer.wantedAngle += 360;
+            }
             // fix drift
             // if drifting
             if (RobotContainer.wantedAngle != swerveSubsystem.getHeading()) {
@@ -210,13 +216,17 @@ public class SwerveJoystick extends Command {
               }
             }
           } else {
-            RobotContainer.wantedAngle = swerveSubsystem.getHeading();
+            boolean hasCoral = false;
+            RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();;
           }
 
           // 4. Construct desired chassis speeds
           ChassisSpeeds chassisSpeeds;
-          chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-      
+          if (!isRobotOrientatedDrive) {
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+          } else {
+            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+          }
 
           // 5. Convert chassis speeds to individual module states
           SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -229,6 +239,11 @@ public class SwerveJoystick extends Command {
           // }
           if(j.getRawButton(OIConstants.BACK)){
             swerveSubsystem.zeroHeading();
+          }
+          if(j.getRawButton(OIConstants.START)){
+            RobotContainer.shouldAutoFixDrift = !RobotContainer.shouldAutoFixDrift;
+            System.out.println("AUTO FIX DRIFT TURNED " + Boolean.toString(RobotContainer.shouldAutoFixDrift));
+            SmartDashboard.putBoolean("Auto Fix Drift", RobotContainer.shouldAutoFixDrift);
           }
         }
       
