@@ -402,7 +402,7 @@ public class SwerveSubsystem extends SubsystemBase {
         allPointsPublisher.set(allPoints.toArray(new Pose2d[0]));
         // To-do: print points in terminal to put into choreo 
         for (Pose2d point: allPoints){
-            System.out.print(point);
+            // System.out.print(point);
         }
     }
 
