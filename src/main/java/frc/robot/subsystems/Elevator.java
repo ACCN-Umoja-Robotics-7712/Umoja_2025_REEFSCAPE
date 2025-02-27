@@ -45,12 +45,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public void runElevator(double percent){
-        if (RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit && percent < 0 && elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit){
-            elevatorMotor1.set(0);
-        }
-        else {
-            elevatorMotor1.set(percent);
-        }
+        // if (RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit && percent < 0 && elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit){
+        //     elevatorMotor1.set(0);
+        // }
+        // else {
+        //     elevatorMotor1.set(percent);
+        // }
     }
     public double getEncoder(){
         return elevator1Encoder.getPosition();

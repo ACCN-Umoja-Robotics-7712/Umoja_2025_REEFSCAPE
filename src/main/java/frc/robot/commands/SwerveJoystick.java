@@ -39,7 +39,7 @@ public class SwerveJoystick extends Command {
 
   Joystick j = new Joystick(USB.DRIVER_CONTROLLER);
 
-  private final PIDController driftController = new PIDController(DriveConstants.kPDrift, 0, 0);
+  private final PIDController driftController = new PIDController(DriveConstants.kPDrift, DriveConstants.kIDrift, 0);
 
 
   /** Creates a new SwerveJoystick. */
@@ -179,7 +179,9 @@ public class SwerveJoystick extends Command {
             // auto fix drift
             if (RobotContainer.shouldAutoFixDrift == 1) {
               RobotContainer.wantedAngle = swerveSubsystem.getHeading();
-            // align
+              // RobotContainer.wantedAngle = 0; 
+
+              // align
             } else if (RobotContainer.shouldAutoFixDrift == 2) {
               // change hasCoral to be based on intake hasCoral
               boolean hasCoral = false;
@@ -219,15 +221,16 @@ public class SwerveJoystick extends Command {
               turningSpeed = driftController.calculate(-diff, 0);
               
               // only fix drift when moving
-              if (joystickX == 0 && joystickY == 0) {
-                turningSpeed = 0;
-              }
+              // if (joystickX == 0 && joystickY == 0) {
+              //   turningSpeed = 0;
+              // }
             }
           } else {
             // auto fix drift
             if (RobotContainer.shouldAutoFixDrift == 1) {
               RobotContainer.wantedAngle = swerveSubsystem.getHeading();
-            // align
+              // RobotContainer.wantedAngle = 0;
+              // align
             } else if (RobotContainer.shouldAutoFixDrift == 2) {
               // change hasCoral to be based on intake hasCoral
               boolean hasCoral = false;

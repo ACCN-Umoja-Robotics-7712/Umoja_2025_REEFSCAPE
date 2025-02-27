@@ -125,6 +125,7 @@ public final class Constants {
         public static final double kPTurning = 0.6;
 
         public static final double kPDrift = 0.1;
+        public static final double kIDrift = 0.0; // 0.05
     }
 
 
@@ -154,13 +155,6 @@ public final class Constants {
         public static final int climbMotorID = 3;
         public static final double kP = 0;
         public static final double kI = 0;
-    }
-    public static final class AlgaeModeStates{
-
-        public static final double NONE = -1;
-        public static final double PICKUP = 0;
-        public static final double READY = 1;
-        public static final double SHOOTING = 2;
     }
 
     public static final class CoralConstants {
@@ -209,7 +203,7 @@ public final class Constants {
         public static final int rightMotorID = 51;
 
         public static final double elevatorTopLimit = 260.0; 
-        public static final double elevatorBottomLimit = 0.5;
+        public static final double elevatorBottomLimit = 20;
 
         public static final double kP =  0.2;
         public static final double kI =  0.0; 
