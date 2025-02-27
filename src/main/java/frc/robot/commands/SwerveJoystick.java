@@ -176,12 +176,20 @@ public class SwerveJoystick extends Command {
       
           // set current angle
           if (RobotContainer.wantedAngle == -1) {
-            // change hasCoral to be based on intake hasCoral
-            boolean hasCoral = false;
-            RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
+            // auto fix drift
+            if (RobotContainer.shouldAutoFixDrift == 1) {
+              RobotContainer.wantedAngle = swerveSubsystem.getHeading();
+            // align
+            } else if (RobotContainer.shouldAutoFixDrift == 2) {
+              // change hasCoral to be based on intake hasCoral
+              boolean hasCoral = false;
+              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
+            } else {
+              RobotContainer.wantedAngle = -1;
+            }
           }
 
-          if (RobotContainer.shouldAutoFixDrift && joystickTurn == 0) {
+          if (RobotContainer.shouldAutoFixDrift != 0 && joystickTurn == 0) {
             // Fixes negative angles from Pose2d
             if (RobotContainer.wantedAngle < 0) {
               RobotContainer.wantedAngle += 360;
@@ -216,8 +224,17 @@ public class SwerveJoystick extends Command {
               }
             }
           } else {
-            boolean hasCoral = false;
-            RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();;
+            // auto fix drift
+            if (RobotContainer.shouldAutoFixDrift == 1) {
+              RobotContainer.wantedAngle = swerveSubsystem.getHeading();
+            // align
+            } else if (RobotContainer.shouldAutoFixDrift == 2) {
+              // change hasCoral to be based on intake hasCoral
+              boolean hasCoral = false;
+              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
+            } else {
+              RobotContainer.wantedAngle = -1;
+            }
           }
 
           // 4. Construct desired chassis speeds
@@ -237,13 +254,17 @@ public class SwerveJoystick extends Command {
           // if(j.getRawButton(OIConstants.START)){
           //   swerveSubsystem.resetTurn();
           // }
-          if(j.getRawButton(OIConstants.BACK)){
+          if(j.getRawButtonPressed(OIConstants.BACK)){
             swerveSubsystem.zeroHeading();
           }
-          if(j.getRawButton(OIConstants.START)){
-            RobotContainer.shouldAutoFixDrift = !RobotContainer.shouldAutoFixDrift;
-            System.out.println("AUTO FIX DRIFT TURNED " + Boolean.toString(RobotContainer.shouldAutoFixDrift));
-            SmartDashboard.putBoolean("Auto Fix Drift", RobotContainer.shouldAutoFixDrift);
+          if(j.getRawButtonPressed(OIConstants.START)){
+            RobotContainer.shouldAutoFixDrift += 1;
+            if (RobotContainer.shouldAutoFixDrift > 2) {
+              RobotContainer.shouldAutoFixDrift = 0;
+            }
+            System.out.println("AUTO FIX DRIFT TURNED " + Integer.toString(RobotContainer.shouldAutoFixDrift));
+            SmartDashboard.putBoolean("Auto Fix Align", RobotContainer.shouldAutoFixDrift == 2);
+            SmartDashboard.putBoolean("Auto Fix Drift", RobotContainer.shouldAutoFixDrift == 1);
           }
         }
       

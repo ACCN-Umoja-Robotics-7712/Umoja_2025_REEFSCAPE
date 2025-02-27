@@ -38,12 +38,10 @@ public class CoralIntake extends SubsystemBase {
 
     public boolean hasCoral(){
         double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //To-do: Check if applied is in amps
-        if (diff < Constants.CoralConstants.coralCurrentDiff){
-            return true;
-        } 
-        else{
-            return false;
-        }
+        SmartDashboard.putNumber("Coral diff", diff);
+        boolean hasCoral = diff < Constants.CoralConstants.coralCurrentDiff && coralIntakeMotor.getOutputCurrent() != 0;
+        SmartDashboard.putBoolean("hasCoral ", hasCoral);
+        return hasCoral;
     }
 
     // public boolean hasCoralSensor(){
@@ -63,8 +61,12 @@ public class CoralIntake extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Coral current", coralIntakeMotor.getAppliedOutput());
-
+        SmartDashboard.putNumber("Coral applied current", coralIntakeMotor.getAppliedOutput());
+        SmartDashboard.putNumber("Coral current", coralIntakeMotor.getOutputCurrent());
+        double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //To-do: Check if applied is in amps
+        SmartDashboard.putNumber("Coral diff", diff);
+        boolean hasCoral = diff < Constants.CoralConstants.coralCurrentDiff && coralIntakeMotor.getOutputCurrent() != 0;
+        SmartDashboard.putBoolean("hasCoral ", hasCoral);
         if (state == Constants.CoralIntakeStates.INTAKE) {
             runIntake(0.05); 
         } else if (state == Constants.CoralIntakeStates.READY || state == Constants.CoralIntakeStates.NONE) {

@@ -16,11 +16,6 @@ import frc.robot.Constants.GameConstants;
 import frc.robot.commands.Autos;
 import frc.robot.Constants.USB;
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> Positioning
 import java.util.List;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -65,7 +60,7 @@ public class RobotContainer {
   public static final Autos auto = new Autos(swerveSubsystem);
 
   public static double wantedAngle = -1;
-  public static Boolean shouldAutoFixDrift = true;
+  public static int shouldAutoFixDrift = 1; // 1 = auto drift, 2 = auto align, 0 = none
   public static int gameState = GameConstants.Robot;
   public static Trajectory currentTrajectory = null;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

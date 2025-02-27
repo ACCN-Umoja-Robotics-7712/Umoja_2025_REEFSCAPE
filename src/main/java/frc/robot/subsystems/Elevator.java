@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorStates;
 import edu.wpi.first.math.controller.PIDController;
@@ -20,7 +21,7 @@ public class Elevator extends SubsystemBase {
     private final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
 
     private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
-    PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, 0, 0);
+    PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, 0);
 
     private double state = Constants.ElevatorStates.NONE;
     
@@ -44,7 +45,15 @@ public class Elevator extends SubsystemBase {
     }
 
     public void runElevator(double percent){
-        elevatorMotor1.set(percent);
+        if (RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit && percent < 0 && elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit){
+            elevatorMotor1.set(0);
+        }
+        else {
+            elevatorMotor1.set(percent);
+        }
+    }
+    public double getEncoder(){
+        return elevator1Encoder.getPosition();
     }
 
     public boolean isClimbReady(){
@@ -71,7 +80,7 @@ public class Elevator extends SubsystemBase {
         if (state != ElevatorStates.NONE) {
             runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
         }
-
+        SmartDashboard.putNumber("Elevator State", state);
         SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
     }
 }

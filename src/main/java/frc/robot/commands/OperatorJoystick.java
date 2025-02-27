@@ -41,29 +41,52 @@ public class OperatorJoystick extends Command {
     public void execute(){
 
         // manual controls
-        double elevatorSpeed = Math.abs(j.getRawAxis(OIConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LY) * 0.3 : 0.0;
-        double coralArmSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.RY) * 0.3 : 0.0;
-        double climbSpeed = Math.abs(j.getRawAxis(OIConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RT) * 0.3 : 0.0;
-        double declimbSpeed = Math.abs(j.getRawAxis(OIConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LT) * 0.3 : 0.0;
+        double elevatorSpeed = Math.abs(j.getRawAxis(OIConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LY) * 0.9 : 0.0;
+        double coralArmSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.RY) * 0.5 : 0.0;
+        double climbSpeed = Math.abs(j.getRawAxis(OIConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RT) * 0.5 : 0.0;
+        double declimbSpeed = Math.abs(j.getRawAxis(OIConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LT) * 0.5 : 0.0;
 
-        elevatorSubsystem.runElevator(elevatorSpeed);
-        coralArmSubsystem.runArm(coralArmSpeed);
+        if (elevatorSubsystem.getState() == Constants.ElevatorStates.NONE) {
+            elevatorSubsystem.runElevator(elevatorSpeed);
+        }
+        if (coralArmSubsystem.getState() == Constants.CoralArmStates.NONE) {
+            coralArmSubsystem.runArm(coralArmSpeed);
+        }
         if (climbSpeed != 0) {
             deepClimbSubsystem.runClimber(climbSpeed);
         } else {
             deepClimbSubsystem.runClimber(declimbSpeed);
         }
+        
+        if (elevatorSpeed != 0){
+            elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
+        }
+        if (coralArmSpeed != 0){
+            coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
+        }
 
         boolean intake = j.getRawButton(OIConstants.LB);
         boolean shoot = j.getRawButton(OIConstants.RB);
         if (intake) {
-            coralIntakeSubsystem.runIntake(0.15);
+            coralIntakeSubsystem.runIntake(0.4);
         } else if (shoot) {
-            coralIntakeSubsystem.runIntake(-0.15);
+            coralIntakeSubsystem.runIntake(-0.4);
         } else {
             coralIntakeSubsystem.runIntake(0);
         }
 
+        if (j.getRawButtonPressed(OIConstants.A)){
+            elevatorSubsystem.setState(Constants.ElevatorStates.L1);
+        }
+        if (j.getRawButtonPressed(OIConstants.X)){
+            elevatorSubsystem.setState(Constants.ElevatorStates.L2);
+        }
+        if (j.getRawButtonPressed(OIConstants.B)){
+            elevatorSubsystem.setState(Constants.ElevatorStates.L3);
+        }
+        if (j.getRawButtonPressed(OIConstants.Y)){
+            elevatorSubsystem.setState(Constants.ElevatorStates.L4);
+        }
 
         // automated control
         // if (j.getRawButtonPressed(OIConstants.A)){

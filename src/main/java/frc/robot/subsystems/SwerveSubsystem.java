@@ -340,7 +340,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     
         posePublisher.set(poseEstimator.getEstimatedPosition());
-        publishRobotPositions();
+        // publishRobotPositions();
     }
 
     public void stopModules() {
@@ -406,38 +406,39 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Pose2d nearestPoint(boolean faceReef, boolean faceProcessor) {
-        boolean isBlue = true;
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            if (alliance.get() == DriverStation.Alliance.Red) {
-                isBlue = false;
-            }
-        }
+        return poseEstimator.getEstimatedPosition();
+        // boolean isBlue = true;
+        // var alliance = DriverStation.getAlliance();
+        // if (alliance.isPresent()) {
+        //     if (alliance.get() == DriverStation.Alliance.Red) {
+        //         isBlue = false;
+        //     }
+        // }
 
-        if (faceProcessor) {
-            if (isBlue) {
-                return Constants.blueProcessorPosition;
-            } else {
-                return Constants.redProcessorPosition;
-            }
-        }
+        // if (faceProcessor) {
+        //     if (isBlue) {
+        //         return Constants.blueProcessorPosition;
+        //     } else {
+        //         return Constants.redProcessorPosition;
+        //     }
+        // }
 
-        List<Pose2d> pointsToCheck;
-        if (faceReef) {
-            if (isBlue) {
-                pointsToCheck = List.of(Constants.blueReefPositions);
-            } else {
-                pointsToCheck = List.of(Constants.redReefPositions);
-            }
-        } else {
-            if (isBlue) {
-                pointsToCheck = List.of(Constants.bluePickUpPositions);
-            } else {
-                pointsToCheck = List.of(Constants.redPickUpPositions);
-            }
+        // List<Pose2d> pointsToCheck;
+        // if (faceReef) {
+        //     if (isBlue) {
+        //         pointsToCheck = List.of(Constants.blueReefPositions);
+        //     } else {
+        //         pointsToCheck = List.of(Constants.redReefPositions);
+        //     }
+        // } else {
+        //     if (isBlue) {
+        //         pointsToCheck = List.of(Constants.bluePickUpPositions);
+        //     } else {
+        //         pointsToCheck = List.of(Constants.redPickUpPositions);
+        //     }
             
-        }
-        return poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
+        // }
+        // return poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
     }
 
     public Pose2d offsetPoint(Pose2d pose, double offset) {

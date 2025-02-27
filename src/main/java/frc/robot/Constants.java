@@ -108,9 +108,9 @@ public final class Constants {
         public static final double kFrontLeftDriveAbsoluteEncoderOffsetDegree = 61.645715;
         public static final double kFrontRightDriveAbsoluteEncoderOffsetDegree = 212.642091;
         public static final double kBackLeftDriveAbsoluteEncoderOffsetDegree = 163.585028;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetDegree = 269.405267;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetDegree = 89.405267;
 
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 4.4;
+        public static final double kPhysicalMaxSpeedMetersPerSecond = 4.0;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
         public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond;
@@ -118,8 +118,8 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
 
-        public static final double kSlowButtonDriveModifier = 0.2;
-        public static final double kSlowButtonTurnModifier = 0.5;
+        public static final double kSlowButtonDriveModifier = 0.4;
+        public static final double kSlowButtonTurnModifier = 0.3;
 
         public static final double kPDrive = 1;
         public static final double kPTurning = 0.6;
@@ -168,8 +168,9 @@ public final class Constants {
         public static final int coralIntakeMotorID = 1;
         public static final int coralArmMotorID = 2;
 
-        public static final double coralArmBottomLimit = 0.0;
+        public static final double coralArmBottomLimit = 5.0;
         public static final double coralArmTopLimit = 140; // Change this
+        public static final double coralArmElevatorLimit = 81;
 
         public static final double kP = 0.1;
         
@@ -185,10 +186,11 @@ public final class Constants {
 
     public static final class CoralArmStates {
         
+        public static final double NONE = -1;
         public static final double PICKUP = 50;
-        public static final double L1 = 30;
-        public static final double L23 = 25;
-        public static final double L4 = 255;
+        public static final double L1 = 8;
+        public static final double L23 = 35;
+        public static final double L4 = 23; // Fix
         public static final double CLIMB = 0; // To-do
         public static final double REMOVE = 50;
     }
@@ -202,32 +204,19 @@ public final class Constants {
 
     }
 
-    public static final class AlgaeConstants {
-
-        public static final int algaeIntakeMotorID = 3;
-        public static final int algaeArmMotorID = 4; 
-        public static final double kP = 0.1;
-        public static final double armPickupPosition = 0;
-        public static final double armLimiter = 0.05;
-    }
-
-    public static final class AlgaeArmStates {
-
-        public static final double PICKUP = 0.0;
-        public static final double READY = 0;
-        public static final double SHOOTING = 0;
-    }
-
     public static final class ElevatorConstants {
         public static final int leftMotorID = 50;
         public static final int rightMotorID = 51;
 
         public static final double elevatorTopLimit = 260.0; 
-        public static final double elevatorBottomLimit = 1;
+        public static final double elevatorBottomLimit = 0.5;
 
-        public static final double kP =  0.1;
+        public static final double kP =  0.2;
+        public static final double kI =  0.0; 
 
         public static final double slowDown = 0.8;
+
+        public static final double elevatorArmLimit = 55;
 
         public static final int elevatorMotor1ID = 8; // Check this
         public static final int elevatorMotor2ID = 9; // Check this
@@ -238,9 +227,9 @@ public final class Constants {
 
         public static final double NONE = -1;
         public static final double L1 = 0;
-        public static final double L2 = 40;
-        public static final double L3 = 120;
-        public static final double L4 = 255;
+        public static final double L2 = 21;
+        public static final double L3 = 77;
+        public static final double L4 = 250;
         public static final double CLIMB = 0;
     };
 

@@ -78,6 +78,9 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.gameState = GameConstants.Robot;
+    RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
+    RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
+    RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
   }
 
   @Override
@@ -134,6 +137,10 @@ public class Robot extends TimedRobot {
         RobotContainer.deepClimbSubsystem
       )
     );
+    RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
+    RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
+    RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

@@ -42,10 +42,10 @@ public class RobotState {
             // algae default position
         } else if (state == Constants.RobotStates.L1){
             // in case we lose coral (robot hits us)
-            if (!coralIntakeSubsystem.hasCoral()) {
-                state = Constants.RobotStates.PICKUP;
-                return;
-            }
+            // if (!coralIntakeSubsystem.hasCoral()) {
+            //     state = Constants.RobotStates.PICKUP;
+            //     return;
+            // }
             // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L1);
@@ -53,10 +53,10 @@ public class RobotState {
             coralIntakeSubsystem.setState(Constants.CoralIntakeStates.READY);
         } else if (state == Constants.RobotStates.L1){
             // in case we lose coral (robot hits us)
-            if (!coralIntakeSubsystem.hasCoral()) {
-                state = Constants.RobotStates.PICKUP;
-                return;
-            }
+            // if (!coralIntakeSubsystem.hasCoral()) {
+            //     state = Constants.RobotStates.PICKUP;
+            //     return;
+            // }
             // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L1);
@@ -65,10 +65,10 @@ public class RobotState {
             deepClimbSubsystem.setState(Constants.DeepClimbStates.ZERO);
         } else if (state == Constants.RobotStates.L2){
             // in case we lose coral (robot hits us)
-            if (!coralIntakeSubsystem.hasCoral()) {
-                state = Constants.RobotStates.PICKUP;
-                return;
-            }
+            // if (!coralIntakeSubsystem.hasCoral()) {
+            //     state = Constants.RobotStates.PICKUP;
+            //     return;
+            // }
             // To-do: if in position switch CORAL INTAKE to SHOOTING state
 
             elevatorSubSystem.setState(Constants.ElevatorStates.L2);
