@@ -102,6 +102,6 @@ public class OperatorJoystick extends Command {
         // } else {
         //     robotState.setState(RobotStates.NONE);
         // }
-// To-do: Add Climb Ready, Climbing, and remove algae
+// TODO: Add Climb Ready, Climbing, and remove algae
     }
 }

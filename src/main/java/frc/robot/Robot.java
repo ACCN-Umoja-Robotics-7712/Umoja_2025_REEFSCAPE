@@ -53,6 +53,7 @@ public class Robot extends TimedRobot {
     for (int port = 5800; port <= 5809; port++) {
             PortForwarder.add(port, Constants.LimelightConstants.tagName + ".local", port);
             PortForwarder.add(port+10, Constants.LimelightConstants.gamePieceName + ".local", port);
+            PortForwarder.add(port+20, Constants.LimelightConstants.driverName + ".local", port);
         }
   }
 
@@ -81,6 +82,8 @@ public class Robot extends TimedRobot {
     RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
     RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
+    RobotContainer.robotState.setState(Constants.RobotStates.NONE);
+
   }
 
   @Override
@@ -140,6 +143,7 @@ public class Robot extends TimedRobot {
     RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
     RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
+    RobotContainer.robotState.setState(Constants.RobotStates.NONE);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

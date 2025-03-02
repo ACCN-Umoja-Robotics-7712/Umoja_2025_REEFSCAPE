@@ -29,7 +29,7 @@ public class CoralArm extends SubsystemBase {
         coralArmConfig.inverted(true);
 
         coralArmMotor = new SparkMax(Constants.CoralConstants.coralArmMotorID, MotorType.kBrushless); 
-        coralArmConfig.softLimit.forwardSoftLimitEnabled(true); //To-do: Change to true once you get limits fixed
+        coralArmConfig.softLimit.forwardSoftLimitEnabled(true); //TODO: Change to true once you get limits fixed
         coralArmConfig.softLimit.reverseSoftLimitEnabled(true);
         coralArmConfig.softLimit.forwardSoftLimit(Constants.CoralConstants.coralArmTopLimit);
         coralArmConfig.softLimit.reverseSoftLimit(Constants.CoralConstants.coralArmBottomLimit);
@@ -44,12 +44,12 @@ public class CoralArm extends SubsystemBase {
             coralArmMotor.set(0);
         }
         else {
-            coralArmMotor.set(percent); // To-do: Add thing to not let it hit into robot if elevator is under a certain thing 
+            coralArmMotor.set(percent); // TODO: Add thing to not let it hit into robot if elevator is under a certain thing 
         }
     }
 
     public boolean isClimbReady(){
-        return coralArmEncoder.getPosition() > Constants.CoralArmStates.CLIMB; // To-do: subtract number for leeway
+        return coralArmEncoder.getPosition() > Constants.CoralArmStates.CLIMB; // TODO: subtract number for leeway
     }
 
     public void setState(double coralArmState) {
@@ -69,7 +69,7 @@ public class CoralArm extends SubsystemBase {
         // SmartDashboard.putNumber("Intake Pos", intakeEncoder.getPosition());
         SmartDashboard.putNumber("Coral Arm Position", coralArmEncoder.getPosition());
         SmartDashboard.putNumber("Coral Arm State", state);
-        if(state != -1){
+        if(state != Constants.CoralArmStates.NONE){
             // runArm(coralArmPID.calculate(coralArmEncoder.getPosition(), state));
         }
     }

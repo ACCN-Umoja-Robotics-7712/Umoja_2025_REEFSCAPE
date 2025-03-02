@@ -166,10 +166,10 @@ public class SwerveSubsystem extends SubsystemBase {
                         .setKinematics(DriveConstants.kDriveKinematics);
 
         // 3. Define PID controllers for tracking trajectory
-        xController = new PIDController(AutoConstants.kPXController, 0, 0);
-        yController = new PIDController(AutoConstants.kPYController, 0, 0);
+        xController = new PIDController(AutoConstants.kPXController, AutoConstants.kIXController, 0);
+        yController = new PIDController(AutoConstants.kPYController, AutoConstants.kIYController, 0);
         thetaController = new ProfiledPIDController(
-                AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+                AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0, AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         
         holonomicDriveController = new HolonomicDriveController(xController, yController, thetaController);
@@ -236,6 +236,8 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> nearestPosePublisher = NetworkTableInstance.getDefault().getStructTopic("NearestPose", Pose2d.struct).publish();
+
     StructArrayPublisher<SwerveModuleState> swerveStatePublisher = NetworkTableInstance.getDefault()
 .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
     StructArrayPublisher<Pose2d> allPointsPublisher = NetworkTableInstance.getDefault()
@@ -263,6 +265,8 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("T BR", Math.toDegrees(backRight.getTurningPosition())%360);
         SmartDashboard.putNumber("YAW", gyro.getYaw());
 
+        SmartDashboard.putNumber("GAME STATE", RobotContainer.gameState);
+
         poseEstimator.update(Rotation2d.fromDegrees(-gyro.getYaw()),
             new SwerveModulePosition[] {
                 frontLeft.getPosition(),
@@ -274,9 +278,10 @@ public class SwerveSubsystem extends SubsystemBase {
         
         String tagLeftLimelightName = Constants.LimelightConstants.tagName;
         String tagRightLimelightName = Constants.LimelightConstants.gamePieceName;
+        // String tagRightLimelightName = Constants.LimelightConstants.driverName;
         if (LimelightHelpers.getTargetCount(tagLeftLimelightName) != 0 && RobotContainer.gameState == GameConstants.Robot) {
             Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
-            Double targetYaw = targetPose3d.getRotation().getMeasureAngle().baseUnitMagnitude();
+            Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
             Double targetX = targetPose3d.getX();
     
             SmartDashboard.putNumber("target yaw", targetYaw);
@@ -285,7 +290,8 @@ public class SwerveSubsystem extends SubsystemBase {
             // lined up angle perfectly (turn off limelight)
             // TODO: Move this number to constants file
             Boolean alignedYaw = targetYaw <= 0.25 || (targetYaw >= 59.75 && targetYaw <= 60.25);
-            Boolean alignedX = Math.abs(targetX) <= 0.02;
+            // Boolean alignedX = Math.abs(targetX) <= 0.1;
+            Boolean alignedX = true;
             if (alignedX && alignedYaw){
                 // TODO: Replace with LEDs ready for game
                 LimelightHelpers.setLEDMode_ForceOff(tagRightLimelightName);
@@ -332,7 +338,7 @@ public class SwerveSubsystem extends SubsystemBase {
             }
             if (!doRejectUpdate)
             {
-                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTrustValue,visionTrustValue,9999999));
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTrustValue+0.1,visionTrustValue+0.1,9999999));
                 poseEstimator.addVisionMeasurement(
                     rightMT2.pose,
                     rightMT2.timestampSeconds);
@@ -340,6 +346,8 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     
         posePublisher.set(poseEstimator.getEstimatedPosition());
+        boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
+        nearestPosePublisher.set(nearestPoint(hasCoral, false));
         // publishRobotPositions();
     }
 
@@ -363,8 +371,8 @@ public class SwerveSubsystem extends SubsystemBase {
         setModuleStates(moduleStates);
     }
 
-    public Trajectory getNearestTagTrajectory(boolean faceCoral, boolean faceProcessor) {
-        Pose2d nearestPoint = nearestPoint(faceCoral, faceProcessor);
+    public Trajectory getNearestTagTrajectory(boolean faceReef, boolean faceProcessor) {
+        Pose2d nearestPoint = nearestPoint(faceReef, faceProcessor);
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
             List.of(),
@@ -399,46 +407,45 @@ public class SwerveSubsystem extends SubsystemBase {
         }
         allPoints.add(Constants.redProcessorPosition);
         allPointsPublisher.set(allPoints.toArray(new Pose2d[0]));
-        // To-do: print points in terminal to put into choreo 
+        // TODO: print points in terminal to put into choreo 
         for (Pose2d point: allPoints){
             // System.out.print(point);
         }
     }
 
     public Pose2d nearestPoint(boolean faceReef, boolean faceProcessor) {
-        return poseEstimator.getEstimatedPosition();
-        // boolean isBlue = true;
-        // var alliance = DriverStation.getAlliance();
-        // if (alliance.isPresent()) {
-        //     if (alliance.get() == DriverStation.Alliance.Red) {
-        //         isBlue = false;
-        //     }
-        // }
+        boolean isBlue = true;
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            if (alliance.get() == DriverStation.Alliance.Red) {
+                isBlue = false;
+            }
+        }
 
-        // if (faceProcessor) {
-        //     if (isBlue) {
-        //         return Constants.blueProcessorPosition;
-        //     } else {
-        //         return Constants.redProcessorPosition;
-        //     }
-        // }
+        if (faceProcessor) {
+            if (isBlue) {
+                return Constants.blueProcessorPosition;
+            } else {
+                return Constants.redProcessorPosition;
+            }
+        }
 
-        // List<Pose2d> pointsToCheck;
-        // if (faceReef) {
-        //     if (isBlue) {
-        //         pointsToCheck = List.of(Constants.blueReefPositions);
-        //     } else {
-        //         pointsToCheck = List.of(Constants.redReefPositions);
-        //     }
-        // } else {
-        //     if (isBlue) {
-        //         pointsToCheck = List.of(Constants.bluePickUpPositions);
-        //     } else {
-        //         pointsToCheck = List.of(Constants.redPickUpPositions);
-        //     }
+        List<Pose2d> pointsToCheck;
+        if (faceReef) {
+            if (isBlue) {
+                pointsToCheck = List.of(Constants.blueReefPositions);
+            } else {
+                pointsToCheck = List.of(Constants.redReefPositions);
+            }
+        } else {
+            if (isBlue) {
+                pointsToCheck = List.of(Constants.bluePickUpPositions);
+            } else {
+                pointsToCheck = List.of(Constants.redPickUpPositions);
+            }
             
-        // }
-        // return poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
+        }
+        return poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
     }
 
     public Pose2d offsetPoint(Pose2d pose, double offset) {

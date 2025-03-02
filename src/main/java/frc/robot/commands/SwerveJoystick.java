@@ -124,7 +124,7 @@ public class SwerveJoystick extends Command {
       Boolean aButtonPressed = j.getRawButton(OIConstants.A);
       if (aButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
-            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(false, true);
+            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(true, false);
         }
         // double curTime = swerveSubsystem.timer.get();
         // var desiredState = RobotContainer.currentTrajectory.sample(curTime);
@@ -161,6 +161,8 @@ public class SwerveJoystick extends Command {
           double joystickX = xSpeed;
           double joystickY = ySpeed;
           double joystickTurn = turningSpeed;
+          
+          SmartDashboard.putNumber("Wanted angle", RobotContainer.wantedAngle);
       
           boolean isRobotOrientatedDrive = RobotContainer.driverController.getRawAxis(OIConstants.RT) >= 0.5;
           // 3. Make the driving smoother
@@ -169,9 +171,9 @@ public class SwerveJoystick extends Command {
             ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.kSlowButtonDriveModifier);
             turningSpeed = turningLimiter.calculate(turningSpeed) * (DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond * DriveConstants.kSlowButtonTurnModifier);
           }else{
-            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-            turningSpeed = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
+            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond  * DriveConstants.teleSpeed;
+            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.teleSpeed;
+            turningSpeed = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond * DriveConstants.teleSpeed; 
           }
       
           // set current angle
@@ -184,7 +186,7 @@ public class SwerveJoystick extends Command {
               // align
             } else if (RobotContainer.shouldAutoFixDrift == 2) {
               // change hasCoral to be based on intake hasCoral
-              boolean hasCoral = false;
+              boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
               RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
             } else {
               RobotContainer.wantedAngle = -1;
@@ -233,7 +235,7 @@ public class SwerveJoystick extends Command {
               // align
             } else if (RobotContainer.shouldAutoFixDrift == 2) {
               // change hasCoral to be based on intake hasCoral
-              boolean hasCoral = false;
+              boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
               RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
             } else {
               RobotContainer.wantedAngle = -1;
@@ -266,9 +268,9 @@ public class SwerveJoystick extends Command {
               RobotContainer.shouldAutoFixDrift = 0;
             }
             System.out.println("AUTO FIX DRIFT TURNED " + Integer.toString(RobotContainer.shouldAutoFixDrift));
-            SmartDashboard.putBoolean("Auto Fix Align", RobotContainer.shouldAutoFixDrift == 2);
-            SmartDashboard.putBoolean("Auto Fix Drift", RobotContainer.shouldAutoFixDrift == 1);
           }
+          SmartDashboard.putBoolean("Auto Fix Align", RobotContainer.shouldAutoFixDrift == 2);
+          SmartDashboard.putBoolean("Auto Fix Drift", RobotContainer.shouldAutoFixDrift == 1);
         }
       
         private double Estimate_Distance() {

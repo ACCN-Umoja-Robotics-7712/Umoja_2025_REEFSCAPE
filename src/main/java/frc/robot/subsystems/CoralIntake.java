@@ -12,12 +12,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CoralIntakeStates;
+
+import edu.wpi.first.wpilibj.I2C;
+import com.revrobotics.ColorSensorV3;
+
 // Intake for the 2025 robot
 public class CoralIntake extends SubsystemBase {
 
     SparkMax coralIntakeMotor;
     RelativeEncoder coralIntakeEncoder;  
+    private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private double state = Constants.CoralIntakeStates.NONE;
+    private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
     
     public CoralIntake(){
 
@@ -33,22 +39,21 @@ public class CoralIntake extends SubsystemBase {
     }
     
     public void runIntake(double percent){
-        coralIntakeMotor.set(percent);
+        if (hasCoralSensor()) {
+            if (percent > 0) {
+                coralIntakeMotor.set(0);
+            } else {
+                coralIntakeMotor.set(percent);
+            }
+        } else {
+            coralIntakeMotor.set(percent);
+        }
     }
 
-    public boolean hasCoral(){
-        double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //To-do: Check if applied is in amps
-        SmartDashboard.putNumber("Coral diff", diff);
-        boolean hasCoral = diff < Constants.CoralConstants.coralCurrentDiff && coralIntakeMotor.getOutputCurrent() != 0;
-        SmartDashboard.putBoolean("hasCoral ", hasCoral);
+    public boolean hasCoralSensor(){
+        boolean hasCoral = colorSensor.getProximity() > Constants.CoralConstants.hasCoralProximity;
         return hasCoral;
     }
-
-    // public boolean hasCoralSensor(){
-    //     if (sensor sees Coral){
-    //         return true;
-    //     }
-    // }
 
     public double getState(){
         return state;
@@ -63,17 +68,19 @@ public class CoralIntake extends SubsystemBase {
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("Coral applied current", coralIntakeMotor.getAppliedOutput());
         SmartDashboard.putNumber("Coral current", coralIntakeMotor.getOutputCurrent());
-        double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //To-do: Check if applied is in amps
+        SmartDashboard.putNumber("Intake State", state);
+        double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //TODO: Check if applied is in amps
         SmartDashboard.putNumber("Coral diff", diff);
         boolean hasCoral = diff < Constants.CoralConstants.coralCurrentDiff && coralIntakeMotor.getOutputCurrent() != 0;
-        SmartDashboard.putBoolean("hasCoral ", hasCoral);
-        if (state == Constants.CoralIntakeStates.INTAKE) {
-            runIntake(0.05); 
-        } else if (state == Constants.CoralIntakeStates.READY || state == Constants.CoralIntakeStates.NONE) {
-            runIntake(0);
-        } else if (state == Constants.CoralIntakeStates.SHOOTING) {
-            runIntake(-0.1);
-        }
+        SmartDashboard.putBoolean("hasCoral", hasCoral);
+        SmartDashboard.putNumber("hasCoral color sensor", colorSensor.getProximity());
+        // if (state == Constants.CoralIntakeStates.INTAKE) {
+        //     runIntake(0.05); 
+        // } else if (state == Constants.CoralIntakeStates.READY || state == Constants.CoralIntakeStates.NONE) {
+        //     runIntake(0);
+        // } else if (state == Constants.CoralIntakeStates.SHOOTING) {
+        //     runIntake(-0.1);
+        // }
     }
 }
 

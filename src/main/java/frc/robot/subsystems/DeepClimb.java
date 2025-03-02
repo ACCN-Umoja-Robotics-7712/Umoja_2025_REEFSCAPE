@@ -54,9 +54,9 @@ public class DeepClimb extends SubsystemBase {
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("Climber position", deepClimbEncoder.getPosition());
 
-        if (state != DeepClimbStates.NONE) {
-            runClimber(deepClimbPID.calculate(deepClimbEncoder.getPosition(), state));
-        }
+        // if (state != DeepClimbStates.NONE) {
+        //     runClimber(deepClimbPID.calculate(deepClimbEncoder.getPosition(), state));
+        // }
     }
 }
 

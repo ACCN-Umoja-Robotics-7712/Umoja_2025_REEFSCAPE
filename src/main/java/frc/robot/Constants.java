@@ -56,6 +56,8 @@ public final class Constants {
         public static final double kWheelBase = Units.inchesToMeters(22);
         // Distance between front and back wheels
 
+        public static final double teleSpeed = 0.7;
+
         public static final double kRobotRadius = Math.sqrt(Math.pow(kTrackWidth, 2) + Math.pow(kWheelBase, 2)) / 2;
 
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -142,7 +144,7 @@ public final class Constants {
         public static final int REMOVE = 7;
     }
 
-    public static final class DeepClimbStates{
+    public static final class DeepClimbStates{ //Not used
         
         public static final double NONE = 01; 
         public static final double ZERO = 0; 
@@ -163,16 +165,18 @@ public final class Constants {
         public static final int coralArmMotorID = 2;
 
         public static final double coralArmBottomLimit = 5.0;
-        public static final double coralArmTopLimit = 140; // Change this
+        public static final double coralArmTopLimit = 140; // TODO: Change this
         public static final double coralArmElevatorLimit = 81;
 
         public static final double kP = 0.1;
         
-        public static final double armPickupPosition = 60; //Tested!
+        public static final double armPickupPosition = 60;
 
         public static final double shootPositionL1 = 0;
         public static final double shootPositionL23 = 0;
         public static final double shootPositionL4 = 0;
+
+        public static final double hasCoralProximity = 120;
 
         public static final double coralCurrentDiff = 0.05;
 
@@ -184,8 +188,8 @@ public final class Constants {
         public static final double PICKUP = 50;
         public static final double L1 = 8;
         public static final double L23 = 35;
-        public static final double L4 = 23; // Fix
-        public static final double CLIMB = 0; // To-do
+        public static final double L4 = 23; // TODO: Fix value
+        public static final double CLIMB = 0; // TODO: Find climb value
         public static final double REMOVE = 50;
     }
 
@@ -212,8 +216,8 @@ public final class Constants {
 
         public static final double elevatorArmLimit = 55;
 
-        public static final int elevatorMotor1ID = 8; // Check this
-        public static final int elevatorMotor2ID = 9; // Check this
+        public static final int elevatorMotor1ID = 8;
+        public static final int elevatorMotor2ID = 9;
 
     }
 
@@ -244,9 +248,14 @@ public final class Constants {
         public static final double kMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-        public static final double kPXController = 1.5;
-        public static final double kPYController = 1.5;
-        public static final double kPThetaController = 3;
+
+        public static final double kPXController = 2;
+        public static final double kPYController = 2;
+        public static final double kPThetaController = 5;
+
+        public static final double kIXController = 0.02;
+        public static final double kIYController = 0.02;
+        public static final double kIThetaController = 0.05;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
@@ -292,6 +301,7 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String tagName = "limelight-tags";
         public static final String gamePieceName = "limelight-gp";
+        public static final String driverName = "driver";
         public static final int Estimate_Distance = 20;
     }
 
@@ -335,7 +345,8 @@ public final class Constants {
         // robot l/w 28.5 by 28.5 inches
         // bumper width ~= 3 inches
         // TODO: Need to add potential intake front distance
-        public static final double robotCenterToFront = 0.45085; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches
+        // public static final double robotCenterToFront = 0.45085; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
+        public static final double robotCenterToFront = 0.50085; // Test
         public static final double robotSideOffset = 0.0254; // intake is 1 inch to the left so move robot 1 inch to the right
         public static final double branchOffset = 0.1651; // 6.5 inches
         public static final double coralStationDivotOffset = 0.2032; // 8 inches
