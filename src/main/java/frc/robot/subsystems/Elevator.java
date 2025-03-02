@@ -21,6 +21,8 @@ public class Elevator extends SubsystemBase {
     private final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
 
     private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
+    private final RelativeEncoder elevator2Encoder = elevatorMotor2.getEncoder();
+    
     PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, 0);
 
     private double state = Constants.ElevatorStates.NONE;
@@ -82,5 +84,6 @@ public class Elevator extends SubsystemBase {
         // }
         SmartDashboard.putNumber("Elevator State", state);
         SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
+        SmartDashboard.putNumber("ELEVATOR 2 Encoder", elevator2Encoder.getPosition());
     }
 }

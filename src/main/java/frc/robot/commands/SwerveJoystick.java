@@ -23,6 +23,7 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.PSConstants;
 import frc.robot.Constants.USB;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -65,7 +66,7 @@ public class SwerveJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (j.getRawButton(OIConstants.Y)) {
+    if (j.getRawButton(PSConstants.TRIANGLE)) {
       double KpDistance = -0.1f;  // Proportional control constant for distance
       double current_distance = Estimate_Distance();  // see the 'Case Study: Estimating Distance'
             double tx = LimelightHelpers.getTX(LimelightConstants.tagName);
@@ -82,7 +83,7 @@ public class SwerveJoystick extends Command {
             else
             {
               // We do see the target, execute aiming code
-              if (j.getRawButton(OIConstants.X)) {
+              if (j.getRawButton(PSConstants.SQUARE)) {
               Double heading_error = tx;
                   steering_adjust = KpDistance * tx;
                   double desired_distance = 10;
@@ -121,7 +122,7 @@ public class SwerveJoystick extends Command {
             return;
       }
 
-      Boolean aButtonPressed = j.getRawButton(OIConstants.A);
+      Boolean aButtonPressed = j.getRawButton(PSConstants.X);
       if (aButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
             RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(false, true);
@@ -152,19 +153,19 @@ public class SwerveJoystick extends Command {
           // 2. Apply deadband
           // xSpeed = Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed : 0.0;
           // ySpeed = Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed : 0.0;
-          if (Math.abs(xSpeed) + Math.abs(ySpeed) < OIConstants.kDeadband) {
+          if (Math.abs(xSpeed) + Math.abs(ySpeed) < PSConstants.kDeadband) {
             xSpeed = 0.0;
             ySpeed = 0.0;
           }
-          turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed : 0.0;
+          turningSpeed = Math.abs(turningSpeed) > PSConstants.kDeadband ? turningSpeed : 0.0;
           
           double joystickX = xSpeed;
           double joystickY = ySpeed;
           double joystickTurn = turningSpeed;
       
-          boolean isRobotOrientatedDrive = RobotContainer.driverController.getRawAxis(OIConstants.RT) >= 0.5;
+          boolean isRobotOrientatedDrive = RobotContainer.driverController.getRawAxis(PSConstants.RT) >= 0.5;
           // 3. Make the driving smoother
-          if (RobotContainer.driverController.getRawButton(OIConstants.kDriverRB) || isRobotOrientatedDrive){
+          if (RobotContainer.driverController.getRawButton(PSConstants.RB) || isRobotOrientatedDrive){
             xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.kSlowButtonDriveModifier);
             ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.kSlowButtonDriveModifier);
             turningSpeed = turningLimiter.calculate(turningSpeed) * (DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond * DriveConstants.kSlowButtonTurnModifier);
@@ -221,9 +222,9 @@ public class SwerveJoystick extends Command {
               turningSpeed = driftController.calculate(-diff, 0);
               
               // only fix drift when moving
-              // if (joystickX == 0 && joystickY == 0) {
-              //   turningSpeed = 0;
-              // }
+              if (joystickX == 0 && joystickY == 0) {
+                turningSpeed = 0;
+              }
             }
           } else {
             // auto fix drift
@@ -257,10 +258,10 @@ public class SwerveJoystick extends Command {
           // if(j.getRawButton(OIConstants.START)){
           //   swerveSubsystem.resetTurn();
           // }
-          if(j.getRawButtonPressed(OIConstants.BACK)){
+          if(j.getRawButtonPressed(PSConstants.SHARE)){
             swerveSubsystem.zeroHeading();
           }
-          if(j.getRawButtonPressed(OIConstants.START)){
+          if(j.getRawButtonPressed(PSConstants.OPTIONS)){
             RobotContainer.shouldAutoFixDrift += 1;
             if (RobotContainer.shouldAutoFixDrift > 2) {
               RobotContainer.shouldAutoFixDrift = 0;

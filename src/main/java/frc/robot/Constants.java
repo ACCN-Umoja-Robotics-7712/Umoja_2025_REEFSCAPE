@@ -220,7 +220,7 @@ public final class Constants {
     public static final class ElevatorStates {
 
         public static final double NONE = -1;
-        public static final double L1 = 0;
+        public static final double L1 = 20;
         public static final double L2 = 21;
         public static final double L3 = 77;
         public static final double L4 = 250;
@@ -287,6 +287,32 @@ public final class Constants {
         public static final int RT = 3;
         public static final int RX = 4;
         public static final int RY = 5;
+    }
+
+    public static final class PSController{
+        public static final int kDriverControllerPort = 0;
+
+        public static final int kDriverYAxis = 1;
+        public static final int kDriverXAxis = 0;
+        public static final int kDriverRotAxis = 4;
+        public static final int kDriverFieldOrientedButtonIdx = 1;
+        public static final int kDriverRB = 6;
+
+        public static final double kDeadband = 0.05;
+
+        //BUTTONS
+
+        public static final int A = 1;
+        public static final int B = 2;
+        public static final int X = 3;
+        public static final int Y = 4;
+        public static final int LB = 5;
+        public static final int RB = 6;
+        public static final int BACK = 7;
+        public static final int START = 8;
+        public static final int L3 = 9;
+        public static final int R3 = 10;
+
     }
 
     public static final class LimelightConstants {
