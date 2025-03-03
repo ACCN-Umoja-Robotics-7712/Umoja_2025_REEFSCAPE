@@ -40,7 +40,7 @@ public class SwerveJoystick extends Command {
   Joystick j = new Joystick(USB.DRIVER_CONTROLLER);
 
   private final PIDController driftController = new PIDController(DriveConstants.kPDrift, DriveConstants.kIDrift, 0);
-
+  
 
   /** Creates a new SwerveJoystick. */
   public SwerveJoystick(SwerveSubsystem swerveSubsystem, Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, 
@@ -65,67 +65,21 @@ public class SwerveJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (j.getRawButton(OIConstants.Y)) {
-      double KpDistance = -0.1f;  // Proportional control constant for distance
-      double current_distance = Estimate_Distance();  // see the 'Case Study: Estimating Distance'
-            double tx = LimelightHelpers.getTX(LimelightConstants.tagName);
-            double distance_error = tx;
-              
-            double ty = LimelightHelpers.getTY(LimelightConstants.tagName);
-          
-            double steering_adjust = 0.0f;
-            if (ty == 0.0f)
-            {
-              // We don't see the target, seek for the target by spinning in place at a safe speed.
-              steering_adjust = 0.3f;		
-            }
-            else
-            {
-              // We do see the target, execute aiming code
-              if (j.getRawButton(OIConstants.X)) {
-              Double heading_error = tx;
-                  steering_adjust = KpDistance * tx;
-                  double desired_distance = 10;
-                  double distance_error2 = desired_distance - current_distance;
-                  // driving_adjust = KpDistance * distance_error2;
-                      
-            }
-          }
-             
-                
-            
-          NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-          NetworkTableEntry tv = table.getEntry("ty");
-          double targetOffsetAngle_Vertical = tv.getDouble(0.0);
-      
-          // how many degrees back is your limelight rotated from perfectly vertical?
-          double limelightMountAngleDegrees = 25.0; 
-      
-          // distance from the center of the Limelight lens to the floor
-          double limelightLensHeightInches = 20.0; 
-      
-          // distance from the target to the floor
-          double goalHeightInches = 60.0; 
-      
-          double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-          double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-      
-          //calculate distance
-          double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
-      
-            // left_command+=steering_adjust; 
-            // right_command-=steering_adjust;
-            
-           
-      
-            return;
-      }
-
+      Boolean xButtonPressed = j.getRawButton(OIConstants.X);
       Boolean aButtonPressed = j.getRawButton(OIConstants.A);
-      if (aButtonPressed) {
+      Boolean bButtonPressed = j.getRawButton(OIConstants.B);
+      if (xButtonPressed || aButtonPressed || bButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
             boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(hasCoral, false);
+            int offset = 0;
+            if (xButtonPressed) {
+              offset = -1;
+            } else if (bButtonPressed) {
+              offset = 1;
+            } else {
+              offset = 0;
+            }
+            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(hasCoral, false, offset);
         }
         // double curTime = swerveSubsystem.timer.get();
         // var desiredState = RobotContainer.currentTrajectory.sample(curTime);

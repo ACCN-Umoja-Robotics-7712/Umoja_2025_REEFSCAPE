@@ -372,8 +372,9 @@ public class SwerveSubsystem extends SubsystemBase {
         setModuleStates(moduleStates);
     }
 
-    public Trajectory getNearestTagTrajectory(boolean faceReef, boolean faceProcessor) {
-        Pose2d nearestPoint = nearestPoint(faceReef, faceProcessor);
+    // offset is -1 for left, 1 for right, and 0 for center
+    public Trajectory getNearestTagTrajectory(boolean faceReef, boolean faceProcessor, int offset) {
+        Pose2d nearestPoint = nearestPoint(faceReef, faceProcessor, offset);
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
             List.of(),
@@ -413,8 +414,13 @@ public class SwerveSubsystem extends SubsystemBase {
             // System.out.print(point);
         }
     }
+    
 
     public Pose2d nearestPoint(boolean faceReef, boolean faceProcessor) {
+        return nearestPoint(faceReef, faceProcessor, 0);
+    }
+
+    public Pose2d nearestPoint(boolean faceReef, boolean faceProcessor, double offsetDirection) {
         boolean isBlue = true;
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
@@ -432,21 +438,37 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         List<Pose2d> pointsToCheck;
+        double offsetDistance = 0;
         if (faceReef) {
+            offsetDistance = Constants.Measurements.branchOffset;
             if (isBlue) {
                 pointsToCheck = List.of(Constants.blueReefPositions);
             } else {
                 pointsToCheck = List.of(Constants.redReefPositions);
             }
         } else {
+            offsetDistance = 3*Constants.Measurements.coralStationDivotOffset;
             if (isBlue) {
                 pointsToCheck = List.of(Constants.bluePickUpPositions);
             } else {
                 pointsToCheck = List.of(Constants.redPickUpPositions);
             }
-            
         }
-        return poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
+
+        Pose2d nearestPose = poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
+        double poseAngle = nearestPose.getRotation().getDegrees();
+        if (poseAngle < 0) {
+            poseAngle += 360;
+        }
+
+        boolean facingBlueDriver = poseAngle > 90 && poseAngle <= 270;
+        boolean shouldFlipBlue = facingBlueDriver && isBlue;
+        boolean shouldFlipRed = !facingBlueDriver && !isBlue;
+        if (shouldFlipBlue || shouldFlipRed) {
+            offsetDirection *= -1;
+        }
+        double trueOffset = offsetDirection*offsetDistance;
+        return offsetPoint(nearestPose, trueOffset);
     }
 
     public Pose2d offsetPoint(Pose2d pose, double offset) {
