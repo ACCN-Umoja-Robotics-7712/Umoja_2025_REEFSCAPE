@@ -41,7 +41,7 @@ public class CoralIntake extends SubsystemBase {
     public void runIntake(double percent){
         if (hasCoralSensor()) {
             if (percent > 0) {
-                coralIntakeMotor.set(0);
+                coralIntakeMotor.set(percent * 0.1);
             } else {
                 coralIntakeMotor.set(percent);
             }

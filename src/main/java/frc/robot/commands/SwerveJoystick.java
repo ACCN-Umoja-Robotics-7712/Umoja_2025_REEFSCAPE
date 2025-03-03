@@ -159,10 +159,6 @@ public class SwerveJoystick extends Command {
           }
           turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed : 0.0;
           
-          double joystickX = xSpeed;
-          double joystickY = ySpeed;
-          double joystickTurn = turningSpeed;
-          
           SmartDashboard.putNumber("Wanted angle", RobotContainer.wantedAngle);
       
           boolean isRobotOrientatedDrive = RobotContainer.driverController.getRawAxis(OIConstants.RT) >= 0.5;
@@ -178,7 +174,7 @@ public class SwerveJoystick extends Command {
           }
       
           // set current angle
-          if (RobotContainer.wantedAngle == -1) {
+          if (RobotContainer.wantedAngle == -1 || RobotContainer.shouldAutoFixDrift == 2) {
             // auto fix drift
             if (RobotContainer.shouldAutoFixDrift == 1) {
               RobotContainer.wantedAngle = swerveSubsystem.getHeading();
@@ -194,8 +190,11 @@ public class SwerveJoystick extends Command {
             }
           }
 
-          if (RobotContainer.shouldAutoFixDrift != 0 && joystickTurn == 0) {
+          boolean drift = RobotContainer.shouldAutoFixDrift == 1 && turningSpeed == 0;
+          boolean align = RobotContainer.shouldAutoFixDrift == 2 && turningSpeed == 0;
+          if (drift || align) {
             // Fixes negative angles from Pose2d
+            SmartDashboard.putNumber("JoystickTurn", turningSpeed);
             if (RobotContainer.wantedAngle < 0) {
               RobotContainer.wantedAngle += 360;
             }
@@ -229,18 +228,8 @@ public class SwerveJoystick extends Command {
               // }
             }
           } else {
-            // auto fix drift
-            if (RobotContainer.shouldAutoFixDrift == 1) {
-              RobotContainer.wantedAngle = swerveSubsystem.getHeading();
-              // RobotContainer.wantedAngle = 0;
-              // align
-            } else if (RobotContainer.shouldAutoFixDrift == 2) {
-              // change hasCoral to be based on intake hasCoral
-              boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
-            } else {
-              RobotContainer.wantedAngle = -1;
-            }
+            // set new angle
+            RobotContainer.wantedAngle = -1;
           }
 
           // 4. Construct desired chassis speeds
