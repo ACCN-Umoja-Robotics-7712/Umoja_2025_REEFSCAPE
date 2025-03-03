@@ -68,9 +68,9 @@ public class OperatorJoystick extends Command {
         boolean intake = j.getRawButton(OIConstants.LB);
         boolean shoot = j.getRawButton(OIConstants.RB);
         if (intake) {
-            coralIntakeSubsystem.runIntake(0.4);
+            coralIntakeSubsystem.runIntake(0.8);
         } else if (shoot) {
-            coralIntakeSubsystem.runIntake(-0.4);
+            coralIntakeSubsystem.runIntake(-0.8);
         } else {
             coralIntakeSubsystem.runIntake(0);
         }

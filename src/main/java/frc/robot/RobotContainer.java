@@ -13,8 +13,8 @@ import frc.robot.subsystems.DeepClimb;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
-import frc.robot.commands.Autos;
 import frc.robot.Constants.USB;
+import frc.robot.commands.autonomous.Autos;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class RobotContainer {
   public final static DeepClimb deepClimbSubsystem = new DeepClimb();
   public final static RobotState robotState = new RobotState(swerveSubsystem, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
 
-  public static final Autos auto = new Autos(swerveSubsystem);
+  public static final Autos auto = new Autos();
 
   public static double wantedAngle = -1;
   public static int shouldAutoFixDrift = 1; // 1 = auto drift, 2 = auto align, 0 = none

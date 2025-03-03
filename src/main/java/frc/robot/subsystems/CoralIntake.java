@@ -21,7 +21,7 @@ public class CoralIntake extends SubsystemBase {
 
     SparkMax coralIntakeMotor;
     RelativeEncoder coralIntakeEncoder;  
-    private final I2C.Port i2cPort = I2C.Port.kOnboard;
+    private final I2C.Port i2cPort = I2C.Port.kMXP;
     private double state = Constants.CoralIntakeStates.NONE;
     private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
     

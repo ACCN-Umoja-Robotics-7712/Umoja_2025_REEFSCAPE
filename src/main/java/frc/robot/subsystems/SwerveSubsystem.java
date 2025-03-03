@@ -237,6 +237,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
     StructPublisher<Pose2d> nearestPosePublisher = NetworkTableInstance.getDefault().getStructTopic("NearestPose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> nearestReefPublisher = NetworkTableInstance.getDefault().getStructTopic("Nearest Reef", Pose2d.struct).publish();
+    StructPublisher<Pose2d> nearestStationPublisher = NetworkTableInstance.getDefault().getStructTopic("Nearest Station", Pose2d.struct).publish();
+
 
     StructArrayPublisher<SwerveModuleState> swerveStatePublisher = NetworkTableInstance.getDefault()
 .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
@@ -258,12 +261,6 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("FR", frontRight.getAbsoluteEncoderDegree());
         SmartDashboard.putNumber("BL", backLeft.getAbsoluteEncoderDegree());
         SmartDashboard.putNumber("BR", backRight.getAbsoluteEncoderDegree());
-
-        SmartDashboard.putNumber("T FL", Math.toDegrees(frontLeft.getTurningPosition())%360);
-        SmartDashboard.putNumber("T FR", Math.toDegrees(frontRight.getTurningPosition())%360);
-        SmartDashboard.putNumber("T BL", Math.toDegrees(backLeft.getTurningPosition())%360);
-        SmartDashboard.putNumber("T BR", Math.toDegrees(backRight.getTurningPosition())%360);
-        SmartDashboard.putNumber("YAW", gyro.getYaw());
 
         SmartDashboard.putNumber("GAME STATE", RobotContainer.gameState);
 
@@ -348,6 +345,10 @@ public class SwerveSubsystem extends SubsystemBase {
         posePublisher.set(poseEstimator.getEstimatedPosition());
         boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
         nearestPosePublisher.set(nearestPoint(hasCoral, false));
+        nearestReefPublisher.set(nearestPoint(true, false));
+        nearestStationPublisher.set(nearestPoint(false, false));
+
+
         // publishRobotPositions();
     }
 

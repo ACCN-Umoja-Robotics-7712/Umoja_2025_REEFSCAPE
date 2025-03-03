@@ -9,6 +9,9 @@ import java.util.Optional;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import choreo.Choreo;
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,8 +20,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.TeleCommandGroup;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.Colors;
@@ -39,7 +44,10 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer robotContainer;
+  
+  private AutoFactory autoFactory;
+  private AutoChooser autoChooser;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -49,12 +57,35 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
+
+    autoFactory = new AutoFactory(
+      RobotContainer.swerveSubsystem::getPose, // A function that returns the current robot pose
+      RobotContainer.swerveSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+      RobotContainer.swerveSubsystem::followTrajectory, // The drive subsystem trajectory follower 
+      true, // If alliance flipping should be enabled 
+      RobotContainer.swerveSubsystem // The drive subsystem
+  );
+
+    // Create the auto chooser
+    autoChooser = new AutoChooser();
+
+    // Add options to the chooser
+    autoChooser.addRoutine("None", RobotContainer.auto::noneAuto);
+    autoChooser.addRoutine("simple auto", RobotContainer.auto::simpleAuto);
+
+
+    // Schedule the selected auto during the autonomous period
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+
+    // Put the auto chooser on the dashboard
+    SmartDashboard.putData(autoChooser);
+
     for (int port = 5800; port <= 5809; port++) {
-            PortForwarder.add(port, Constants.LimelightConstants.tagName + ".local", port);
-            PortForwarder.add(port+10, Constants.LimelightConstants.gamePieceName + ".local", port);
-            PortForwarder.add(port+20, Constants.LimelightConstants.driverName + ".local", port);
-        }
+      PortForwarder.add(port, Constants.LimelightConstants.tagName + ".local", port);
+      PortForwarder.add(port+10, Constants.LimelightConstants.gamePieceName + ".local", port);
+      PortForwarder.add(port+20, Constants.LimelightConstants.driverName + ".local", port);
+    }
   }
 
   /**
@@ -108,7 +139,7 @@ public class Robot extends TimedRobot {
     // Reset and start the timer when the autonomous period begins
     timer.restart();
     
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
