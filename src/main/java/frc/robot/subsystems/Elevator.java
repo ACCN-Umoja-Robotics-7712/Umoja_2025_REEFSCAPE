@@ -45,13 +45,14 @@ public class Elevator extends SubsystemBase {
     }
 
     public void runElevator(double percent){
-        if (RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit && percent < 0 && elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit){
+        if (isDangerous(percent)){
             elevatorMotor1.set(0);
         }
         else {
             elevatorMotor1.set(percent);
         }
     }
+    
     public double getEncoder(){
         return elevator1Encoder.getPosition();
     }
@@ -61,11 +62,26 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setState(double state) {
+        elevatorPID.reset();
         this.state = state;
     }
 
     public double getState(){
         return state;
+    }
+
+    public boolean isDangerous(double percent) {
+        boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
+        boolean isMovingDown = percent < 0;
+        boolean isCloseToArm = elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit;
+        return  isArmBlocking && isMovingDown && isCloseToArm;
+    }
+
+    public boolean isDangerousState(double state) {
+        boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
+        boolean isMovingDown = state < elevator1Encoder.getPosition();
+        boolean isCloseToArm = elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit;
+        return  isArmBlocking && isMovingDown && isCloseToArm;
     }
 
     public void stop(){
@@ -77,9 +93,11 @@ public class Elevator extends SubsystemBase {
         // TODO Auto-generated method stub
         super.periodic();
 
-        // if (state != ElevatorStates.NONE) {
-        //     runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
-        // }
+        if (state != ElevatorStates.NONE && !isDangerousState(state)) {
+            runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
+        } else {
+            setState(ElevatorStates.NONE);
+        }
         SmartDashboard.putNumber("Elevator State", state);
         SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
     }
