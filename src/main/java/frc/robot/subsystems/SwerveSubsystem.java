@@ -144,7 +144,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(Constants.DriveConstants.kPDrive, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(Constants.DriveConstants.kPTurning, 0.0, 0.0) // Rotation PID constants
-                ),
+                ), // TODO: Auto PID
                 config,
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -474,7 +474,7 @@ public class SwerveSubsystem extends SubsystemBase {
         if (shouldFlipBlue || shouldFlipRed) {
             offsetDirection *= -1;
         }
-        double trueOffset = offsetDirection*offsetDistance;
+        double trueOffset = -offsetDirection*offsetDistance;
         return offsetPoint(nearestPose, trueOffset);
     }
 

@@ -124,8 +124,10 @@ public class SwerveModule {
             return;
         }
         state.optimize(getState().angle);
-        SmartDashboard.putNumber("Swerve current " + absoluteEncoderID, getState().speedMetersPerSecond);
-        SmartDashboard.putNumber("Swerve wanted " + absoluteEncoderID, state.speedMetersPerSecond);
+        SmartDashboard.putNumber("Swerve current speed" + absoluteEncoderID, getState().speedMetersPerSecond);
+        SmartDashboard.putNumber("Swerve wanted speed" + absoluteEncoderID, state.speedMetersPerSecond);
+        SmartDashboard.putNumber("Swerve current" + absoluteEncoderID, driveMotor.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Swerve velocity" + absoluteEncoderID, driveMotor.getVelocity().getValueAsDouble());
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         // driveMotor.set(drivePIDcontroller.calculate())
         // TODO: CHANGE THIS TO PID

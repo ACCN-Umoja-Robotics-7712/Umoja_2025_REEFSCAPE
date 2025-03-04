@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CoralIntakeStates;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
+
 import com.revrobotics.ColorSensorV3;
 
 // Intake for the 2025 robot
@@ -24,6 +26,7 @@ public class CoralIntake extends SubsystemBase {
     private final I2C.Port i2cPort = I2C.Port.kMXP;
     private double state = Constants.CoralIntakeStates.NONE;
     private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+    private double prevHasCoral = -1;
     
     public CoralIntake(){
 
@@ -52,6 +55,16 @@ public class CoralIntake extends SubsystemBase {
 
     public boolean hasCoralSensor(){
         boolean hasCoral = colorSensor.getProximity() > Constants.CoralConstants.hasCoralProximity;
+        // dropped/shoot coral
+        if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 0.5) {
+            return true;
+        } else {
+            if (hasCoral) {
+                prevHasCoral = Timer.getTimestamp();
+            } else {
+                prevHasCoral = -1;
+            }
+        }
         return hasCoral;
     }
 
@@ -71,8 +84,7 @@ public class CoralIntake extends SubsystemBase {
         SmartDashboard.putNumber("Intake State", state);
         double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //TODO: Check if applied is in amps
         SmartDashboard.putNumber("Coral diff", diff);
-        boolean hasCoral = diff < Constants.CoralConstants.coralCurrentDiff && coralIntakeMotor.getOutputCurrent() != 0;
-        SmartDashboard.putBoolean("hasCoral", hasCoral);
+        SmartDashboard.putBoolean("hasCoral", hasCoralSensor());
         SmartDashboard.putNumber("hasCoral color sensor", colorSensor.getProximity());
         // if (state == Constants.CoralIntakeStates.INTAKE) {
         //     runIntake(0.05); 
