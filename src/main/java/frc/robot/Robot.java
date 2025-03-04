@@ -132,7 +132,8 @@ public class Robot extends TimedRobot {
 
     //     if (initialPose.isPresent()) {
     //         // Reset odometry to the start of the trajectory
-            RobotContainer.swerveSubsystem.resetOdometry(RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition());
+    RobotContainer.swerveSubsystem.zeroHeading();
+    // RobotContainer.swerveSubsystem.resetOdometry(RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition());
     //     }
     // }
 

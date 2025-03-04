@@ -14,6 +14,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +25,7 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.XBoxConstants;
 import frc.robot.Constants.USB;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -115,9 +118,9 @@ public class SwerveJoystick extends Command {
           
           SmartDashboard.putNumber("Wanted angle", RobotContainer.wantedAngle);
       
-          boolean isRobotOrientatedDrive = RobotContainer.driverController.getRawAxis(OIConstants.RT) >= 0.5;
+          boolean isRobotOrientatedDrive = RobotContainer.driverController.getRawAxis(XBoxConstants.RT) >= 0.5;
           // 3. Make the driving smoother
-          if (RobotContainer.driverController.getRawButton(OIConstants.kDriverRB) || isRobotOrientatedDrive){
+          if (RobotContainer.driverController.getRawButton(XBoxConstants.R1) || isRobotOrientatedDrive){
             xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.kSlowButtonDriveModifier);
             ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.kTeleDriveMaxSpeedMetersPerSecond * DriveConstants.kSlowButtonDriveModifier);
             turningSpeed = turningLimiter.calculate(turningSpeed) * (DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond * DriveConstants.kSlowButtonTurnModifier);
@@ -200,13 +203,13 @@ public class SwerveJoystick extends Command {
           swerveSubsystem.setModuleStates(moduleStates);
           
       
-          // if(j.getRawButton(OIConstants.START)){
+          // if(j.getRawButton(XBoxConstants.MENU)){
           //   swerveSubsystem.resetTurn();
           // }
-          if(j.getRawButtonPressed(OIConstants.BACK)){
+          if(j.getRawButtonPressed(XBoxConstants.PAGE)){
             swerveSubsystem.zeroHeading();
           }
-          if(j.getRawButtonPressed(OIConstants.START)){
+          if(j.getRawButtonPressed(XBoxConstants.MENU)){
             RobotContainer.shouldAutoFixDrift += 1;
             if (RobotContainer.shouldAutoFixDrift > 2) {
               RobotContainer.shouldAutoFixDrift = 0;

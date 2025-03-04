@@ -46,7 +46,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.wpilibj.*;
-
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
@@ -203,8 +203,15 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeading(){
+        double yaw = -gyro.getYaw();
+
+        // if blue flip
+        if (!DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red)) {
+            yaw += 180;
+        }
+
         //Changes the -180->0 to 180->360 (0 to 180 stays the same)
-        double heading = Math.IEEEremainder(-gyro.getYaw(), 360);
+        double heading = Math.IEEEremainder(yaw, 360);
         // double heading = (-gyro.getYaw() + 360)%180;
         if(heading < 0){
             heading = 180 + (180+heading);
@@ -223,7 +230,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         System.out.println("ODOMETRY RESET");
-        poseEstimator.resetPosition(Rotation2d.fromDegrees(gyro.getYaw()), new SwerveModulePosition[] {
+        poseEstimator.resetPosition(Rotation2d.fromDegrees(getHeading()), new SwerveModulePosition[] {
             frontLeft.getPosition(),
             frontRight.getPosition(),
             backLeft.getPosition(),
@@ -264,7 +271,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("GAME STATE", RobotContainer.gameState);
 
-        poseEstimator.update(Rotation2d.fromDegrees(-gyro.getYaw()),
+        poseEstimator.update(Rotation2d.fromDegrees(getHeading()),
             new SwerveModulePosition[] {
                 frontLeft.getPosition(),
                 frontRight.getPosition(),

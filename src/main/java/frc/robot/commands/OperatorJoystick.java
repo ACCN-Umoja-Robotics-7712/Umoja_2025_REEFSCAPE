@@ -7,6 +7,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.USB;
+import frc.robot.Constants.XBoxConstants;
 import frc.robot.Constants.RobotStates;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralArm;
@@ -41,10 +42,10 @@ public class OperatorJoystick extends Command {
     public void execute(){
 
         // manual controls
-        double elevatorSpeed = Math.abs(j.getRawAxis(OIConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LY) * 0.9 : 0.0;
-        double coralArmSpeed = Math.abs(j.getRawAxis(OIConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.RY) * 0.5 : 0.0;
-        double climbSpeed = Math.abs(j.getRawAxis(OIConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(OIConstants.RT) * 0.7 : 0.0;
-        double declimbSpeed = Math.abs(j.getRawAxis(OIConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(OIConstants.LT) * 0.5 : 0.0;
+        double elevatorSpeed = Math.abs(j.getRawAxis(XBoxConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LY) * 0.9 : 0.0;
+        double coralArmSpeed = Math.abs(j.getRawAxis(XBoxConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.RY) * 0.5 : 0.0;
+        double climbSpeed = Math.abs(j.getRawAxis(XBoxConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(XBoxConstants.RT) * 0.7 : 0.0;
+        double declimbSpeed = Math.abs(j.getRawAxis(XBoxConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LT) * 0.5 : 0.0;
 
         if (elevatorSubsystem.getState() == Constants.ElevatorStates.NONE) {
             elevatorSubsystem.runElevator(elevatorSpeed);
@@ -65,8 +66,8 @@ public class OperatorJoystick extends Command {
             coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
         }
 
-        boolean intake = j.getRawButton(OIConstants.LB);
-        boolean shoot = j.getRawButton(OIConstants.RB);
+        boolean intake = j.getRawButton(XBoxConstants.LB);
+        boolean shoot = j.getRawButton(XBoxConstants.R1);
         if (intake) {
             coralIntakeSubsystem.runIntake(0.8);
         } else if (shoot) {
@@ -75,29 +76,29 @@ public class OperatorJoystick extends Command {
             coralIntakeSubsystem.runIntake(0);
         }
 
-        if (j.getRawButtonPressed(OIConstants.A)){
+        if (j.getRawButtonPressed(XBoxConstants.A)){
             elevatorSubsystem.setState(Constants.ElevatorStates.L1);
         }
-        if (j.getRawButtonPressed(OIConstants.X)){
+        if (j.getRawButtonPressed(XBoxConstants.X)){
             elevatorSubsystem.setState(Constants.ElevatorStates.L2);
         }
-        if (j.getRawButtonPressed(OIConstants.B)){
+        if (j.getRawButtonPressed(XBoxConstants.B)){
             elevatorSubsystem.setState(Constants.ElevatorStates.L3);
         }
-        if (j.getRawButtonPressed(OIConstants.Y)){
+        if (j.getRawButtonPressed(XBoxConstants.Y)){
             elevatorSubsystem.setState(Constants.ElevatorStates.L4);
         }
 
         // automated control
-        // if (j.getRawButtonPressed(OIConstants.A)){
+        // if (j.getRawButtonPressed(XBoxConstants.A)){
         //     if (robotState.getState() != RobotStates.CLIMBING || robotState.getState() != RobotStates.CLIMB_READY){
         //         robotState.setState(RobotStates.L1);
         //     }
-        // } else if (j.getRawButtonPressed(OIConstants.X)){
+        // } else if (j.getRawButtonPressed(XBoxConstants.X)){
         //     robotState.setState(RobotStates.L2);
-        // } else if(j.getRawButtonPressed(OIConstants.B)){
+        // } else if(j.getRawButtonPressed(XBoxConstants.B)){
         //     robotState.setState(RobotStates.L3);
-        // } else if(j.getRawButtonPressed(OIConstants.Y)){
+        // } else if(j.getRawButtonPressed(XBoxConstants.Y)){
         //     robotState.setState(RobotStates.L4);
         // } else {
         //     robotState.setState(RobotStates.NONE);
