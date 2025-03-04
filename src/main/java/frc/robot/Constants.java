@@ -209,7 +209,7 @@ public final class Constants {
         public static final double elevatorTopLimit = 260.0; 
         public static final double elevatorBottomLimit = 20;
 
-        public static final double kP =  0.2;
+        public static final double kP =  0.1;
         public static final double kI =  0.0; 
 
         public static final double slowDown = 0.8;
@@ -224,9 +224,9 @@ public final class Constants {
     public static final class ElevatorStates {
 
         public static final double NONE = -1;
-        public static final double L1 = 0;
+        public static final double L1 = 20;
         public static final double L2 = 21;
-        public static final double L3 = 77;
+        public static final double L3 = 140;
         public static final double L4 = 250;
         public static final double CLIMB = 0;
     };
