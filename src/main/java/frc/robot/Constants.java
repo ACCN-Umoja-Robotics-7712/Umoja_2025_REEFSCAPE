@@ -251,11 +251,11 @@ public final class Constants {
 
         public static final double kPXController = 2;
         public static final double kPYController = 2;
-        public static final double kPThetaController = 5;
+        public static final double kPThetaController = 4;
 
         public static final double kIXController = 0.02;
         public static final double kIYController = 0.02;
-        public static final double kIThetaController = 0.05;
+        public static final double kIThetaController = 0.06;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
@@ -263,6 +263,35 @@ public final class Constants {
                 kMaxAngularAccelerationRadiansPerSecondSquared);
     }
 
+    public static final class XBoxConstants {
+        
+        // Buttons
+        public static final int A = 1; 
+        public static final int B = 2;
+        public static final int X = 3;
+        public static final int Y = 4;
+
+        public static final int LB = 5;
+        public static final int R1 = 6;
+        
+        public static final int PAGE = 7;
+        public static final int MENU = 8;
+
+        public static final int L3 = 9;
+        public static final int R3 = 10;
+
+        // Axes
+
+        public static final int LX = 0;
+        public static final int LY = 1; 
+
+        public static final int LT = 2;
+        public static final int RT = 3;
+
+        public static final int RX = 4; 
+        public static final int RY = 5;
+
+    }
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
 
