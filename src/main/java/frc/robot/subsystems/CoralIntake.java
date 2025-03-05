@@ -44,7 +44,7 @@ public class CoralIntake extends SubsystemBase {
     public void runIntake(double percent){
         if (hasCoralSensor()) {
             if (percent > 0) {
-                coralIntakeMotor.set(percent * 0.1);
+                coralIntakeMotor.set(percent * 0.05);
             } else {
                 coralIntakeMotor.set(percent);
             }
@@ -56,7 +56,7 @@ public class CoralIntake extends SubsystemBase {
     public boolean hasCoralSensor(){
         boolean hasCoral = colorSensor.getProximity() > Constants.CoralConstants.hasCoralProximity;
         // dropped/shoot coral
-        if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 0.5) {
+        if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 1) {
             return true;
         } else {
             if (hasCoral) {

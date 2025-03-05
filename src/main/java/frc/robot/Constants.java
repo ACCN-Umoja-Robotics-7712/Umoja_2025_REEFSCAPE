@@ -127,7 +127,7 @@ public final class Constants {
         public static final double kPTurning = 0.6;
 
         public static final double kPDrift = 0.05;
-        public static final double kIDrift = 0.0025; // 0.05
+        public static final double kIDrift = 0.003; 
     }
 
 
@@ -185,10 +185,10 @@ public final class Constants {
     public static final class CoralArmStates {
         
         public static final double NONE = -1;
-        public static final double PICKUP = 50;
+        public static final double PICKUP = 54;
         public static final double L1 = 8;
         public static final double L23 = 35;
-        public static final double L4 = 23; // TODO: Fix value
+        public static final double L4 = 25.5; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
         public static final double REMOVE = 50;
     }
@@ -225,8 +225,8 @@ public final class Constants {
 
         public static final double NONE = -1;
         public static final double L1 = 20;
-        public static final double L2 = 21;
-        public static final double L3 = 140;
+        public static final double L2 = 20;
+        public static final double L3 = 105;
         public static final double L4 = 250;
         public static final double CLIMB = 0;
     };
@@ -249,13 +249,15 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
 
+        // public static final double kPXController = 2;
+        // public static final double kPYController = 2;
         public static final double kPXController = 2;
         public static final double kPYController = 2;
-        public static final double kPThetaController = 4;
+        public static final double kPThetaController = 5;
 
-        public static final double kIXController = 0.04;
-        public static final double kIYController = 0.04;
-        public static final double kIThetaController = 0.06;
+        public static final double kIXController = 0.02; //0.06
+        public static final double kIYController = 0.02; // 0.06
+        public static final double kIThetaController = 0.05;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(

@@ -1,7 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorStates;
@@ -41,11 +43,17 @@ public class OperatorJoystick extends Command {
     @Override
     public void execute(){
 
+        if (DriverStation.getMatchTime() <= 20 || DriverStation.getMatchTime() >= 17) {
+            j.setRumble(RumbleType.kBothRumble, 1);
+        } else {
+            j.setRumble(RumbleType.kBothRumble, 0);
+        }
+
         // manual controls
         double elevatorSpeed = Math.abs(j.getRawAxis(XBoxConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LY) * 0.9 : 0.0;
         double coralArmSpeed = Math.abs(j.getRawAxis(XBoxConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.RY) * 0.5 : 0.0;
         double climbSpeed = Math.abs(j.getRawAxis(XBoxConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(XBoxConstants.RT) * 0.7 : 0.0;
-        double declimbSpeed = Math.abs(j.getRawAxis(XBoxConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LT) * 0.5 : 0.0;
+        double declimbSpeed = Math.abs(j.getRawAxis(XBoxConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LT) * 0.7 : 0.0;
 
         if (elevatorSubsystem.getState() == Constants.ElevatorStates.NONE) {
             elevatorSubsystem.runElevator(elevatorSpeed);
@@ -77,16 +85,20 @@ public class OperatorJoystick extends Command {
         }
 
         if (j.getRawButtonPressed(XBoxConstants.A)){
+            coralArmSubsystem.setState(Constants.CoralArmStates.PICKUP);
             elevatorSubsystem.setState(Constants.ElevatorStates.L1);
         }
         if (j.getRawButtonPressed(XBoxConstants.X)){
             elevatorSubsystem.setState(Constants.ElevatorStates.L2);
+            coralArmSubsystem.setState(Constants.CoralArmStates.L23);
         }
         if (j.getRawButtonPressed(XBoxConstants.B)){
             elevatorSubsystem.setState(Constants.ElevatorStates.L3);
+            coralArmSubsystem.setState(Constants.CoralArmStates.L23);
         }
         if (j.getRawButtonPressed(XBoxConstants.Y)){
             elevatorSubsystem.setState(Constants.ElevatorStates.L4);
+            coralArmSubsystem.setState(Constants.CoralArmStates.L4);
         }
 
         // automated control

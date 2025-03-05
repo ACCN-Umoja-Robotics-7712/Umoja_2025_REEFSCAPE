@@ -170,7 +170,7 @@ public class SwerveSubsystem extends SubsystemBase {
         yController = new PIDController(AutoConstants.kPYController, AutoConstants.kIYController, 0);
         thetaController = new ProfiledPIDController(
                 AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0, AutoConstants.kThetaControllerConstraints);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.enableContinuousInput(0,360);
         
         holonomicDriveController = new HolonomicDriveController(xController, yController, thetaController);
     }
@@ -474,7 +474,7 @@ public class SwerveSubsystem extends SubsystemBase {
         if (shouldFlipBlue || shouldFlipRed) {
             offsetDirection *= -1;
         }
-        double trueOffset = -offsetDirection*offsetDistance;
+        double trueOffset = offsetDirection*offsetDistance;
         return offsetPoint(nearestPose, trueOffset);
     }
 

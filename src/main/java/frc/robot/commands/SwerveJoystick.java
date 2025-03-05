@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -16,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -68,11 +70,20 @@ public class SwerveJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      Boolean xButtonPressed = j.getRawButton(OIConstants.X);
-      Boolean aButtonPressed = j.getRawButton(OIConstants.A);
-      Boolean bButtonPressed = j.getRawButton(OIConstants.B);
+      if (DriverStation.getMatchTime() <= 20) {
+          j.setRumble(RumbleType.kBothRumble, 1);
+      } else {
+          j.setRumble(RumbleType.kBothRumble, 0);
+      }
+
+      Boolean xButtonPressed = j.getRawButton(XBoxConstants.X);
+      Boolean aButtonPressed = j.getRawButton(XBoxConstants.A);
+      Boolean bButtonPressed = j.getRawButton(XBoxConstants.B);
       if (xButtonPressed || aButtonPressed || bButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
+            swerveSubsystem.holonomicDriveController.getThetaController().reset(swerveSubsystem.getPose().getRotation().getDegrees());
+            swerveSubsystem.holonomicDriveController.getXController().reset();
+            swerveSubsystem.holonomicDriveController.getYController().reset();
             boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
             int offset = 0;
             if (xButtonPressed) {
@@ -84,12 +95,15 @@ public class SwerveJoystick extends Command {
             }
             RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(hasCoral, false, offset);
         }
+        // if (!swerveSubsystem.timer.isRunning()) {
+        //   swerveSubsystem.timer.start();
+        // }
         // double curTime = swerveSubsystem.timer.get();
         // var desiredState = RobotContainer.currentTrajectory.sample(curTime);
         // var desiredRotation = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1).poseMeters.getRotation();
-        
         var desiredState = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1);
         var desiredRotation = desiredState.poseMeters.getRotation();
+        SmartDashboard.putNumber("ROTATION", desiredRotation.getDegrees());
         var targetChassisSpeeds =
             swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), desiredState, desiredRotation);
         var targetModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetChassisSpeeds);
@@ -99,6 +113,7 @@ public class SwerveJoystick extends Command {
         return;
       } else {
         RobotContainer.currentTrajectory = null;
+        // swerveSubsystem.timer.stop();
       }
       
       

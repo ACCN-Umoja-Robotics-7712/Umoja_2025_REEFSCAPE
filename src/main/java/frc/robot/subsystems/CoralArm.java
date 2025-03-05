@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
+import frc.robot.Constants.ElevatorStates;
 import frc.robot.RobotContainer;
 // Intake for the 2025 robot
 public class CoralArm extends SubsystemBase {
@@ -40,7 +41,7 @@ public class CoralArm extends SubsystemBase {
     }
     
     public void runArm(double percent){
-        if(RobotContainer.elevatorSubsystem.getEncoder() < Constants.ElevatorConstants.elevatorArmLimit && percent > 0 && coralArmEncoder.getPosition() > Constants.CoralConstants.coralArmElevatorLimit){
+        if (isDangerous(percent)) {
             coralArmMotor.set(0);
         }
         else {
@@ -48,11 +49,27 @@ public class CoralArm extends SubsystemBase {
         }
     }
 
+    public boolean isDangerous(double percent) {
+        boolean isElevatorBlocking = RobotContainer.elevatorSubsystem.getEncoder() < Constants.ElevatorConstants.elevatorArmLimit;
+        boolean isMovingUp = percent > 0;
+        boolean isCloseToElevator = coralArmEncoder.getPosition() > Constants.CoralConstants.coralArmElevatorLimit;
+        return  isElevatorBlocking && isMovingUp && isCloseToElevator;
+    }
+
+
+    public boolean isDangerousState(double state) {
+        boolean isElevatorBlocking = RobotContainer.elevatorSubsystem.getEncoder() < Constants.ElevatorConstants.elevatorArmLimit;
+        boolean isMovingUp = state > coralArmEncoder.getPosition();
+        boolean isCloseToElevator = coralArmEncoder.getPosition() > Constants.CoralConstants.coralArmElevatorLimit;
+        return  isElevatorBlocking && isMovingUp && isCloseToElevator;
+    }
+
     public boolean isClimbReady(){
         return coralArmEncoder.getPosition() > Constants.CoralArmStates.CLIMB; // TODO: subtract number for leeway
     }
 
     public void setState(double coralArmState) {
+        coralArmPID.reset();
         state = coralArmState;
     }
 
@@ -69,8 +86,13 @@ public class CoralArm extends SubsystemBase {
         // SmartDashboard.putNumber("Intake Pos", intakeEncoder.getPosition());
         SmartDashboard.putNumber("Coral Arm Position", coralArmEncoder.getPosition());
         SmartDashboard.putNumber("Coral Arm State", state);
-        if(state != Constants.CoralArmStates.NONE){
-            // runArm(coralArmPID.calculate(coralArmEncoder.getPosition(), state));
+        
+        if (state != Constants.CoralArmStates.NONE) {
+            if (!isDangerousState(state)) {
+                runArm(coralArmPID.calculate(coralArmEncoder.getPosition(), state));
+            } else {
+                runArm(0);
+            }
         }
     }
 }

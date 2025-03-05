@@ -63,6 +63,7 @@ public class RobotContainer {
   public static int shouldAutoFixDrift = 1; // 1 = auto drift, 2 = auto align, 0 = none
   public static int gameState = GameConstants.Robot;
   public static Trajectory currentTrajectory = null;
+  public static Pose2d goalPose = null;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -115,7 +116,7 @@ public class RobotContainer {
         PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
         ProfiledPIDController thetaController = new ProfiledPIDController(
                 AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.enableContinuousInput(0, 360);
 
         // 4. Construct command to follow trajectory
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(

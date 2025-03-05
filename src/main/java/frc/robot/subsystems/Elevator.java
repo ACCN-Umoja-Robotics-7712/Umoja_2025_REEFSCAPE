@@ -80,8 +80,7 @@ public class Elevator extends SubsystemBase {
     public boolean isDangerousState(double state) {
         boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
         boolean isMovingDown = state < elevator1Encoder.getPosition();
-        boolean isCloseToArm = elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit;
-        return  isArmBlocking && isMovingDown && isCloseToArm;
+        return  isArmBlocking && isMovingDown;
     }
 
     public void stop(){
@@ -93,10 +92,12 @@ public class Elevator extends SubsystemBase {
         // TODO Auto-generated method stub
         super.periodic();
 
-        if (state != ElevatorStates.NONE && !isDangerousState(state)) {
-            runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
-        } else {
-            setState(ElevatorStates.NONE);
+        if (state != ElevatorStates.NONE) {
+            if (!isDangerousState(state)) {
+                runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
+            } else {
+                runElevator(0);
+            }
         }
         SmartDashboard.putNumber("Elevator State", state);
         SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
