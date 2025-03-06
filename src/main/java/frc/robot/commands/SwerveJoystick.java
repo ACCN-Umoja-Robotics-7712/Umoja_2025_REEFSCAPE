@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -12,6 +15,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -86,7 +90,7 @@ public class SwerveJoystick extends Command {
       Boolean bButtonPressed = j.getRawButton(XBoxConstants.B);
       if (xButtonPressed || aButtonPressed || bButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
-            swerveSubsystem.holonomicDriveController.getThetaController().reset(0);
+            swerveSubsystem.holonomicDriveController.getThetaController().reset(Units.degreesToRadians(swerveSubsystem.getHeading()));
             swerveSubsystem.holonomicDriveController.getXController().reset();
             swerveSubsystem.holonomicDriveController.getYController().reset();
             boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
@@ -221,25 +225,6 @@ public class SwerveJoystick extends Command {
           SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
           swerveSubsystem.setModuleStates(moduleStates); // TODO: add simple auto time thing
 
-          //* */ Simple auto backup
-          ChassisSpeeds autoChassisSpeeds = new ChassisSpeeds(0, 1, 0);
-          SwerveModuleState[] autoState = DriveConstants.kDriveKinematics.toSwerveModuleStates(autoChassisSpeeds);
-          
-          if (RobotContainer.gameState == GameConstants.Auto){
-            if (Math.abs(autoTimer - Timer.getTimestamp()) < 7){
-              swerveSubsystem.setModuleStates(autoState);
-            }
-            else {
-              swerveSubsystem.setModuleStates(null);
-            }
-          }
-          /* */
-
-          
-      
-          // if(j.getRawButton(XBoxConstants.MENU)){
-          //   swerveSubsystem.resetTurn();
-          // }
           if(j.getRawButtonPressed(XBoxConstants.PAGE)){
             swerveSubsystem.zeroHeading();
           }
@@ -253,13 +238,8 @@ public class SwerveJoystick extends Command {
           SmartDashboard.putBoolean("Auto Fix Align", RobotContainer.shouldAutoFixDrift == 2);
           SmartDashboard.putBoolean("Auto Fix Drift", RobotContainer.shouldAutoFixDrift == 1);
         }
-      
-        private double Estimate_Distance() {
-          // TODO Auto-generated method stub
-          throw new UnsupportedOperationException("Unimplemented method 'Estimate_Distance'");
-        }
-      
-        // Called once the command ends or is interrupted.
+
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     swerveSubsystem.stopModules();

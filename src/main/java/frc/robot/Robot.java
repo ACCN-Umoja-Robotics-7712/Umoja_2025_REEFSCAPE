@@ -110,6 +110,9 @@ public class Robot extends TimedRobot {
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
     RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
     RobotContainer.robotState.setState(Constants.RobotStates.NONE);
+    RobotContainer.elevatorSubsystem.runElevator(0);
+    RobotContainer.coralArmSubsystem.runArm(0);
+    RobotContainer.coralIntakeSubsystem.runIntake(0);
 
   }
 
@@ -121,6 +124,14 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
+    RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
+    RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
+    RobotContainer.robotState.setState(Constants.RobotStates.NONE);
+    RobotContainer.elevatorSubsystem.runElevator(0);
+    RobotContainer.coralArmSubsystem.runArm(0);
+    RobotContainer.coralIntakeSubsystem.runIntake(0);
+
     autoStartTimer = Timer.getTimestamp();
     
     // if (trajectory.isPresent()) {
@@ -151,7 +162,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-
     RobotContainer.gameState = GameConstants.Auto;
     ChassisSpeeds autoChassisSpeeds = new ChassisSpeeds(0, 0.5, 0);
     ChassisSpeeds stopChassisSpeeds = new ChassisSpeeds(0, 0, 0);
@@ -200,6 +210,9 @@ public class Robot extends TimedRobot {
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
     RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
     RobotContainer.robotState.setState(Constants.RobotStates.NONE);
+    RobotContainer.elevatorSubsystem.runElevator(0);
+    RobotContainer.coralArmSubsystem.runArm(0);
+    RobotContainer.coralIntakeSubsystem.runIntake(0);
 
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.cancel();
