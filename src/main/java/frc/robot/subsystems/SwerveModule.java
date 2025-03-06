@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -58,11 +61,17 @@ public class SwerveModule {
         driveMotor.setInverted(driveMotorReversed); // Code depriciated in 2026
         turnMotor.setInverted(turnMotorReversed); // Code depriciated in 2026
 
-        
-        // driveEncoder = driveMotor.getEncoder(Type.kHallSensor, 42);
-        // turnEncoder = turnMotor.getEncoder(Type.kHallSensor, 42);
+        TalonFXConfigurator talonFXConfigurator = driveMotor.getConfigurator();
+        CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+        config.StatorCurrentLimitEnable = true;
+        config.StatorCurrentLimit = 120;
 
-        // driveMotor.setSmartCurrentLimit(30);
+        config.SupplyCurrentLimitEnable = true;
+        config.SupplyCurrentLimit = 70;
+        
+        talonFXConfigurator.apply(config);
+
+        // driveMotor.smartcurrent(30);
         // turnMotor.setSmartCurrentLimit(20);
 
 

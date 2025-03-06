@@ -56,7 +56,7 @@ public class CoralIntake extends SubsystemBase {
     public boolean hasCoralSensor(){
         boolean hasCoral = colorSensor.getProximity() > Constants.CoralConstants.hasCoralProximity;
         // dropped/shoot coral
-        if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 1) {
+        if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 1.5) {
             return true;
         } else {
             if (hasCoral) {

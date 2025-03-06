@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,7 +71,7 @@ public class SwerveJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if (DriverStation.getMatchTime() <= 20) {
+      if (DriverStation.getMatchType() != MatchType.None && DriverStation.getMatchTime() <= 20) {
           j.setRumble(RumbleType.kBothRumble, 1);
       } else {
           j.setRumble(RumbleType.kBothRumble, 0);
@@ -81,7 +82,7 @@ public class SwerveJoystick extends Command {
       Boolean bButtonPressed = j.getRawButton(XBoxConstants.B);
       if (xButtonPressed || aButtonPressed || bButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
-            swerveSubsystem.holonomicDriveController.getThetaController().reset(swerveSubsystem.getPose().getRotation().getDegrees());
+            swerveSubsystem.holonomicDriveController.getThetaController().reset(0);
             swerveSubsystem.holonomicDriveController.getXController().reset();
             swerveSubsystem.holonomicDriveController.getYController().reset();
             boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();

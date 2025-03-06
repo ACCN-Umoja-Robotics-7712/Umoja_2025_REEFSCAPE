@@ -10,8 +10,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import choreo.Choreo;
 import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.TeleCommandGroup;
+import frc.robot.commands.autonomous.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.Colors;
 import frc.robot.Constants.GameConstants;
@@ -38,7 +37,7 @@ import frc.robot.Constants.GameConstants;
 public class Robot extends TimedRobot {
   
   // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
-  private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("myTrajectory");
+  private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("Simple Auto");
 
   private final Timer timer = new Timer();
 
@@ -46,7 +45,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer robotContainer;
   
-  private AutoFactory autoFactory;
   private AutoChooser autoChooser;
 
   /**
@@ -59,27 +57,20 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
 
-    autoFactory = new AutoFactory(
-      RobotContainer.swerveSubsystem::getPose, // A function that returns the current robot pose
-      RobotContainer.swerveSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
-      RobotContainer.swerveSubsystem::followTrajectory, // The drive subsystem trajectory follower 
-      true, // If alliance flipping should be enabled 
-      RobotContainer.swerveSubsystem // The drive subsystem
-  );
-
     // Create the auto chooser
     autoChooser = new AutoChooser();
 
     // Add options to the chooser
-    autoChooser.addRoutine("None", RobotContainer.auto::noneAuto);
-    autoChooser.addRoutine("simple auto", RobotContainer.auto::simpleAuto);
-
-
-    // Schedule the selected auto during the autonomous period
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    autoChooser.addCmd("simple auto", RobotContainer.auto::simpleAuto);
+    // autoChooser.addRoutine("auto2", RobotContainer.auto::auto2);
+    autoChooser.addRoutine("NONE", RobotContainer.auto::noneAuto);
 
     // Put the auto chooser on the dashboard
-    SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData("AUTOS", autoChooser);
+
+    // Schedule the selected auto during the autonomous period
+    // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+
 
     for (int port = 5800; port <= 5809; port++) {
       PortForwarder.add(port, Constants.LimelightConstants.tagName + ".local", port);
@@ -126,12 +117,15 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     RobotContainer.gameState = GameConstants.Auto;
-    // if (trajectory.isPresent()) {
-    //     // Get the initial pose of the trajectory
-    //     Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
+    if (trajectory.isPresent()) {
+        // Get the initial pose of the trajectory
+        Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
 
-    //     if (initialPose.isPresent()) {
-    //         // Reset odometry to the start of the trajectory
+        if (initialPose.isPresent()) {
+            // Reset odometry to the start of the trajectory
+
+        }
+    }
     RobotContainer.swerveSubsystem.zeroHeading();
     // RobotContainer.swerveSubsystem.resetOdometry(RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition());
     //     }
@@ -140,17 +134,25 @@ public class Robot extends TimedRobot {
     // Reset and start the timer when the autonomous period begins
     timer.restart();
     
-    m_autonomousCommand = robotContainer.getAutonomousCommand();
+    // m_autonomousCommand = robotContainer.getAutonomousCommand();
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    // // schedule the autonomous command (example)
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    if (trajectory.isPresent()) {
+      // 
+      Optional<SwerveSample> sample = trajectory.get().sampleAt(timer.get(), isRedAlliance());
+
+      if (sample.isPresent()) {
+        RobotContainer.swerveSubsystem.followTrajectory(sample.get());
+      }
+    }
   }
 
   @Override
@@ -177,9 +179,9 @@ public class Robot extends TimedRobot {
     RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
     RobotContainer.robotState.setState(Constants.RobotStates.NONE);
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.cancel();
+    // }
   }
 
   /** This function is called periodically during operator control. */

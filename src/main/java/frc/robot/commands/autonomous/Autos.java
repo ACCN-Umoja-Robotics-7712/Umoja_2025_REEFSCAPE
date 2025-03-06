@@ -9,9 +9,13 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -49,8 +53,22 @@ public class Autos {
             swerveSubsystem::getPose, // A function that returns the current robot pose
             swerveSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
             swerveSubsystem::followTrajectory, // The drive subsystem trajectory follower 
-            true, // If alliance flipping should be enabled 
+            false, // If alliance flipping should be enabled 
             swerveSubsystem // The drive subsystem
+        );
+    }
+
+    private boolean isRed() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+    }
+
+    public Command simpleAuto() {
+        return Commands.sequence(
+            autoFactory.trajectoryCmd("Simple auto")
         );
     }
 
@@ -58,19 +76,46 @@ public class Autos {
         return autoFactory.newRoutine("None");
     }
 
-    public AutoRoutine simpleAuto() {
-        AutoRoutine routine = autoFactory.newRoutine("center");
+    // public AutoRoutine simpleAuto() {
+    //     StructPublisher<Pose2d> poseStartPublisher = NetworkTableInstance.getDefault().getStructTopic("AUTO POSE START", Pose2d.struct).publish();
+    //     StructPublisher<Pose2d> poseEndPublisher = NetworkTableInstance.getDefault().getStructTopic("AUTO POSE END", Pose2d.struct).publish();
+    //     AutoRoutine routine = autoFactory.newRoutine("center");
+
+    //     // Load the routine's trajectories
+    //     AutoTrajectory driveToMiddle = routine.trajectory("Simple auto");
+
+        
+    //     poseStartPublisher.set(driveToMiddle.getInitialPose().get());
+    //     poseEndPublisher.set(driveToMiddle.getFinalPose().get());
+
+    //     // When the routine begins, reset odometry and start the first trajectory (1)
+    //     routine.active().onTrue(
+    //         Commands.sequence(
+    //             driveToMiddle.resetOdometry(),
+    //             driveToMiddle.cmd()
+    //         )
+    //     );
+
+
+    //     // driveToMiddle.done().onTrue();
+    //     return routine;
+    // }
+
+    public AutoRoutine auto2() {
+        AutoRoutine routine = autoFactory.newRoutine("auto2");
 
         // Load the routine's trajectories
-        AutoTrajectory driveToMiddle = routine.trajectory("Simple auto");
+        AutoTrajectory driveToMiddle = routine.trajectory("auto2");
 
         // When the routine begins, reset odometry and start the first trajectory (1)
         routine.active().onTrue(
             Commands.sequence(
-                driveToMiddle.cmd()
+                driveToMiddle.resetOdometry(),
+                driveToMiddle.cmd(),
+                new Shoot(intake)
             )
         );
-        driveToMiddle.done().onTrue(new Shoot(intake));
+        driveToMiddle.done();
         return routine;
     }
     

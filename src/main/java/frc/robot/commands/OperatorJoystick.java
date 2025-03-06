@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +44,7 @@ public class OperatorJoystick extends Command {
     @Override
     public void execute(){
 
-        if (DriverStation.getMatchTime() <= 20 || DriverStation.getMatchTime() >= 17) {
+        if (DriverStation.getMatchType() != MatchType.None && DriverStation.getMatchTime() <= 20 && DriverStation.getMatchTime() >= 17) {
             j.setRumble(RumbleType.kBothRumble, 1);
         } else {
             j.setRumble(RumbleType.kBothRumble, 0);
