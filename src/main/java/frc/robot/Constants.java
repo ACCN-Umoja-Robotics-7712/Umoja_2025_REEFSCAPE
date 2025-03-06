@@ -127,7 +127,7 @@ public final class Constants {
         public static final double kPTurning = 0.6;
 
         public static final double kPDrift = 0.055;
-        public static final double kIDrift = 0.0062; 
+        public static final double kIDrift = 0.0065; //Changed before test
     }
 
 

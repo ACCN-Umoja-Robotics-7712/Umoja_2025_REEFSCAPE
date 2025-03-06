@@ -13,6 +13,8 @@ import choreo.auto.AutoChooser;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -26,6 +28,7 @@ import frc.robot.commands.TeleCommandGroup;
 import frc.robot.commands.autonomous.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.Colors;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
 
 /**
@@ -46,6 +49,8 @@ public class Robot extends TimedRobot {
   private RobotContainer robotContainer;
   
   private AutoChooser autoChooser;
+
+  private double autoStartTimer = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -116,16 +121,17 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    RobotContainer.gameState = GameConstants.Auto;
-    if (trajectory.isPresent()) {
-        // Get the initial pose of the trajectory
-        Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
+    autoStartTimer = Timer.getTimestamp();
+    
+    // if (trajectory.isPresent()) {
+    //     // Get the initial pose of the trajectory
+    //     Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
 
-        if (initialPose.isPresent()) {
-            // Reset odometry to the start of the trajectory
+    //     if (initialPose.isPresent()) {
+    //         // Reset odometry to the start of the trajectory
 
-        }
-    }
+    //     }
+    // }
     RobotContainer.swerveSubsystem.zeroHeading();
     // RobotContainer.swerveSubsystem.resetOdometry(RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition());
     //     }
@@ -145,14 +151,30 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    if (trajectory.isPresent()) {
-      // 
-      Optional<SwerveSample> sample = trajectory.get().sampleAt(timer.get(), isRedAlliance());
 
-      if (sample.isPresent()) {
-        RobotContainer.swerveSubsystem.followTrajectory(sample.get());
+    RobotContainer.gameState = GameConstants.Auto;
+    ChassisSpeeds autoChassisSpeeds = new ChassisSpeeds(0, 0.5, 0);
+    ChassisSpeeds stopChassisSpeeds = new ChassisSpeeds(0, 0, 0);
+    SwerveModuleState[] autoState = DriveConstants.kDriveKinematics.toSwerveModuleStates(autoChassisSpeeds);
+    SwerveModuleState[] stopState = DriveConstants.kDriveKinematics.toSwerveModuleStates(stopChassisSpeeds);
+      
+      if (RobotContainer.gameState == GameConstants.Auto){
+        if (Math.abs(autoStartTimer - Timer.getTimestamp()) < 7){
+          RobotContainer.swerveSubsystem.setModuleStates(autoState);
+        }
+        else {
+          RobotContainer.swerveSubsystem.setModuleStates(stopState);
+        }
       }
-    }
+      
+    // if (trajectory.isPresent()) {
+    //   // 
+    //   Optional<SwerveSample> sample = trajectory.get().sampleAt(timer.get(), isRedAlliance());
+
+    //   if (sample.isPresent()) {
+    //     RobotContainer.swerveSubsystem.followTrajectory(sample.get());
+    //   }
+    // }
   }
 
   @Override

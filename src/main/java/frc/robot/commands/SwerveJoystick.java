@@ -20,12 +20,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.XBoxConstants;
@@ -42,6 +44,8 @@ public class SwerveJoystick extends Command {
   private final SwerveSubsystem swerveSubsystem;
   private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+
+  private double autoTimer = 0; 
 
   Joystick j = new Joystick(USB.DRIVER_CONTROLLER);
 
@@ -215,8 +219,22 @@ public class SwerveJoystick extends Command {
 
           // 5. Convert chassis speeds to individual module states
           SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-      
-          swerveSubsystem.setModuleStates(moduleStates);
+          swerveSubsystem.setModuleStates(moduleStates); // TODO: add simple auto time thing
+
+          //* */ Simple auto backup
+          ChassisSpeeds autoChassisSpeeds = new ChassisSpeeds(0, 1, 0);
+          SwerveModuleState[] autoState = DriveConstants.kDriveKinematics.toSwerveModuleStates(autoChassisSpeeds);
+          
+          if (RobotContainer.gameState == GameConstants.Auto){
+            if (Math.abs(autoTimer - Timer.getTimestamp()) < 7){
+              swerveSubsystem.setModuleStates(autoState);
+            }
+            else {
+              swerveSubsystem.setModuleStates(null);
+            }
+          }
+          /* */
+
           
       
           // if(j.getRawButton(XBoxConstants.MENU)){
