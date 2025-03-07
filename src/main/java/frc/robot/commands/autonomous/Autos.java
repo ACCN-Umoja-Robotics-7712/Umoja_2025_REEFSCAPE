@@ -58,23 +58,23 @@ public class Autos {
         );
     }
 
-    private boolean isRed() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-    }
+    // private boolean isRed() {
+    //     var alliance = DriverStation.getAlliance();
+    //     if (alliance.isPresent()) {
+    //         return alliance.get() == DriverStation.Alliance.Red;
+    //     }
+    //     return false;
+    // }
 
-    public Command simpleAuto() {
-        return Commands.sequence(
-            autoFactory.trajectoryCmd("Simple auto")
-        );
-    }
+    // public Command simpleAuto() {
+    //     return Commands.sequence(
+    //         autoFactory.trajectoryCmd("Simple auto")
+    //     );
+    // }
 
-    public AutoRoutine noneAuto() {
-        return autoFactory.newRoutine("None");
-    }
+    // public AutoRoutine noneAuto() {
+    //     return autoFactory.newRoutine("None");
+    // }
 
     // public AutoRoutine simpleAuto() {
     //     StructPublisher<Pose2d> poseStartPublisher = NetworkTableInstance.getDefault().getStructTopic("AUTO POSE START", Pose2d.struct).publish();
@@ -101,22 +101,22 @@ public class Autos {
     //     return routine;
     // }
 
-    public AutoRoutine auto2() {
-        AutoRoutine routine = autoFactory.newRoutine("auto2");
+    // public AutoRoutine auto2() {
+    //     AutoRoutine routine = autoFactory.newRoutine("auto2");
 
-        // Load the routine's trajectories
-        AutoTrajectory driveToMiddle = routine.trajectory("auto2");
+    //     // Load the routine's trajectories
+    //     AutoTrajectory driveToMiddle = routine.trajectory("auto2");
 
-        // When the routine begins, reset odometry and start the first trajectory (1)
-        routine.active().onTrue(
-            Commands.sequence(
-                driveToMiddle.resetOdometry(),
-                driveToMiddle.cmd(),
-                new Shoot(intake)
-            )
-        );
-        driveToMiddle.done();
-        return routine;
-    }
+    //     // When the routine begins, reset odometry and start the first trajectory (1)
+    //     routine.active().onTrue(
+    //         Commands.sequence(
+    //             driveToMiddle.resetOdometry(),
+    //             driveToMiddle.cmd(),
+    //             new Shoot(intake)
+    //         )
+    //     );
+    //     driveToMiddle.done();
+    //     return routine;
+    // }
     
 }
