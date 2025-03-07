@@ -218,7 +218,9 @@ public class SwerveJoystick extends Command {
           if (!isRobotOrientatedDrive) {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
           } else {
-            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+            boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+            int flip = isBlue ? -1 : 1;
+            chassisSpeeds = new ChassisSpeeds(flip*xSpeed, flip*ySpeed, turningSpeed);
           }
 
           // 5. Convert chassis speeds to individual module states
