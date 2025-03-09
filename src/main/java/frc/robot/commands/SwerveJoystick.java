@@ -75,8 +75,8 @@ public class SwerveJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if (DriverStation.getMatchType() != MatchType.None && DriverStation.getMatchTime() <= 20) {
-          j.setRumble(RumbleType.kBothRumble, 1);
+      if (DriverStation.getMatchType() != MatchType.None && DriverStation.getMatchTime() <= 30) {
+          j.setRumble(RumbleType.kBothRumble, 0.2);
       } else {
           j.setRumble(RumbleType.kBothRumble, 0);
       }

@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import choreo.Choreo;
 import choreo.auto.AutoChooser;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.TeleCommandGroup;
+import frc.robot.subsystems.CoralArm;
 // import frc.robot.commands.autonomous.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.Colors;
@@ -105,6 +108,9 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+ 
+    RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kCoast);
+
     RobotContainer.gameState = GameConstants.Robot;
     RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
@@ -122,6 +128,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autoStartTimer = Timer.getTimestamp();
+
+    RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
+
     
     // if (trajectory.isPresent()) {
     //     // Get the initial pose of the trajectory
@@ -184,6 +193,9 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
+    RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
+
     RobotContainer.swerveSubsystem.setDefaultCommand(
       new TeleCommandGroup(
         RobotContainer.robotState,

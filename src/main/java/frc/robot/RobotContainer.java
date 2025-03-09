@@ -11,11 +11,16 @@ import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.DeepClimb;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.CoralArmStates;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.RobotPositions;
 import frc.robot.Constants.USB;
 import frc.robot.commands.autonomous.Autos;
+import frc.robot.commands.autonomous.MoveArm;
+import frc.robot.commands.autonomous.MoveElevator;
+import frc.robot.commands.autonomous.Shoot;
 
 import java.util.List;
 
@@ -35,6 +40,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -127,25 +133,25 @@ public class RobotContainer {
         Trajectory blueRightTrajectory = TrajectoryGenerator.generateTrajectory(
           RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
           List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset),
+          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset),
           trajectoryConfig);
 
         Trajectory redRightTrajectory = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
             List.of(),
-            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset),
+            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset),
             trajectoryConfig);
 
         Trajectory redLeftTrajectory = TrajectoryGenerator.generateTrajectory(
           RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
           List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, -Constants.Measurements.branchOffset),
+          swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset),
           trajectoryConfig);
 
         Trajectory blueLeftTrajectory = TrajectoryGenerator.generateTrajectory(
           RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
           List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, -Constants.Measurements.branchOffset),
+          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset),
           trajectoryConfig);
       
         // 3. Define PID controllers for tracking trajectory
@@ -157,7 +163,7 @@ public class RobotContainer {
 
         // 4. Construct command to follow trajectory 
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                redCenter, //Swap auto trajectory here
+                blueLeftTrajectory, //Swap auto trajectory here
                 swerveSubsystem::getPose,
                 DriveConstants.kDriveKinematics,
                 xController,
@@ -171,7 +177,11 @@ public class RobotContainer {
                 // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
                 swerveControllerCommand,
                 new InstantCommand(() -> swerveSubsystem.stopModules()),
-                new InstantCommand(() -> elevatorSubsystem.setState(Constants.ElevatorStates.L4))
+                new ParallelCommandGroup(
+                  new MoveElevator(elevatorSubsystem, ElevatorStates.L4),
+                  new MoveArm(coralArmSubsystem, CoralArmStates.L4)
+                ),
+                new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1))
               );
   }
 }
