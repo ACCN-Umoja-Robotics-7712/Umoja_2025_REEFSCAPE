@@ -56,7 +56,7 @@ public final class Constants {
         public static final double kWheelBase = Units.inchesToMeters(22);
         // Distance between front and back wheels
 
-        public static final double teleSpeed = 0.7;
+        public static final double teleSpeed = 0.75;
 
         public static final double kRobotRadius = Math.sqrt(Math.pow(kTrackWidth, 2) + Math.pow(kWheelBase, 2)) / 2;
 
@@ -120,14 +120,14 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
 
-        public static final double kSlowButtonDriveModifier = 0.4;
+        public static final double kSlowButtonDriveModifier = 0.35;
         public static final double kSlowButtonTurnModifier = 0.3;
 
         public static final double kPDrive = 1;
         public static final double kPTurning = 0.6;
 
-        public static final double kPDrift = 0.055;
-        public static final double kIDrift = 0.0065; //Changed before test
+        public static final double kPDrift = 0.05;
+        public static final double kIDrift = 0.007; //Changed before test
     }
 
 
@@ -170,7 +170,7 @@ public final class Constants {
 
         public static final double kP = 0.1;
         
-        public static final double armPickupPosition = 60;
+        public static final double armPickupPosition = 57;
 
         public static final double shootPositionL1 = 0;
         public static final double shootPositionL23 = 0;
@@ -185,10 +185,10 @@ public final class Constants {
     public static final class CoralArmStates {
         
         public static final double NONE = -1;
-        public static final double PICKUP = 54;
+        public static final double PICKUP = 57;
         public static final double L1 = 8;
         public static final double L23 = 35;
-        public static final double L4 = 25.5; // TODO: Fix value
+        public static final double L4 = 30; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
         public static final double REMOVE = 50;
     }
@@ -206,8 +206,8 @@ public final class Constants {
         public static final int leftMotorID = 50;
         public static final int rightMotorID = 51;
 
-        public static final double elevatorTopLimit = 260.0; 
-        public static final double elevatorBottomLimit = 20;
+        public static final double elevatorTopLimit = 245.0; 
+        public static final double elevatorBottomLimit = 15.0;
 
         public static final double kP =  0.1;
         public static final double kI =  0.0; 
@@ -224,10 +224,10 @@ public final class Constants {
     public static final class ElevatorStates {
 
         public static final double NONE = -1;
-        public static final double L1 = 20;
-        public static final double L2 = 20;
+        public static final double L1 = 15;
+        public static final double L2 = 15;
         public static final double L3 = 105;
-        public static final double L4 = 250;
+        public static final double L4 = 241;
         public static final double CLIMB = 0;
     };
 
@@ -376,8 +376,8 @@ public final class Constants {
         // robot l/w 28.5 by 28.5 inches
         // bumper width ~= 3 inches
         // TODO: Need to add potential intake front distance
-        // public static final double robotCenterToFront = 0.45085; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
-        public static final double robotCenterToFront = 0.50085; // Test
+        public static final double robotCenterToFront = 0.45085; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
+        // public static final double robotCenterToFront = 0.50085; // Test
         public static final double robotSideOffset = 0.0254; // intake is 1 inch to the left so move robot 1 inch to the right
         public static final double branchOffset = 0.1651 + 0.05; // 6.5 inches
         public static final double coralStationDivotOffset = 0.2032; // 8 inches

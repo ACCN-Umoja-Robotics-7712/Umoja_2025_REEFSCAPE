@@ -11,10 +11,16 @@ import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.DeepClimb;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.CoralArmStates;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.GameConstants;
+import frc.robot.Constants.RobotPositions;
 import frc.robot.Constants.USB;
 import frc.robot.commands.autonomous.Autos;
+import frc.robot.commands.autonomous.MoveArm;
+import frc.robot.commands.autonomous.MoveElevator;
+import frc.robot.commands.autonomous.Shoot;
 
 import java.util.List;
 
@@ -29,9 +35,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -56,6 +65,8 @@ public class RobotContainer {
   public final static CoralIntake coralIntakeSubsystem = new CoralIntake();
   public final static DeepClimb deepClimbSubsystem = new DeepClimb();
   public final static RobotState robotState = new RobotState(swerveSubsystem, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
+  
+  private boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red); 
 
   public static final Autos auto = new Autos();
 
@@ -103,14 +114,46 @@ public class RobotContainer {
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                         .setKinematics(DriveConstants.kDriveKinematics);
-
+    
+        
+        
         // 2. Generate trajectory
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+        Trajectory redCenter = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
             List.of(),
-            Constants.RobotPositions.redCenterSafe,
+            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, -Constants.Measurements.branchOffset),
             trajectoryConfig);
 
+        Trajectory blueCenter = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, -Constants.Measurements.branchOffset),
+          trajectoryConfig);
+
+        Trajectory blueRightTrajectory = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset),
+          trajectoryConfig);
+
+        Trajectory redRightTrajectory = TrajectoryGenerator.generateTrajectory(
+            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+            List.of(),
+            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset),
+            trajectoryConfig);
+
+        Trajectory redLeftTrajectory = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset),
+          trajectoryConfig);
+
+        Trajectory blueLeftTrajectory = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset),
+          trajectoryConfig);
+      
         // 3. Define PID controllers for tracking trajectory
         PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
         PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
@@ -118,9 +161,9 @@ public class RobotContainer {
                 AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(0, 360);
 
-        // 4. Construct command to follow trajectory
+        // 4. Construct command to follow trajectory 
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                trajectory,
+                blueLeftTrajectory, //Swap auto trajectory here
                 swerveSubsystem::getPose,
                 DriveConstants.kDriveKinematics,
                 xController,
@@ -133,6 +176,12 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
                 swerveControllerCommand,
-                new InstantCommand(() -> swerveSubsystem.stopModules()));
+                new InstantCommand(() -> swerveSubsystem.stopModules()),
+                new ParallelCommandGroup(
+                  new MoveElevator(elevatorSubsystem, ElevatorStates.L4),
+                  new MoveArm(coralArmSubsystem, CoralArmStates.L4)
+                ),
+                new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1))
+              );
   }
 }

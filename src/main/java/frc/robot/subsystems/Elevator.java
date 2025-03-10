@@ -42,6 +42,7 @@ public class Elevator extends SubsystemBase {
         elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
         elevatorMotor2.configure(elevator2Config, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
+        elevatorPID.setTolerance(0.3);
     }
 
     public void runElevator(double percent){
@@ -70,6 +71,10 @@ public class Elevator extends SubsystemBase {
         return state;
     }
 
+    public boolean didReachState() {
+        return elevatorPID.atSetpoint();
+    }
+
     public boolean isDangerous(double percent) {
         boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
         boolean isMovingDown = percent < 0;
@@ -84,6 +89,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stop(){
+        state = ElevatorStates.NONE;
         elevatorMotor1.set(0);
     }
 

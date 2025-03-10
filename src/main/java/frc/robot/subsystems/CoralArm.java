@@ -22,10 +22,11 @@ public class CoralArm extends SubsystemBase {
     RelativeEncoder coralArmEncoder;  
     private double state = Constants.CoralArmStates.PICKUP;
     PIDController coralArmPID = new PIDController(Constants.CoralConstants.kP, 0, 0);
+    SparkMaxConfig coralArmConfig;
 
     public CoralArm(){
 
-        SparkMaxConfig coralArmConfig = new SparkMaxConfig();
+        coralArmConfig = new SparkMaxConfig();
         coralArmConfig.idleMode(IdleMode.kBrake);
         coralArmConfig.inverted(true);
 
@@ -38,6 +39,7 @@ public class CoralArm extends SubsystemBase {
         
         coralArmEncoder = coralArmMotor.getEncoder();
         
+        coralArmPID.setTolerance(0.3);
     }
     
     public void runArm(double percent){
@@ -47,6 +49,11 @@ public class CoralArm extends SubsystemBase {
         else {
             coralArmMotor.set(percent); // TODO: Add thing to not let it hit into robot if elevator is under a certain thing 
         }
+    }
+
+    public void setIdleMode(IdleMode mode) {
+        coralArmConfig.idleMode(mode);
+        // coralArmMotor.configure(coralArmConfig, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
     }
 
     public boolean isDangerous(double percent) {
@@ -78,6 +85,10 @@ public class CoralArm extends SubsystemBase {
     }
     public double getState(){
         return state;
+    }
+    
+    public boolean didReachState() {
+        return coralArmPID.atSetpoint();
     }
     
     @Override

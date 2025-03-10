@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import choreo.Choreo;
 import choreo.auto.AutoChooser;
@@ -25,7 +27,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.TeleCommandGroup;
-import frc.robot.commands.autonomous.Autos;
+import frc.robot.subsystems.CoralArm;
+// import frc.robot.commands.autonomous.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
@@ -62,16 +65,16 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
 
-    // Create the auto chooser
-    autoChooser = new AutoChooser();
+    // // Create the auto chooser
+    // autoChooser = new AutoChooser();
 
-    // Add options to the chooser
-    autoChooser.addCmd("simple auto", RobotContainer.auto::simpleAuto);
-    // autoChooser.addRoutine("auto2", RobotContainer.auto::auto2);
-    autoChooser.addRoutine("NONE", RobotContainer.auto::noneAuto);
+    // // Add options to the chooser
+    // autoChooser.addCmd("simple auto", RobotContainer.auto::simpleAuto);
+    // // autoChooser.addRoutine("auto2", RobotContainer.auto::auto2);
+    // autoChooser.addRoutine("NONE", RobotContainer.auto::noneAuto);
 
-    // Put the auto chooser on the dashboard
-    SmartDashboard.putData("AUTOS", autoChooser);
+    // // Put the auto chooser on the dashboard
+    // SmartDashboard.putData("AUTOS", autoChooser);
 
     // Schedule the selected auto during the autonomous period
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
@@ -105,6 +108,9 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+ 
+    RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kCoast);
+
     RobotContainer.gameState = GameConstants.Robot;
     RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
@@ -133,6 +139,9 @@ public class Robot extends TimedRobot {
     RobotContainer.coralIntakeSubsystem.runIntake(0);
 
     autoStartTimer = Timer.getTimestamp();
+
+    RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
+
     
     // if (trajectory.isPresent()) {
     //     // Get the initial pose of the trajectory
@@ -151,12 +160,12 @@ public class Robot extends TimedRobot {
     // Reset and start the timer when the autonomous period begins
     timer.restart();
     
-    // m_autonomousCommand = robotContainer.getAutonomousCommand();
+    m_autonomousCommand = robotContainer.getAutonomousCommand();
 
     // // schedule the autonomous command (example)
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
-    // }
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule(); // Today
+    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -168,14 +177,14 @@ public class Robot extends TimedRobot {
     SwerveModuleState[] autoState = DriveConstants.kDriveKinematics.toSwerveModuleStates(autoChassisSpeeds);
     SwerveModuleState[] stopState = DriveConstants.kDriveKinematics.toSwerveModuleStates(stopChassisSpeeds);
       
-      if (RobotContainer.gameState == GameConstants.Auto){
-        if (Math.abs(autoStartTimer - Timer.getTimestamp()) < 7){
-          RobotContainer.swerveSubsystem.setModuleStates(autoState);
-        }
-        else {
-          RobotContainer.swerveSubsystem.setModuleStates(stopState);
-        }
-      }
+      // if (RobotContainer.gameState == GameConstants.Auto){
+      //   if (Math.abs(autoStartTimer - Timer.getTimestamp()) < 7){
+      //     RobotContainer.swerveSubsystem.setModuleStates(autoState);
+      //   }
+      //   else {
+      //     RobotContainer.swerveSubsystem.setModuleStates(stopState);
+      //   }
+      // }
       
     // if (trajectory.isPresent()) {
     //   // 
@@ -194,6 +203,9 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
+    RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
+
     RobotContainer.swerveSubsystem.setDefaultCommand(
       new TeleCommandGroup(
         RobotContainer.robotState,
@@ -214,9 +226,9 @@ public class Robot extends TimedRobot {
     RobotContainer.coralArmSubsystem.runArm(0);
     RobotContainer.coralIntakeSubsystem.runIntake(0);
 
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.cancel();
-    // }
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
   }
 
   /** This function is called periodically during operator control. */
