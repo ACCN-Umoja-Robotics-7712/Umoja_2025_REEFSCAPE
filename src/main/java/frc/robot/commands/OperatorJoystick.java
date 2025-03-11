@@ -5,9 +5,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ElevatorStates;
+import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.USB;
 import frc.robot.Constants.XBoxConstants;
@@ -85,21 +88,23 @@ public class OperatorJoystick extends Command {
             coralIntakeSubsystem.runIntake(0);
         }
 
-        if (j.getRawButtonPressed(XBoxConstants.A)){
-            coralArmSubsystem.setState(Constants.CoralArmStates.PICKUP);
-            elevatorSubsystem.setState(Constants.ElevatorStates.L1);
-        }
-        if (j.getRawButtonPressed(XBoxConstants.X)){
-            elevatorSubsystem.setState(Constants.ElevatorStates.L2);
-            coralArmSubsystem.setState(Constants.CoralArmStates.L23);
-        }
-        if (j.getRawButtonPressed(XBoxConstants.B)){
-            elevatorSubsystem.setState(Constants.ElevatorStates.L3);
-            coralArmSubsystem.setState(Constants.CoralArmStates.L23);
-        }
-        if (j.getRawButtonPressed(XBoxConstants.Y)){
-            elevatorSubsystem.setState(Constants.ElevatorStates.L4);
-            coralArmSubsystem.setState(Constants.CoralArmStates.L4);
+        if (RobotContainer.gameState != GameConstants.Robot){
+            if (j.getRawButtonPressed(XBoxConstants.A)){
+                coralArmSubsystem.setState(Constants.CoralArmStates.PICKUP);
+                elevatorSubsystem.setState(Constants.ElevatorStates.L1);
+            }
+            if (j.getRawButtonPressed(XBoxConstants.X)){
+                elevatorSubsystem.setState(Constants.ElevatorStates.L2);
+                coralArmSubsystem.setState(Constants.CoralArmStates.L23);
+            }
+            if (j.getRawButtonPressed(XBoxConstants.B)){
+                elevatorSubsystem.setState(Constants.ElevatorStates.L3);
+                coralArmSubsystem.setState(Constants.CoralArmStates.L23);
+            }
+            if (j.getRawButtonPressed(XBoxConstants.Y)){
+                elevatorSubsystem.setState(Constants.ElevatorStates.L4);
+                coralArmSubsystem.setState(Constants.CoralArmStates.L4);
+            }
         }
 
         // automated control

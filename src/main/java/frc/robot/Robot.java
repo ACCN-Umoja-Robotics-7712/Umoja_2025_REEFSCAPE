@@ -4,24 +4,25 @@
 
 package frc.robot;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import choreo.Choreo;
-import choreo.auto.AutoChooser;
-import choreo.trajectory.SwerveSample;
-import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,6 +31,7 @@ import frc.robot.commands.TeleCommandGroup;
 import frc.robot.subsystems.CoralArm;
 // import frc.robot.commands.autonomous.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
@@ -41,17 +43,14 @@ import frc.robot.Constants.GameConstants;
  * project.
  */
 public class Robot extends TimedRobot {
-  
-  // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
-  private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("Simple Auto");
-
   private final Timer timer = new Timer();
 
   private Command m_autonomousCommand;
 
   private RobotContainer robotContainer;
   
-  private AutoChooser autoChooser;
+  // private AutoChooser autoChooser;
+  private SendableChooser<Trajectory> chooser;
 
   private double autoStartTimer = 0;
 
@@ -64,17 +63,68 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
+    
+    // 1. Create trajectory settings
+        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                        .setKinematics(DriveConstants.kDriveKinematics);
+    
+        
+        
+        // 2. Generate trajectory
+        Trajectory redCenter = TrajectoryGenerator.generateTrajectory(
+            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+            List.of(),
+            RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, -Constants.Measurements.branchOffset),
+            trajectoryConfig);
 
-    // // Create the auto chooser
-    // autoChooser = new AutoChooser();
+        Trajectory blueCenter = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, -Constants.Measurements.branchOffset),
+          trajectoryConfig);
 
-    // // Add options to the chooser
+        Trajectory blueRightTrajectory = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset),
+          trajectoryConfig);
+
+        Trajectory redRightTrajectory = TrajectoryGenerator.generateTrajectory(
+            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+            List.of(),
+            RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset),
+            trajectoryConfig);
+
+        Trajectory redLeftTrajectory = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset),
+          trajectoryConfig);
+
+        Trajectory blueLeftTrajectory = TrajectoryGenerator.generateTrajectory(
+          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+          List.of(),
+          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset),
+          trajectoryConfig);
+
+    // Create the auto chooser
+    chooser = new SendableChooser<Trajectory>();
+
+    // Add options to the chooser
+    chooser.addOption("Blue Left", blueRightTrajectory);
+    chooser.addOption("Blue Center", blueCenter);
+    chooser.addOption("Blue Right", blueLeftTrajectory);
+    chooser.addOption("Red Left", redRightTrajectory);
+    chooser.addOption("Red Center", redCenter);
+    chooser.addOption("Red Right", redLeftTrajectory);
     // autoChooser.addCmd("simple auto", RobotContainer.auto::simpleAuto);
     // // autoChooser.addRoutine("auto2", RobotContainer.auto::auto2);
     // autoChooser.addRoutine("NONE", RobotContainer.auto::noneAuto);
 
     // // Put the auto chooser on the dashboard
-    // SmartDashboard.putData("AUTOS", autoChooser);
+    SmartDashboard.putData("AUTOS", chooser);
 
     // Schedule the selected auto during the autonomous period
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
@@ -131,16 +181,6 @@ public class Robot extends TimedRobot {
 
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
 
-    
-    // if (trajectory.isPresent()) {
-    //     // Get the initial pose of the trajectory
-    //     Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
-
-    //     if (initialPose.isPresent()) {
-    //         // Reset odometry to the start of the trajectory
-
-    //     }
-    // }
     RobotContainer.swerveSubsystem.zeroHeading();
     // RobotContainer.swerveSubsystem.resetOdometry(RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition());
     //     }
@@ -149,7 +189,8 @@ public class Robot extends TimedRobot {
     // Reset and start the timer when the autonomous period begins
     timer.restart();
     
-    m_autonomousCommand = robotContainer.getAutonomousCommand();
+    Trajectory traj = chooser.getSelected();
+    m_autonomousCommand = robotContainer.getScoreCommand(traj);
 
     // // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -175,15 +216,6 @@ public class Robot extends TimedRobot {
       //     RobotContainer.swerveSubsystem.setModuleStates(stopState);
       //   }
       // }
-      
-    // if (trajectory.isPresent()) {
-    //   // 
-    //   Optional<SwerveSample> sample = trajectory.get().sampleAt(timer.get(), isRedAlliance());
-
-    //   if (sample.isPresent()) {
-    //     RobotContainer.swerveSubsystem.followTrajectory(sample.get());
-    //   }
-    // }
   }
 
   @Override

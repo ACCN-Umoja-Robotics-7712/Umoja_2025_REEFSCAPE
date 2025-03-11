@@ -53,7 +53,7 @@ public class CoralArm extends SubsystemBase {
 
     public void setIdleMode(IdleMode mode) {
         coralArmConfig.idleMode(mode);
-        // coralArmMotor.configure(coralArmConfig, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
+        coralArmMotor.configure(coralArmConfig, null, null);
     }
 
     public boolean isDangerous(double percent) {

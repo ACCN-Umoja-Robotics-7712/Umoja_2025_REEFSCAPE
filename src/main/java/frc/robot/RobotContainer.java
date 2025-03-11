@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -69,6 +70,11 @@ public class RobotContainer {
   private boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red); 
 
   public static final Autos auto = new Autos();
+  // 3. Define PID controllers for tracking trajectory
+  PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+  PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+  ProfiledPIDController thetaController = new ProfiledPIDController(
+          AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
 
   public static double wantedAngle = -1;
   public static int shouldAutoFixDrift = 1; // 1 = auto drift, 2 = auto align, 0 = none
@@ -79,6 +85,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    thetaController.enableContinuousInput(0, 360);
   }
 
   /**
@@ -100,88 +107,69 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getScoreCommand(Trajectory trajectory) {
+    // An example command will be run in autonomous
+
+    if (trajectory == null) {
+      return new InstantCommand();
+    }
+    
+    // 4. Construct command to follow trajectory 
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+      trajectory,
+      swerveSubsystem::getPose,
+      DriveConstants.kDriveKinematics,
+      xController,
+      yController,
+      thetaController,
+      swerveSubsystem::setModuleStates,
+      swerveSubsystem);
+
+    // 5. Add some init and wrap-up, and return everything
+    return new SequentialCommandGroup(
+      // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
+      swerveControllerCommand,
+      new InstantCommand(() -> swerveSubsystem.stopModules()),
+      new ParallelCommandGroup(
+        new MoveElevator(elevatorSubsystem, ElevatorStates.L4),
+        new MoveArm(coralArmSubsystem, CoralArmStates.L4)
+      ),
+      new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1))
+    );
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-  //  return new PathPlannerAuto("Test Auto");
-    // 1. Create trajectory settings
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(DriveConstants.kDriveKinematics);
-    
-        
-        
-        // 2. Generate trajectory
-        Trajectory redCenter = TrajectoryGenerator.generateTrajectory(
-            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-            List.of(),
-            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, -Constants.Measurements.branchOffset),
-            trajectoryConfig);
+  public Command getStationAuto(Trajectory trajectory) {
+    // 4. Construct command to follow trajectory 
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        trajectory,
+        swerveSubsystem::getPose,
+        DriveConstants.kDriveKinematics,
+        xController,
+        yController,
+        thetaController,
+        swerveSubsystem::setModuleStates,
+        swerveSubsystem);
 
-        Trajectory blueCenter = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, -Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory blueRightTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory redRightTrajectory = TrajectoryGenerator.generateTrajectory(
-            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-            List.of(),
-            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset),
-            trajectoryConfig);
-
-        Trajectory redLeftTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory blueLeftTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset),
-          trajectoryConfig);
-      
-        // 3. Define PID controllers for tracking trajectory
-        PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-        PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-        ProfiledPIDController thetaController = new ProfiledPIDController(
-                AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-        thetaController.enableContinuousInput(0, 360);
-
-        // 4. Construct command to follow trajectory 
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                blueLeftTrajectory, //Swap auto trajectory here
-                swerveSubsystem::getPose,
-                DriveConstants.kDriveKinematics,
-                xController,
-                yController,
-                thetaController,
-                swerveSubsystem::setModuleStates,
-                swerveSubsystem);
-
-        // 5. Add some init and wrap-up, and return everything
-        return new SequentialCommandGroup(
-                // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
-                swerveControllerCommand,
-                new InstantCommand(() -> swerveSubsystem.stopModules()),
-                new ParallelCommandGroup(
-                  new MoveElevator(elevatorSubsystem, ElevatorStates.L4),
-                  new MoveArm(coralArmSubsystem, CoralArmStates.L4)
-                ),
-                new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1))
-              );
+    // 5. Add some init and wrap-up, and return everything
+    return new SequentialCommandGroup(
+      new WaitCommand(1.0),
+      new ParallelCommandGroup(
+        new MoveElevator(elevatorSubsystem, ElevatorStates.L1),
+        new MoveArm(coralArmSubsystem, CoralArmStates.PICKUP)
+      ),
+      swerveControllerCommand,
+      new InstantCommand(() -> swerveSubsystem.stopModules()),
+      new InstantCommand(() -> coralIntakeSubsystem.runIntake(1))
+    );
   }
 }

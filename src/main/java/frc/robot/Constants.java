@@ -232,7 +232,7 @@ public final class Constants {
     };
 
     public static final class LEDConstants {
-        public static final int numLEDsPerStrip = 36;
+        public static final int numLEDsPerStrip = 24;
         public static final int numLEDsPerColor = 3;
     }
 
