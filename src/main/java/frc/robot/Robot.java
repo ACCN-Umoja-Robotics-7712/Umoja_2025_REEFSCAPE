@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
   private RobotContainer robotContainer;
   
   // private AutoChooser autoChooser;
-  private SendableChooser<Trajectory> chooser;
+  private SendableChooser<Pose2d> chooser;
 
   private double autoStartTimer = 0;
 
@@ -64,61 +64,26 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
     
-    // 1. Create trajectory settings
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(DriveConstants.kDriveKinematics);
-    
-        
-        
-        // 2. Generate trajectory
-        Trajectory redCenter = TrajectoryGenerator.generateTrajectory(
-            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-            List.of(),
-            RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, -Constants.Measurements.branchOffset),
-            trajectoryConfig);
-
-        Trajectory blueCenter = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, -Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory blueRightTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory redRightTrajectory = TrajectoryGenerator.generateTrajectory(
-            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-            List.of(),
-            RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset),
-            trajectoryConfig);
-
-        Trajectory redLeftTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory blueLeftTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset),
-          trajectoryConfig);
+    // 2. Generate trajectory
+    Pose2d blueLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset);
+    Pose2d blueCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, Constants.Measurements.branchOffset);
+    Pose2d blueRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset);
+    Pose2d redLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset);
+    Pose2d redCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, Constants.Measurements.branchOffset);
+    Pose2d redRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset);
 
     // Create the auto chooser
-    chooser = new SendableChooser<Trajectory>();
+    chooser = new SendableChooser<Pose2d>();
 
     // Add options to the chooser
-    chooser.addOption("Blue Left", blueRightTrajectory);
+    chooser.addOption("Blue Driver Left", blueRight);
     chooser.addOption("Blue Center", blueCenter);
-    chooser.addOption("Blue Right", blueLeftTrajectory);
-    chooser.addOption("Red Left", redRightTrajectory);
+    chooser.addOption("Blue Driver Right", blueLeft);
+    chooser.addOption("Red Driver Left", redRight);
     chooser.addOption("Red Center", redCenter);
-    chooser.addOption("Red Right", redLeftTrajectory);
+    chooser.addOption("Red Driver Right", redLeft);
+    chooser.setDefaultOption("Default", null);
+
     // autoChooser.addCmd("simple auto", RobotContainer.auto::simpleAuto);
     // // autoChooser.addRoutine("auto2", RobotContainer.auto::auto2);
     // autoChooser.addRoutine("NONE", RobotContainer.auto::noneAuto);
@@ -159,6 +124,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
  
+    RobotContainer.led.setUmojaColors();
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kCoast);
 
     RobotContainer.gameState = GameConstants.Robot;
@@ -189,8 +155,8 @@ public class Robot extends TimedRobot {
     // Reset and start the timer when the autonomous period begins
     timer.restart();
     
-    Trajectory traj = chooser.getSelected();
-    m_autonomousCommand = robotContainer.getScoreCommand(traj);
+    Pose2d endPose = chooser.getSelected();
+    m_autonomousCommand = robotContainer.getScoreCommand(endPose);
 
     // // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

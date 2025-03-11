@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.RobotState;
@@ -65,8 +66,14 @@ public class RobotContainer {
   public final static CoralArm coralArmSubsystem = new CoralArm();
   public final static CoralIntake coralIntakeSubsystem = new CoralIntake();
   public final static DeepClimb deepClimbSubsystem = new DeepClimb();
+  public final static LEDs led = new LEDs();
   public final static RobotState robotState = new RobotState(swerveSubsystem, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
-  
+  // 1. Create trajectory settings
+  TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+    AutoConstants.kMaxSpeedMetersPerSecond,
+    AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+            .setKinematics(DriveConstants.kDriveKinematics);
+
   private boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red); 
 
   public static final Autos auto = new Autos();
@@ -112,16 +119,22 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getScoreCommand(Trajectory trajectory) {
+  public Command getScoreCommand(Pose2d endPose) {
     // An example command will be run in autonomous
 
-    if (trajectory == null) {
+    if (endPose == null) {
       return new InstantCommand();
     }
     
+    Trajectory traj = TrajectoryGenerator.generateTrajectory(
+      RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+      List.of(),
+      endPose,
+      trajectoryConfig);
+
     // 4. Construct command to follow trajectory 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      trajectory,
+      traj,
       swerveSubsystem::getPose,
       DriveConstants.kDriveKinematics,
       xController,

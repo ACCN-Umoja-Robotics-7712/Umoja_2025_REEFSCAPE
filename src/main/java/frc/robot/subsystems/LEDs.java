@@ -10,7 +10,7 @@ import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.LEDConstants;
 
 public class LEDs extends SubsystemBase {
-    private AddressableLED LED = new AddressableLED(1);
+    private AddressableLED LED = new AddressableLED(0);
     private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(4*LEDConstants.numLEDsPerStrip);
     private Color currColor, lastColor;
     private int index, currentCount = 0;
