@@ -150,7 +150,8 @@ public class RobotContainer {
       new InstantCommand(() -> swerveSubsystem.stopModules()),
       new ParallelCommandGroup(
         new MoveElevator(elevatorSubsystem, ElevatorStates.L4),
-        new MoveArm(coralArmSubsystem, CoralArmStates.L4)
+        new MoveArm(coralArmSubsystem, CoralArmStates.L4),
+        new InstantCommand(() -> coralIntakeSubsystem.runIntake(1))
       ),
       new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1))
     );

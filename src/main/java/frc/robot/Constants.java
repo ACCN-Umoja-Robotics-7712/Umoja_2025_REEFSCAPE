@@ -185,10 +185,10 @@ public final class Constants {
     public static final class CoralArmStates {
         
         public static final double NONE = -1;
-        public static final double PICKUP = 57;
+        public static final double PICKUP = 60;
         public static final double L1 = 8;
-        public static final double L23 = 35;
-        public static final double L4 = 30; // TODO: Fix value
+        public static final double L23 = 36;
+        public static final double L4 = 36; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
         public static final double REMOVE = 50;
     }
