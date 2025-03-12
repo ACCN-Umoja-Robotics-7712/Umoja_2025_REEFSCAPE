@@ -379,7 +379,7 @@ public final class Constants {
         public static final double robotCenterToFront = 0.45085; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
         // public static final double robotCenterToFront = 0.50085; // Test
         public static final double robotSideOffset = 0.0254; // intake is 1 inch to the left so move robot 1 inch to the right
-        public static final double branchOffset = 0.1651; // 6.5 inches
+        public static final double branchOffset = 0.1651 ; // 6.5 inches
         public static final double coralStationDivotOffset = 0.2032; // 8 inches
     }
 
