@@ -9,9 +9,13 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Colors;
 import frc.robot.Constants.CoralIntakeStates;
+import frc.robot.Constants.GameConstants;
+import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,6 +31,8 @@ public class CoralIntake extends SubsystemBase {
     private double state = Constants.CoralIntakeStates.NONE;
     private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
     private double prevHasCoral = -1;
+    private Color intakeColor;
+    public boolean hasCoral, intakeState;
     
     public CoralIntake(){
 
@@ -86,6 +92,20 @@ public class CoralIntake extends SubsystemBase {
         SmartDashboard.putNumber("Coral diff", diff);
         SmartDashboard.putBoolean("hasCoral", hasCoralSensor());
         SmartDashboard.putNumber("hasCoral color sensor", colorSensor.getProximity());
+        
+        intakeState = hasCoralSensor();
+
+        if(hasCoral!=intakeState){
+            if(RobotContainer.gameState==GameConstants.TeleOp){
+                if(intakeState){
+                    intakeColor = Colors.green;
+                } else {
+                    intakeColor = Colors.white;
+                }                
+                RobotContainer.led.setLEDColor(intakeColor);
+            }
+            hasCoral = intakeState;
+        }
         // if (state == Constants.CoralIntakeStates.INTAKE) {
         //     runIntake(0.05); 
         // } else if (state == Constants.CoralIntakeStates.READY || state == Constants.CoralIntakeStates.NONE) {

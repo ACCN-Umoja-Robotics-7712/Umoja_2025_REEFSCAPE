@@ -152,7 +152,11 @@ public class RobotContainer {
         new MoveElevator(elevatorSubsystem, ElevatorStates.L4),
         new MoveArm(coralArmSubsystem, CoralArmStates.L4)
       ),
-      new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1))
+      new ParallelCommandGroup(
+        new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1)),
+        new WaitCommand(1.0)
+      ),
+      new InstantCommand(() -> coralIntakeSubsystem.runIntake(0))
     );
   }
 
@@ -175,7 +179,6 @@ public class RobotContainer {
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
-      new WaitCommand(1.0),
       new ParallelCommandGroup(
         new MoveElevator(elevatorSubsystem, ElevatorStates.L1),
         new MoveArm(coralArmSubsystem, CoralArmStates.PICKUP)
