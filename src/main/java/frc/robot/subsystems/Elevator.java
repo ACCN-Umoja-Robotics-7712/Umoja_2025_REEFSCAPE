@@ -8,12 +8,15 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.Colors;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorStates;
+import frc.robot.Constants.GameConstants;
 import edu.wpi.first.math.controller.PIDController;
 
 public class Elevator extends SubsystemBase {
@@ -21,6 +24,7 @@ public class Elevator extends SubsystemBase {
     private final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
 
     private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
+    private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(3);
     PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, 0);
 
     private double state = Constants.ElevatorStates.NONE;
@@ -107,5 +111,6 @@ public class Elevator extends SubsystemBase {
         }
         SmartDashboard.putNumber("Elevator State", state);
         SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
+        SmartDashboard.putNumber("ELEVATOR ABSOLUTE ENCODER", absoluteEncoder.get());
     }
 }

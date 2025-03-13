@@ -47,9 +47,11 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
 import frc.robot.LimelightHelpers;
@@ -281,31 +283,31 @@ public class SwerveSubsystem extends SubsystemBase {
         );
         
         String tagLeftLimelightName = Constants.LimelightConstants.tagName;
-        String tagRightLimelightName = Constants.LimelightConstants.gamePieceName;
-        // String tagRightLimelightName = Constants.LimelightConstants.driverName;
-        if (LimelightHelpers.getTargetCount(tagLeftLimelightName) != 0 && RobotContainer.gameState == GameConstants.Robot) {
-            Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
-            Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
-            Double targetX = targetPose3d.getX();
+        String tagRightLimelightName = Constants.LimelightConstants.driverName;
+        boolean hasTargets = LimelightHelpers.getTargetCount(tagLeftLimelightName) != 0;
+        boolean isDisabled = RobotContainer.gameState == GameConstants.Robot;
+        boolean isNonGameTeleop = RobotContainer.gameState == GameConstants.TeleOp && DriverStation.getMatchType() == MatchType.None;
+        if (hasTargets && (isDisabled || isNonGameTeleop)) {
+            RobotContainer.led.setLEDColor(Colors.green);
+            // Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
+            // Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
+            // Double targetX = targetPose3d.getX();
     
-            SmartDashboard.putNumber("target yaw", targetYaw);
-            SmartDashboard.putNumber("target x", targetX);
+            // SmartDashboard.putNumber("target yaw", targetYaw);
+            // SmartDashboard.putNumber("target x", targetX);
 
-            // lined up angle perfectly (turn off limelight)
-            // TODO: Move this number to constants file
-            Boolean alignedYaw = targetYaw <= 0.25 || (targetYaw >= 59.75 && targetYaw <= 60.25);
-            // Boolean alignedX = Math.abs(targetX) <= 0.1;
-            Boolean alignedX = true;
-            if (alignedX && alignedYaw){
-                // TODO: Replace with LEDs ready for game
-                LimelightHelpers.setLEDMode_ForceOff(tagRightLimelightName);
-            } else {
-                // TODO: Replace with LEDs not game ready
-                LimelightHelpers.setLEDMode_ForceOn(tagRightLimelightName);
-            }
+            // // lined up angle perfectly (turn off limelight)
+            // // TODO: Move this number to constants file
+            // Boolean alignedYaw = targetYaw <= 0.25 || (targetYaw >= 59.75 && targetYaw <= 60.25);
+            // // Boolean alignedX = Math.abs(targetX) <= 0.1;
+            // Boolean alignedX = true;
+            // if (alignedX && alignedYaw){
+            //     RobotContainer.led.setLEDColor(Colors.green);
+            // } else {
+            //     RobotContainer.led.setLEDColor(Colors.red);
+            // }
         } else {
-            // TODO: Replace with LEDs not game ready
-            LimelightHelpers.setLEDMode_ForceOn(tagRightLimelightName);
+            RobotContainer.led.setLEDColor(Colors.red);
         }
        
         LimelightHelpers.SetRobotOrientation(tagLeftLimelightName, poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);

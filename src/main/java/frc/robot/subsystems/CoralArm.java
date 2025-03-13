@@ -8,7 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
@@ -20,6 +20,7 @@ public class CoralArm extends SubsystemBase {
 
     SparkMax coralArmMotor;
     RelativeEncoder coralArmEncoder;  
+    private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(5);
     private double state = Constants.CoralArmStates.PICKUP;
     PIDController coralArmPID = new PIDController(Constants.CoralConstants.kP, 0, 0);
     SparkMaxConfig coralArmConfig;
@@ -96,6 +97,7 @@ public class CoralArm extends SubsystemBase {
         // This method will be called once per scheduler run
         // SmartDashboard.putNumber("Intake Pos", intakeEncoder.getPosition());
         SmartDashboard.putNumber("Coral Arm Position", coralArmEncoder.getPosition());
+        SmartDashboard.putNumber("Coral Arm ABSOLUTE Position", absoluteEncoder.get());
         SmartDashboard.putNumber("Coral Arm State", state);
         
         if (state != Constants.CoralArmStates.NONE) {

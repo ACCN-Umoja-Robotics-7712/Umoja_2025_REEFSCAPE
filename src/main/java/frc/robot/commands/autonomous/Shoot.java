@@ -28,8 +28,7 @@ public class Shoot extends Command{
 
     @Override
     public void end(boolean isInterrupted){
-        System.out.println("SHOOT END");
-        // intake.runIntake(0);
+        intake.runIntake(0);
     }
 
     @Override
