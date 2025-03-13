@@ -244,19 +244,19 @@ public final class Constants {
 
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 8;
+        public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 6;
         public static final double kMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
 
         // public static final double kPXController = 2;
         // public static final double kPYController = 2;
-        public static final double kPXController = 2;
-        public static final double kPYController = 2;
-        public static final double kPThetaController = 5;
+        public static final double kPXController = 1.5;
+        public static final double kPYController = 1.5;
+        public static final double kPThetaController = 1;
 
-        public static final double kIXController = 0.02; //0.06
-        public static final double kIYController = 0.02; // 0.06
+        public static final double kIXController = 0.1; //0.06
+        public static final double kIYController = 0.1; // 0.06
         public static final double kIThetaController = 0.05;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
@@ -376,10 +376,10 @@ public final class Constants {
         // robot l/w 28.5 by 28.5 inches
         // bumper width ~= 3 inches
         // TODO: Need to add potential intake front distance
-        public static final double robotCenterToFront = 0.45085; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
+        public static final double robotCenterToFront = 0.45085 + 0.03; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
         // public static final double robotCenterToFront = 0.50085; // Test
         public static final double robotSideOffset = 0.0254; // intake is 1 inch to the left so move robot 1 inch to the right
-        public static final double branchOffset = 0.1651 ; // 6.5 inches
+        public static final double branchOffset = 0.1651; // 6.5 inches
         public static final double coralStationDivotOffset = 0.2032; // 8 inches
     }
 

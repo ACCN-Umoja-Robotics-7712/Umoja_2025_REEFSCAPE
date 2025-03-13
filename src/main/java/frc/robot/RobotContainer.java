@@ -78,8 +78,8 @@ public class RobotContainer {
 
   public static final Autos auto = new Autos();
   // 3. Define PID controllers for tracking trajectory
-  PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-  PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+  PIDController xController = new PIDController(AutoConstants.kPXController, AutoConstants.kIXController, 0);
+  PIDController yController = new PIDController(AutoConstants.kPYController, AutoConstants.kIYController, 0);
   ProfiledPIDController thetaController = new ProfiledPIDController(
           AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
 
@@ -119,6 +119,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
+
   public Command getScoreCommand(Pose2d endPose) {
     // An example command will be run in autonomous
 

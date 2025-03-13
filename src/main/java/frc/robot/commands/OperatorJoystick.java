@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.CoralArmStates;
 import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.OIConstants;
@@ -104,6 +105,13 @@ public class OperatorJoystick extends Command {
             if (j.getRawButtonPressed(XBoxConstants.Y)){
                 elevatorSubsystem.setState(Constants.ElevatorStates.L4);
                 coralArmSubsystem.setState(Constants.CoralArmStates.L4);
+            }
+        } else {
+            if (elevatorSubsystem.getState() != ElevatorStates.NONE) {
+                elevatorSubsystem.setState(ElevatorStates.NONE);
+            }
+            if (coralArmSubsystem.getState() != CoralArmStates.NONE) {
+                coralArmSubsystem.setState(CoralArmStates.NONE);
             }
         }
 
