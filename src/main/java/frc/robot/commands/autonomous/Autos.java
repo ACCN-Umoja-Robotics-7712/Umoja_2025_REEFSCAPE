@@ -55,14 +55,22 @@ public class Autos {
     ProfiledPIDController thetaController = new ProfiledPIDController(
             AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0, AutoConstants.kThetaControllerConstraints);
 
-    Pose2d blueRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset);
+    Pose2d blueReefRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset);
     Pose2d blueCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, Constants.Measurements.branchOffset);
-    Pose2d blueRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset);
-    Pose2d redRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset);
+    Pose2d blueReefRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset);
+    Pose2d redReefRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset);
     Pose2d redCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, Constants.Measurements.branchOffset);
-    Pose2d redRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset);
+    Pose2d redReefRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset);
     
-    Pose2d blueStation = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset);
+    Pose2d blueReefDriverLeftLeftBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, Constants.Measurements.branchOffset);
+    Pose2d blueReefDriverLeftRightBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, -Constants.Measurements.branchOffset);
+    Pose2d blueReefDriverRightLeftBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefRight17, Constants.Measurements.branchOffset);
+    Pose2d blueReefDriverRightRightBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefRight17, -Constants.Measurements.branchOffset);
+
+    Pose2d redReefDriverLeftLeftBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, Constants.Measurements.branchOffset);
+    Pose2d redReefDriverLeftRightBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, -Constants.Measurements.branchOffset);
+    Pose2d redReefDriverRightLeftBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, Constants.Measurements.branchOffset);
+    Pose2d redReefDriverRightRightBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, -Constants.Measurements.branchOffset);
 
     Pose2d blueStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, 3*Constants.Measurements.coralStationDivotOffset);
     Pose2d blueStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13,  -3*Constants.Measurements.coralStationDivotOffset);
@@ -114,11 +122,11 @@ public class Autos {
 
     public Command getBlueDriverLeft() {
         return new SequentialCommandGroup(
-            getScoreCommand(blueRobotRight),
+            getScoreCommand(blueReefRobotRight),
             getStationCommand(blueStationRobotRight),
-            getScoreCommand(blueRobotRight),
+            getScoreCommand(blueReefDriverLeftLeftBranch),
             getStationCommand(blueStationRobotRight),
-            getScoreCommand(blueRobotRight)
+            getScoreCommand(blueReefDriverLeftRightBranch)
         );
     }
 
@@ -128,21 +136,21 @@ public class Autos {
 
     public Command getBlueDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(blueRobotLeft),
+            getScoreCommand(blueReefRobotLeft),
             getStationCommand(blueStationRobotLeft),
-            getScoreCommand(blueRobotLeft),
+            getScoreCommand(blueReefDriverRightLeftBranch),
             getStationCommand(blueStationRobotLeft),
-            getScoreCommand(blueRobotLeft)
+            getScoreCommand(blueReefDriverRightRightBranch)
         );
     }
 
     public Command getRedDriverLeft() {
         return new SequentialCommandGroup(
-            getScoreCommand(redRobotRight),
+            getScoreCommand(redReefRobotRight),
             getStationCommand(redStationRobotRight),
-            getScoreCommand(redRobotRight),
+            getScoreCommand(redReefDriverLeftLeftBranch),
             getStationCommand(redStationRobotRight),
-            getScoreCommand(redRobotRight)
+            getScoreCommand(redReefDriverLeftRightBranch)
         );
     }
 
@@ -152,11 +160,11 @@ public class Autos {
 
     public Command getRedDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(redRobotLeft),
+            getScoreCommand(redReefRobotLeft),
             getStationCommand(redStationRobotLeft),
-            getScoreCommand(redRobotLeft),
+            getScoreCommand(redReefDriverRightLeftBranch),
             getStationCommand(redStationRobotLeft),
-            getScoreCommand(redRobotLeft)
+            getScoreCommand(redReefDriverRightRightBranch)
         );
     }
 
