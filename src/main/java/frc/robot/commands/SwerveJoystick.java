@@ -119,11 +119,17 @@ public class SwerveJoystick extends Command {
         Pose2d pose = swerveSubsystem.getPose();
 
         // Generate the next speeds for the robot
-        ChassisSpeeds speeds = new ChassisSpeeds(
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             swerveSubsystem.xController.calculate(pose.getX(), RobotContainer.goalPose.getX()),
             swerveSubsystem.yController.calculate(pose.getY(), RobotContainer.goalPose.getY()),
-            swerveSubsystem.thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(RobotContainer.goalPose.getRotation().getDegrees()))
+            swerveSubsystem.thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(RobotContainer.goalPose.getRotation().getDegrees())),
+            swerveSubsystem.getRotation2d()
         );
+        // ChassisSpeeds speeds = new ChassisSpeeds(
+        //     swerveSubsystem.xController.calculate(pose.getX(), RobotContainer.goalPose.getX()),
+        //     swerveSubsystem.yController.calculate(pose.getY(), RobotContainer.goalPose.getY()),
+        //     swerveSubsystem.thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(RobotContainer.goalPose.getRotation().getDegrees()))
+        // );
 
         // Apply the generated speeds
         swerveSubsystem.setModuleStatesFromSpeeds(speeds);
