@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -105,19 +106,33 @@ public class SwerveJoystick extends Command {
         // }
         // double curTime = swerveSubsystem.timer.get();
         // var desiredState = RobotContainer.currentTrajectory.sample(curTime);
-        // var desiredRotation = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1).poseMeters.getRotation();
-        var desiredState = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1);
-        var desiredRotation = desiredState.poseMeters.getRotation();
-        SmartDashboard.putNumber("ROTATION", desiredRotation.getDegrees());
-        var targetChassisSpeeds =
-            swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), desiredState, desiredRotation);
-        var targetModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetChassisSpeeds);
 
-        swerveSubsystem.setModuleStates(targetModuleStates);
+        // var desiredRotation = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1).poseMeters.getRotation();
+        // var desiredState = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1);
+        // var desiredRotation = desiredState.poseMeters.getRotation();
+        // SmartDashboard.putNumber("ROTATION", desiredRotation.getDegrees());
+        // var targetChassisSpeeds =
+        //     swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), desiredState, desiredRotation);
+        // var targetModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetChassisSpeeds);
+
+        // Get the current pose of the robot
+        Pose2d pose = swerveSubsystem.getPose();
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            swerveSubsystem.xController.calculate(pose.getX(), RobotContainer.goalPose.getX()),
+            swerveSubsystem.yController.calculate(pose.getY(), RobotContainer.goalPose.getY()),
+            swerveSubsystem.thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(RobotContainer.goalPose.getRotation().getDegrees()))
+        );
+
+        // Apply the generated speeds
+        swerveSubsystem.setModuleStatesFromSpeeds(speeds);
+        // swerveSubsystem.setModuleStates(targetModuleStates);
         RobotContainer.wantedAngle = -1;
         return;
       } else {
         RobotContainer.currentTrajectory = null;
+        RobotContainer.goalPose = null;
         // swerveSubsystem.timer.stop();
       }
       

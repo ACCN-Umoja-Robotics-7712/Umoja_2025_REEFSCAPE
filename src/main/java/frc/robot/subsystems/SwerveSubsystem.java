@@ -95,9 +95,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
     private TrajectoryConfig trajectoryConfig;
-    private PIDController xController;
-    private PIDController yController;
-    private ProfiledPIDController thetaController;
+    public PIDController xController;
+    public PIDController yController;
+    public ProfiledPIDController thetaController;
     public HolonomicDriveController holonomicDriveController;
     public final Timer timer = new Timer();
     
@@ -384,6 +384,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // offset is -1 for left, 1 for right, and 0 for center
     public Trajectory getNearestTagTrajectory(boolean faceReef, boolean faceProcessor, int offset) {
         Pose2d nearestPoint = nearestPoint(faceReef, faceProcessor, offset);
+        RobotContainer.goalPose = nearestPoint;
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
             List.of(),
