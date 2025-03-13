@@ -50,7 +50,6 @@ public class Robot extends TimedRobot {
   private RobotContainer robotContainer;
   
   // private AutoChooser autoChooser;
-  private SendableChooser<Pose2d> chooser;
 
   private double autoStartTimer = 0;
 
@@ -65,31 +64,17 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
     
     // 2. Generate trajectory
-    Pose2d blueLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset);
+    Pose2d blueRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset);
     Pose2d blueCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, Constants.Measurements.branchOffset);
-    Pose2d blueRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset);
-    Pose2d redLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset);
+    Pose2d blueRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset);
+    Pose2d redRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset);
     Pose2d redCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, Constants.Measurements.branchOffset);
-    Pose2d redRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset);
-
-    // Create the auto chooser
-    chooser = new SendableChooser<Pose2d>();
-
-    // Add options to the chooser
-    chooser.addOption("Blue Driver Left", blueRight);
-    chooser.addOption("Blue Center", blueCenter);
-    chooser.addOption("Blue Driver Right", blueLeft);
-    chooser.addOption("Red Driver Left", redRight);
-    chooser.addOption("Red Center", redCenter);
-    chooser.addOption("Red Driver Right", redLeft);
-    chooser.setDefaultOption("Default", null);
+    Pose2d redRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset);
 
     // autoChooser.addCmd("simple auto", RobotContainer.auto::simpleAuto);
     // // autoChooser.addRoutine("auto2", RobotContainer.auto::auto2);
     // autoChooser.addRoutine("NONE", RobotContainer.auto::noneAuto);
 
-    // // Put the auto chooser on the dashboard
-    SmartDashboard.putData("AUTOS", chooser);
 
     // Schedule the selected auto during the autonomous period
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
@@ -155,8 +140,7 @@ public class Robot extends TimedRobot {
     // Reset and start the timer when the autonomous period begins
     timer.restart();
     
-    Pose2d endPose = chooser.getSelected();
-    m_autonomousCommand = robotContainer.getScoreCommand(endPose);
+    m_autonomousCommand = RobotContainer.auto.getAuto();
 
     // // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
