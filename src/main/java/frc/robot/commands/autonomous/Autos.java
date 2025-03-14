@@ -61,6 +61,7 @@ public class Autos {
     Pose2d redReefRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset);
     Pose2d redCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, Constants.Measurements.branchOffset);
     Pose2d redReefRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset);
+    Pose2d practiceCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, Constants.Measurements.branchOffset);
     
     Pose2d blueReefDriverLeftLeftBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, Constants.Measurements.branchOffset);
     Pose2d blueReefDriverLeftRightBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, -Constants.Measurements.branchOffset);
@@ -72,16 +73,20 @@ public class Autos {
     Pose2d redReefDriverRightLeftBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, Constants.Measurements.branchOffset);
     Pose2d redReefDriverRightRightBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, -Constants.Measurements.branchOffset);
 
-    Pose2d blueStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, 3*Constants.Measurements.coralStationDivotOffset);
-    Pose2d blueStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13,  -3*Constants.Measurements.coralStationDivotOffset);
-    Pose2d redStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupRight2,  3*Constants.Measurements.coralStationDivotOffset);
-    Pose2d redStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupLeft1,  -3*Constants.Measurements.coralStationDivotOffset);
+    Pose2d blueStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, 0*Constants.Measurements.coralStationDivotOffset);
+    Pose2d blueStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13,  -0*Constants.Measurements.coralStationDivotOffset);
+    Pose2d redStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupRight2,  0*Constants.Measurements.coralStationDivotOffset);
+    Pose2d redStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupLeft1,  -0
+    *Constants.Measurements.coralStationDivotOffset);
     
     public enum AUTO {
         BLUE_DRIVER_LEFT, BLUE_CENTER, BLUE_DRIVER_RIGHT,
-        RED_DRIVER_LEFT, RED_CENTER, RED_DRIVER_RIGHT
+        RED_DRIVER_LEFT, RED_CENTER, RED_DRIVER_RIGHT,
+        PRACTICE_FIELD
     }
     private SendableChooser<AUTO> chooser;
+    StructPublisher<Pose2d> reefPosePublisher = NetworkTableInstance.getDefault().getStructTopic("Auto Reef Pose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> stationPosePublisher = NetworkTableInstance.getDefault().getStructTopic("Auto Station Pose", Pose2d.struct).publish();
     
     public Autos(){
         // Create the auto chooser
@@ -94,6 +99,7 @@ public class Autos {
         chooser.addOption("Red Driver Left", AUTO.RED_DRIVER_LEFT);
         chooser.addOption("Red Center", AUTO.RED_CENTER);
         chooser.addOption("Red Driver Right", AUTO.RED_DRIVER_RIGHT);
+        chooser.addOption("Practice field center", AUTO.PRACTICE_FIELD);
         chooser.setDefaultOption("Default", null);
         // // Put the auto chooser on the dashboard
         SmartDashboard.putData("AUTOS", chooser);
@@ -116,55 +122,60 @@ public class Autos {
             case RED_DRIVER_LEFT -> getRedDriverLeft();
             case RED_CENTER -> getRedCenter();
             case RED_DRIVER_RIGHT -> getRedDriverRight();
+            case PRACTICE_FIELD -> getPracticeField();
             default -> new InstantCommand();
         };
     }
 
     public Command getBlueDriverLeft() {
         return new SequentialCommandGroup(
-            getScoreCommand(blueReefRobotRight),
-            getStationCommand(blueStationRobotRight),
-            getScoreCommand(blueReefDriverLeftLeftBranch),
-            getStationCommand(blueStationRobotRight),
-            getScoreCommand(blueReefDriverLeftRightBranch)
+            getScoreCommand(swerveSubsystem.getPose(), blueReefRobotRight, AutoConstants.firstWait),
+            getStationCommand(blueReefRobotRight, blueStationRobotRight),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueStationRobotRight, 0, -1, 0), blueReefDriverLeftLeftBranch, AutoConstants.stationWait),
+            getStationCommand(blueReefDriverLeftLeftBranch, blueStationRobotRight),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueStationRobotRight, 0, -1, 0), blueReefDriverLeftRightBranch, AutoConstants.stationWait)
         );
     }
 
+    public Command getPracticeField() {
+        return getScoreCommand(swerveSubsystem.getPose(), practiceCenter, AutoConstants.firstWait);
+    }
+
     public Command getBlueCenter() {
-        return getScoreCommand(blueCenter);
+        return getScoreCommand(swerveSubsystem.getPose(), blueCenter, AutoConstants.firstWait);
     }
 
     public Command getBlueDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(blueReefRobotLeft),
-            getStationCommand(blueStationRobotLeft),
-            getScoreCommand(blueReefDriverRightLeftBranch),
-            getStationCommand(blueStationRobotLeft),
-            getScoreCommand(blueReefDriverRightRightBranch)
+            getScoreCommand(swerveSubsystem.getPose(), blueReefRobotLeft, AutoConstants.firstWait),
+            getStationCommand(blueReefRobotLeft, blueStationRobotLeft),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueStationRobotLeft, 0, -1, 0), blueReefDriverRightLeftBranch, AutoConstants.stationWait),
+            getStationCommand(blueReefDriverRightLeftBranch, blueStationRobotLeft),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueStationRobotLeft, 0, -1, 0), blueReefDriverRightRightBranch, AutoConstants.stationWait)
         );
     }
 
     public Command getRedDriverLeft() {
         return new SequentialCommandGroup(
-            getScoreCommand(redReefRobotRight),
-            getStationCommand(redStationRobotRight),
-            getScoreCommand(redReefDriverLeftLeftBranch),
-            getStationCommand(redStationRobotRight),
-            getScoreCommand(redReefDriverLeftRightBranch)
+            getScoreCommand(swerveSubsystem.getPose(), redReefRobotRight, AutoConstants.firstWait),
+            getStationCommand(redReefRobotRight, redStationRobotRight),
+            getScoreCommand(swerveSubsystem.offsetPoint(redStationRobotRight, 0, -1, 0), redReefDriverLeftLeftBranch, AutoConstants.stationWait),
+            getStationCommand(redReefDriverLeftLeftBranch, redStationRobotRight),
+            getScoreCommand(swerveSubsystem.offsetPoint(redStationRobotRight, 0, -1, 0), redReefDriverLeftRightBranch, AutoConstants.stationWait)
         );
     }
 
     public Command getRedCenter() {
-        return getScoreCommand(redCenter);
+        return getScoreCommand(swerveSubsystem.getPose(), redCenter, AutoConstants.firstWait);
     }
 
     public Command getRedDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(redReefRobotLeft),
-            getStationCommand(redStationRobotLeft),
-            getScoreCommand(redReefDriverRightLeftBranch),
-            getStationCommand(redStationRobotLeft),
-            getScoreCommand(redReefDriverRightRightBranch)
+            getScoreCommand(swerveSubsystem.getPose(), redReefRobotLeft, AutoConstants.firstWait),
+            getStationCommand(redReefRobotLeft, redStationRobotLeft),
+            getScoreCommand(swerveSubsystem.offsetPoint(redStationRobotLeft, 0, -1, 0), redReefDriverRightLeftBranch, AutoConstants.stationWait),
+            getStationCommand(redReefDriverRightLeftBranch, redStationRobotLeft),
+            getScoreCommand(swerveSubsystem.offsetPoint(redStationRobotLeft, 0, -1, 0), redReefDriverRightRightBranch, AutoConstants.stationWait)
         );
     }
 
@@ -173,15 +184,16 @@ public class Autos {
    *
    * @return the command to run in autonomous
    */
-  public Command getScoreCommand(Pose2d endPose) {
+  public Command getScoreCommand(Pose2d startPose, Pose2d endPose, double waitTime) {
     // An example command will be run in autonomous
 
     if (endPose == null) {
       return new InstantCommand();
     }
+    reefPosePublisher.set(endPose);
     
     Trajectory traj = TrajectoryGenerator.generateTrajectory(
-      RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+      startPose,
       List.of(),
       endPose,
       trajectoryConfig);
@@ -206,7 +218,7 @@ public class Autos {
                 new InstantCommand(() -> swerveSubsystem.stopModules())
             ),
             new SequentialCommandGroup(
-                new WaitCommand(1.0),
+                new WaitCommand(waitTime),
                 new ParallelCommandGroup(
                     new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L4),
                     new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4)
@@ -227,11 +239,17 @@ public class Autos {
    *
    * @return the command to run in autonomous
    */
-  public Command getStationCommand(Pose2d endPose) {
+  public Command getStationCommand(Pose2d startPose, Pose2d endPose) {
+
+    if (endPose == null) {
+      return new InstantCommand();
+    }
+    stationPosePublisher.set(endPose);
+
     Trajectory traj = TrajectoryGenerator.generateTrajectory(
-      RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
+      swerveSubsystem.offsetPoint(startPose, 0, -1, 0),
       List.of(),
-      endPose,
+      swerveSubsystem.offsetPoint(endPose, 0, 0.5, 0),
       trajectoryConfig);
 
     // 4. Construct command to follow trajectory 
@@ -254,7 +272,7 @@ public class Autos {
                 new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.PICKUP)
             ),
             new SequentialCommandGroup(
-                new WaitCommand(1.5),
+                new WaitCommand(1.1),
                 new ParallelCommandGroup(
                     new Intake(RobotContainer.coralIntakeSubsystem),
                     swerveControllerCommand

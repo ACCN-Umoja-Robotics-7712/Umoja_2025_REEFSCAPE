@@ -185,7 +185,7 @@ public final class Constants {
     public static final class CoralArmStates {
         
         public static final double NONE = -1;
-        public static final double PICKUP = 60;
+        public static final double PICKUP = 58.75;
         public static final double L1 = 8;
         public static final double L23 = 36;
         public static final double L4 = 36; // TODO: Fix value
@@ -244,25 +244,28 @@ public final class Constants {
 
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 6;
-        public static final double kMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
+        public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
+        public static final double kMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
 
         // public static final double kPXController = 2;
         // public static final double kPYController = 2;
-        public static final double kPXController = 1.5;
-        public static final double kPYController = 1.5;
-        public static final double kPThetaController = 1;
+        public static final double kPXController = 5;
+        public static final double kPYController = 5;
+        public static final double kPThetaController = 2.5;
 
-        public static final double kIXController = 0.1; //0.06
-        public static final double kIYController = 0.1; // 0.06
-        public static final double kIThetaController = 0.05;
+        public static final double kIXController = 0.35; //0.06
+        public static final double kIYController = 0.35; // 0.06
+        public static final double kIThetaController = 0.2;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond,
                 kMaxAngularAccelerationRadiansPerSecondSquared);
+
+        public static final double firstWait = 1.0;
+        public static final double stationWait = 3.0;
     }
 
     public static final class XBoxConstants {
@@ -379,7 +382,7 @@ public final class Constants {
         public static final double robotCenterToFront = 0.45085 + 0.03; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
         // public static final double robotCenterToFront = 0.50085; // Test
         public static final double robotSideOffset = 0.0254; // intake is 1 inch to the left so move robot 1 inch to the right
-        public static final double branchOffset = 0.1651; // 6.5 inches
+        public static final double branchOffset = 0.1651 - 0.06; // 6.5 inches
         public static final double coralStationDivotOffset = 0.2032; // 8 inches
     }
 
