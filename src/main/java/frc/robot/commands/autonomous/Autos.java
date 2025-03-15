@@ -2,11 +2,16 @@ package frc.robot.commands.autonomous;
 
 import java.io.ObjectInputFilter.Config;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import choreo.Choreo;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
+import choreo.trajectory.TrajectorySample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -198,7 +203,7 @@ public class Autos {
       endPose,
       trajectoryConfig);
 
-    // 4. Construct command to follow trajectory 
+    // 4. Construct command to follow trajectory
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
       traj,
       swerveSubsystem::getPose,
@@ -247,7 +252,7 @@ public class Autos {
     stationPosePublisher.set(endPose);
 
     Trajectory traj = TrajectoryGenerator.generateTrajectory(
-      swerveSubsystem.offsetPoint(startPose, 0, -1, 0),
+      swerveSubsystem.offsetPoint(startPose, 0, -2, 0),
       List.of(),
       swerveSubsystem.offsetPoint(endPose, 0, 0.5, 0),
       trajectoryConfig);
