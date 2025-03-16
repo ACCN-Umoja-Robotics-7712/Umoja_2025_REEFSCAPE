@@ -227,9 +227,11 @@ public class Robot extends TimedRobot {
         RobotContainer.driverController,
         RobotContainer.operatorController,
         RobotContainer.coralArmSubsystem,
-        RobotContainer.coralIntakeSubsystem
+        RobotContainer.coralIntakeSubsystem,
+        RobotContainer.elevatorSubsystem
       )
     );
+    
     // RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
     // RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);

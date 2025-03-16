@@ -15,21 +15,24 @@ import frc.robot.Constants.RobotStates;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.DeepClimb;
+import frc.robot.subsystems.Elevator;
 
 public class OperatorJoystick extends Command {
     //Defining subsystems
     CoralArm coralArmSubsystem;
     CoralIntake coralIntakeSubsystem;
+    Elevator elevatorSubsystem;
 
     Joystick j = new Joystick(USB.OPERATOR_CONTROLLER);
 
-    public OperatorJoystick(CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem, Joystick j){
+    public OperatorJoystick(CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem, Elevator elevatorSubsystem, Joystick j){
         this.coralArmSubsystem = coralArmSubsystem;
         this.coralIntakeSubsystem = coralIntakeSubsystem;
+        this.elevatorSubsystem = elevatorSubsystem;
 
 
         //Add subsystem dependencies
-        addRequirements(coralArmSubsystem, coralIntakeSubsystem);
+        addRequirements(coralArmSubsystem, coralIntakeSubsystem, elevatorSubsystem);
     }
 
     @Override

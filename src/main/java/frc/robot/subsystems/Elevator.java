@@ -28,7 +28,6 @@ public class Elevator extends SubsystemBase {
     public Elevator() {
         SparkMaxConfig elevatorConfig = new SparkMaxConfig();
         SparkMaxConfig elevator2Config = new SparkMaxConfig();
-        
         elevatorConfig.idleMode(IdleMode.kBrake);
         elevatorConfig.inverted(false);
         elevatorConfig.softLimit.forwardSoftLimitEnabled(true);

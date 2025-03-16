@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.SwerveSubsystem;
-// import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralIntake;
 // import frc.robot.subsystems.RobotState;
@@ -60,7 +60,7 @@ public class RobotContainer {
   public final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   public final static Joystick driverController = new Joystick(USB.DRIVER_CONTROLLER);
   public final static Joystick operatorController = new Joystick(USB.OPERATOR_CONTROLLER);
-  // public final static Elevator elevatorSubsystem = new Elevator();
+  public final static Elevator elevatorSubsystem = new Elevator();
   public final static CoralIntake coralIntakeSubsystem = new CoralIntake();
   public final static CoralArm coralArmSubsystem = new CoralArm();
   // public final static DeepClimb deepClimbSubsystem = new DeepClimb();
