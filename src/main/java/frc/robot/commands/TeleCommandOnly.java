@@ -10,7 +10,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.CoralArm;
 
 public class TeleCommandOnly extends ParallelCommandGroup{
-    public TeleCommandOnly(SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorJoystick, CoralArm coralArmSubsystem){
+    public TeleCommandOnly(SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorController, CoralArm coralArmSubsystem){
         
         boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
         int flip = isBlue ? -1 : 1;
@@ -23,6 +23,9 @@ public class TeleCommandOnly extends ParallelCommandGroup{
                 () -> -driverController.getRawAxis(XBoxConstants.RX)
             )
         );
+        addCommands(
+        new OperatorJoystick(coralArmSubsystem, operatorController)
+            );
     }
 }
 
