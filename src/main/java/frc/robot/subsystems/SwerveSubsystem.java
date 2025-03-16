@@ -350,8 +350,8 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     
         posePublisher.set(poseEstimator.getEstimatedPosition());
-        boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-        nearestPosePublisher.set(nearestPoint(hasCoral, false));
+        // boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
+        // nearestPosePublisher.set(nearestPoint(hasCoral, false));
         nearestReefPublisher.set(nearestPoint(true, false));
         nearestStationPublisher.set(nearestPoint(false, false));
 

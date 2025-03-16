@@ -1,111 +1,111 @@
-package frc.robot.subsystems;
+// package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+// import com.revrobotics.spark.SparkMax;
+// import com.revrobotics.spark.SparkBase.PersistMode;
+// import com.revrobotics.spark.SparkBase.ResetMode;
+// import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.spark.SparkLowLevel.MotorType;
+// import com.revrobotics.spark.config.SparkMaxConfig;
+// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.ElevatorStates;
-import edu.wpi.first.math.controller.PIDController;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import frc.robot.Constants;
+// import frc.robot.RobotContainer;
+// import frc.robot.Constants.ElevatorConstants;
+// import frc.robot.Constants.ElevatorStates;
+// import edu.wpi.first.math.controller.PIDController;
 
-public class Elevator extends SubsystemBase {
-    private final SparkMax elevatorMotor1 = new SparkMax(Constants.ElevatorConstants.elevatorMotor1ID, MotorType.kBrushless);
-    private final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
+// public class Elevator extends SubsystemBase {
+//     private final SparkMax elevatorMotor1 = new SparkMax(Constants.ElevatorConstants.elevatorMotor1ID, MotorType.kBrushless);
+//     private final SparkMax elevatorMotor2 = new SparkMax(Constants.ElevatorConstants.elevatorMotor2ID, MotorType.kBrushless);
 
-    private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
-    PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, 0);
+//     private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
+//     PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, 0);
 
-    private double state = Constants.ElevatorStates.NONE;
+//     private double state = Constants.ElevatorStates.NONE;
     
-    public Elevator() {
-        SparkMaxConfig elevatorConfig = new SparkMaxConfig();
-        SparkMaxConfig elevator2Config = new SparkMaxConfig();
+//     public Elevator() {
+//         SparkMaxConfig elevatorConfig = new SparkMaxConfig();
+//         SparkMaxConfig elevator2Config = new SparkMaxConfig();
 
         
-        elevatorConfig.idleMode(IdleMode.kBrake);
-        elevatorConfig.inverted(false);
-        elevatorConfig.softLimit.forwardSoftLimitEnabled(true);
-        elevatorConfig.softLimit.reverseSoftLimitEnabled(true);
-        elevatorConfig.softLimit.forwardSoftLimit(Constants.ElevatorConstants.elevatorTopLimit);
-        elevatorConfig.softLimit.reverseSoftLimit(Constants.ElevatorConstants.elevatorBottomLimit);
-        elevatorMotor1.configure(elevatorConfig,ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
+//         elevatorConfig.idleMode(IdleMode.kBrake);
+//         elevatorConfig.inverted(false);
+//         elevatorConfig.softLimit.forwardSoftLimitEnabled(true);
+//         elevatorConfig.softLimit.reverseSoftLimitEnabled(true);
+//         elevatorConfig.softLimit.forwardSoftLimit(Constants.ElevatorConstants.elevatorTopLimit);
+//         elevatorConfig.softLimit.reverseSoftLimit(Constants.ElevatorConstants.elevatorBottomLimit);
+//         elevatorMotor1.configure(elevatorConfig,ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
-        elevator2Config.idleMode(IdleMode.kBrake);
-        elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
-        elevatorMotor2.configure(elevator2Config, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
+//         elevator2Config.idleMode(IdleMode.kBrake);
+//         elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
+//         elevatorMotor2.configure(elevator2Config, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
-        elevatorPID.setTolerance(0.3);
-    }
+//         elevatorPID.setTolerance(0.3);
+//     }
 
-    public void runElevator(double percent){
-        if (isDangerous(percent)){
-            elevatorMotor1.set(0);
-        }
-        else {
-            elevatorMotor1.set(percent);
-        }
-    }
+//     public void runElevator(double percent){
+//         if (isDangerous(percent)){
+//             elevatorMotor1.set(0);
+//         }
+//         else {
+//             elevatorMotor1.set(percent);
+//         }
+//     }
     
-    public double getEncoder(){
-        return elevator1Encoder.getPosition();
-    }
+//     public double getEncoder(){
+//         return elevator1Encoder.getPosition();
+//     }
 
-    public boolean isClimbReady(){
-        return elevator1Encoder.getPosition() >= Constants.ElevatorStates.CLIMB; // TODO: Subtract number for leeway
-    }
+//     public boolean isClimbReady(){
+//         return elevator1Encoder.getPosition() >= Constants.ElevatorStates.CLIMB; // TODO: Subtract number for leeway
+//     }
 
-    public void setState(double state) {
-        elevatorPID.reset();
-        this.state = state;
-    }
+//     public void setState(double state) {
+//         elevatorPID.reset();
+//         this.state = state;
+//     }
 
-    public double getState(){
-        return state;
-    }
+//     public double getState(){
+//         return state;
+//     }
 
-    public boolean didReachState() {
-        return elevatorPID.atSetpoint();
-    }
+//     public boolean didReachState() {
+//         return elevatorPID.atSetpoint();
+//     }
 
-    public boolean isDangerous(double percent) {
-        boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
-        boolean isMovingDown = percent < 0;
-        boolean isCloseToArm = elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit;
-        return  isArmBlocking && isMovingDown && isCloseToArm;
-    }
+//     public boolean isDangerous(double percent) {
+//         boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
+//         boolean isMovingDown = percent < 0;
+//         boolean isCloseToArm = elevator1Encoder.getPosition() < Constants.ElevatorConstants.elevatorArmLimit;
+//         return  isArmBlocking && isMovingDown && isCloseToArm;
+//     }
 
-    public boolean isDangerousState(double state) {
-        boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
-        boolean isMovingDown = state < elevator1Encoder.getPosition();
-        return  isArmBlocking && isMovingDown;
-    }
+//     public boolean isDangerousState(double state) {
+//         boolean isArmBlocking = RobotContainer.coralArmSubsystem.getEncoder() > Constants.CoralConstants.coralArmElevatorLimit;
+//         boolean isMovingDown = state < elevator1Encoder.getPosition();
+//         return  isArmBlocking && isMovingDown;
+//     }
 
-    public void stop(){
-        state = ElevatorStates.NONE;
-        elevatorMotor1.set(0);
-    }
+//     public void stop(){
+//         state = ElevatorStates.NONE;
+//         elevatorMotor1.set(0);
+//     }
 
-    @Override
-    public void periodic() {
-        // TODO Auto-generated method stub
-        super.periodic();
+//     @Override
+//     public void periodic() {
+//         // TODO Auto-generated method stub
+//         super.periodic();
 
-        if (state != ElevatorStates.NONE) {
-            if (!isDangerousState(state)) {
-                runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
-            } else {
-                runElevator(0);
-            }
-        }
-        SmartDashboard.putNumber("Elevator State", state);
-        SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
-    }
-}
+//         if (state != ElevatorStates.NONE) {
+//             if (!isDangerousState(state)) {
+//                 runElevator(elevatorPID.calculate(elevator1Encoder.getPosition(), state));
+//             } else {
+//                 runElevator(0);
+//             }
+//         }
+//         SmartDashboard.putNumber("Elevator State", state);
+//         SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
+//     }
+// }

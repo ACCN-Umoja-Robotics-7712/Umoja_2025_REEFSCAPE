@@ -88,42 +88,42 @@ public class SwerveJoystick extends Command {
       Boolean xButtonPressed = j.getRawButton(XBoxConstants.X);
       Boolean aButtonPressed = j.getRawButton(XBoxConstants.A);
       Boolean bButtonPressed = j.getRawButton(XBoxConstants.B);
-      if (xButtonPressed || aButtonPressed || bButtonPressed) {
-        if (RobotContainer.currentTrajectory == null) {
-            swerveSubsystem.holonomicDriveController.getThetaController().reset(Units.degreesToRadians(swerveSubsystem.getHeading()));
-            swerveSubsystem.holonomicDriveController.getXController().reset();
-            swerveSubsystem.holonomicDriveController.getYController().reset();
-            boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-            int offset = 0;
-            if (xButtonPressed) {
-              offset = -1;
-            } else if (bButtonPressed) {
-              offset = 1;
-            } else {
-              offset = 0;
-            }
-            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(hasCoral, false, offset);
-        }
-        // if (!swerveSubsystem.timer.isRunning()) {
-        //   swerveSubsystem.timer.start();
-        // }
-        // double curTime = swerveSubsystem.timer.get();
-        // var desiredState = RobotContainer.currentTrajectory.sample(curTime);
-        // var desiredRotation = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1).poseMeters.getRotation();
-        var desiredState = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1);
-        var desiredRotation = desiredState.poseMeters.getRotation();
-        SmartDashboard.putNumber("ROTATION", desiredRotation.getDegrees());
-        var targetChassisSpeeds =
-            swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), desiredState, desiredRotation);
-        var targetModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetChassisSpeeds);
+      // if (xButtonPressed || aButtonPressed || bButtonPressed) {
+      //   if (RobotContainer.currentTrajectory == null) {
+      //       swerveSubsystem.holonomicDriveController.getThetaController().reset(Units.degreesToRadians(swerveSubsystem.getHeading()));
+      //       swerveSubsystem.holonomicDriveController.getXController().reset();
+      //       swerveSubsystem.holonomicDriveController.getYController().reset();
+      //       boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
+      //       int offset = 0;
+      //       if (xButtonPressed) {
+      //         offset = -1;
+      //       } else if (bButtonPressed) {
+      //         offset = 1;
+      //       } else {
+      //         offset = 0;
+      //       }
+      //       RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(hasCoral, false, offset);
+      //   }
+      //   // if (!swerveSubsystem.timer.isRunning()) {
+      //   //   swerveSubsystem.timer.start();
+      //   // }
+      //   // double curTime = swerveSubsystem.timer.get();
+      //   // var desiredState = RobotContainer.currentTrajectory.sample(curTime);
+      //   // var desiredRotation = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1).poseMeters.getRotation();
+      //   var desiredState = RobotContainer.currentTrajectory.getStates().get(RobotContainer.currentTrajectory.getStates().size() - 1);
+      //   var desiredRotation = desiredState.poseMeters.getRotation();
+      //   SmartDashboard.putNumber("ROTATION", desiredRotation.getDegrees());
+      //   var targetChassisSpeeds =
+      //       swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), desiredState, desiredRotation);
+      //   var targetModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetChassisSpeeds);
 
-        swerveSubsystem.setModuleStates(targetModuleStates);
-        RobotContainer.wantedAngle = -1;
-        return;
-      } else {
-        RobotContainer.currentTrajectory = null;
-        // swerveSubsystem.timer.stop();
-      }
+      //   swerveSubsystem.setModuleStates(targetModuleStates);
+      //   RobotContainer.wantedAngle = -1;
+      //   return;
+      // } else {
+      //   RobotContainer.currentTrajectory = null;
+      //   // swerveSubsystem.timer.stop();
+      // }
       
       
           // 1. Get joystic inputs
@@ -169,8 +169,8 @@ public class SwerveJoystick extends Command {
               // align
             } else if (RobotContainer.shouldAutoFixDrift == 2) {
               // change hasCoral to be based on intake hasCoral
-              boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
+              // boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
+              // RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
             } else {
               RobotContainer.wantedAngle = -1;
             }
