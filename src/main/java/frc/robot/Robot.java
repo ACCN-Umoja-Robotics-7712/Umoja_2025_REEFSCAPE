@@ -224,7 +224,9 @@ public class Robot extends TimedRobot {
     RobotContainer.swerveSubsystem.setDefaultCommand(
       new TeleCommandOnly(
         RobotContainer.swerveSubsystem,
-        RobotContainer.driverController
+        RobotContainer.driverController,
+        RobotContainer.operatorController,
+        RobotContainer.elevatorSubsystem
       )
     );
     // RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
