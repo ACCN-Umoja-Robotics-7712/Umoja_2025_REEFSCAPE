@@ -47,9 +47,9 @@ public class OperatorJoystick extends Command {
         // if (elevatorSubsystem.getState() == Constants.ElevatorStates.NONE) {
         //     elevatorSubsystem.runElevator(elevatorSpeed);
         // }
-        // if (coralArmSubsystem.getState() == Constants.CoralArmStates.NONE) {
-        //     coralArmSubsystem.runArm(coralArmSpeed);
-        // }
+        if (coralArmSubsystem.getState() == Constants.CoralArmStates.NONE) {
+            coralArmSubsystem.runArm(coralArmSpeed);
+        }
         // if (climbSpeed != 0) {
         //     deepClimbSubsystem.runClimber(climbSpeed);
         // } else {
@@ -59,9 +59,9 @@ public class OperatorJoystick extends Command {
         // if (elevatorSpeed != 0){
         //     elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
         // }
-        // if (coralArmSpeed != 0){
-        //     coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
-        // }
+        if (coralArmSpeed != 0){
+            coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
+        }
 
         // boolean intake = j.getRawButton(XBoxConstants.LB);
         // boolean shoot = j.getRawButton(XBoxConstants.R1);
