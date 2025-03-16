@@ -7,14 +7,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.XBoxConstants;
 import frc.robot.subsystems.SwerveSubsystem;
-// import frc.robot.subsystems.Elevator;
-// import frc.robot.subsystems.CoralArm;
-// import frc.robot.subsystems.RobotState;
+import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralIntake;
-import frc.robot.subsystems.DeepClimb;
 
 public class TeleCommandOnly extends ParallelCommandGroup{
-    public TeleCommandOnly(SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorController, CoralIntake coralIntakeSubsystem){
+
+    public TeleCommandOnly(SwerveSubsystem swerveSubsystem, Joystick driverController, Joystick operatorController, CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem){
         
         boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
         int flip = isBlue ? -1 : 1;
@@ -28,7 +26,7 @@ public class TeleCommandOnly extends ParallelCommandGroup{
             )
         );
         addCommands(
-            new OperatorJoystick(coralIntakeSubsystem, operatorController)
+            new OperatorJoystick(coralArmSubsystem, coralIntakeSubsystem, operatorController)
         );
     }
 }

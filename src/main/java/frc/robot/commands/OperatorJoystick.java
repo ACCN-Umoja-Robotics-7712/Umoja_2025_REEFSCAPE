@@ -12,19 +12,24 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.USB;
 import frc.robot.Constants.XBoxConstants;
 import frc.robot.Constants.RobotStates;
+import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralIntake;
+import frc.robot.subsystems.DeepClimb;
 
 public class OperatorJoystick extends Command {
     //Defining subsystems
+    CoralArm coralArmSubsystem;
     CoralIntake coralIntakeSubsystem;
 
     Joystick j = new Joystick(USB.OPERATOR_CONTROLLER);
 
-    public OperatorJoystick(CoralIntake coralIntakeSubsystem, Joystick j){
+    public OperatorJoystick(CoralArm coralArmSubsystem, CoralIntake coralIntakeSubsystem, Joystick j){
+        this.coralArmSubsystem = coralArmSubsystem;
         this.coralIntakeSubsystem = coralIntakeSubsystem;
 
+
         //Add subsystem dependencies
-        addRequirements(coralIntakeSubsystem);
+        addRequirements(coralArmSubsystem, coralIntakeSubsystem);
     }
 
     @Override
@@ -36,11 +41,33 @@ public class OperatorJoystick extends Command {
         //     j.setRumble(RumbleType.kBothRumble, 0);
         // }
 
-       
+        // manual controls
+        // double elevatorSpeed = Math.abs(j.getRawAxis(XBoxConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LY) * 1 : 0.0;
+        double coralArmSpeed = Math.abs(j.getRawAxis(XBoxConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.RY) * 0.6 : 0.0;
+        // double climbSpeed = Math.abs(j.getRawAxis(XBoxConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(XBoxConstants.RT) * 1 : 0.0;
+        // double declimbSpeed = Math.abs(j.getRawAxis(XBoxConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LT) * 1 : 0.0;
+
+        // if (elevatorSubsystem.getState() == Constants.ElevatorStates.NONE) {
+        //     elevatorSubsystem.runElevator(elevatorSpeed);
+        // }
+        if (coralArmSubsystem.getState() == Constants.CoralArmStates.NONE) {
+            coralArmSubsystem.runArm(coralArmSpeed);
+        }
+        // if (climbSpeed != 0) {
+        //     deepClimbSubsystem.runClimber(climbSpeed);
+        // } else {
+        //     deepClimbSubsystem.runClimber(declimbSpeed);
+        // }
+        
+        // if (elevatorSpeed != 0){
+        //     elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
+        // }
+        if (coralArmSpeed != 0){
+            coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
+        }
 
         boolean intake = j.getRawButton(XBoxConstants.LB);
         boolean shoot = j.getRawButton(XBoxConstants.R1);
-
         if (intake) {
             coralIntakeSubsystem.runIntake(0.8);
         } else if (shoot) {
@@ -48,6 +75,23 @@ public class OperatorJoystick extends Command {
         } else {
             coralIntakeSubsystem.runIntake(0);
         }
+
+        // if (j.getRawButtonPressed(XBoxConstants.A)){
+        //     coralArmSubsystem.setState(Constants.CoralArmStates.PICKUP);
+        //     elevatorSubsystem.setState(Constants.ElevatorStates.L1);
+        // }
+        // if (j.getRawButtonPressed(XBoxConstants.X)){
+        //     elevatorSubsystem.setState(Constants.ElevatorStates.L2);
+        //     coralArmSubsystem.setState(Constants.CoralArmStates.L23);
+        // }
+        // if (j.getRawButtonPressed(XBoxConstants.B)){
+        //     elevatorSubsystem.setState(Constants.ElevatorStates.L3);
+        //     coralArmSubsystem.setState(Constants.CoralArmStates.L23);
+        // }
+        // if (j.getRawButtonPressed(XBoxConstants.Y)){
+        //     elevatorSubsystem.setState(Constants.ElevatorStates.L4);
+        //     coralArmSubsystem.setState(Constants.CoralArmStates.L4);
+        // }
 
         // automated control
         // if (j.getRawButtonPressed(XBoxConstants.A)){
