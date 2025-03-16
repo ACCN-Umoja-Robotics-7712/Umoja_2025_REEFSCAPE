@@ -59,10 +59,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   public final static Joystick driverController = new Joystick(USB.DRIVER_CONTROLLER);
-  // public final static Joystick operatorController = new Joystick(USB.OPERATOR_CONTROLLER);
+  public final static Joystick operatorController = new Joystick(USB.OPERATOR_CONTROLLER);
   // public final static Elevator elevatorSubsystem = new Elevator();
   // public final static CoralArm coralArmSubsystem = new CoralArm();
-  // public final static CoralIntake coralIntakeSubsystem = new CoralIntake();
+  public final static CoralIntake coralIntakeSubsystem = new CoralIntake();
   // public final static DeepClimb deepClimbSubsystem = new DeepClimb();
   // public final static RobotState robotState = new RobotState(swerveSubsystem, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
   
