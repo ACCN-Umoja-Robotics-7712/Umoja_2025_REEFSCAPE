@@ -205,7 +205,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    // RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
+    RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
 
     // RobotContainer.swerveSubsystem.setDefaultCommand(
     //   new TeleCommandGroup(
@@ -224,11 +224,13 @@ public class Robot extends TimedRobot {
     RobotContainer.swerveSubsystem.setDefaultCommand(
       new TeleCommandOnly(
         RobotContainer.swerveSubsystem,
-        RobotContainer.driverController
+        RobotContainer.driverController,
+        RobotContainer.operatorController,
+        RobotContainer.coralArmSubsystem
       )
     );
     // RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
-    // RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
+    RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
     // RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);
     // RobotContainer.robotState.setState(Constants.RobotStates.NONE);
     // RobotContainer.elevatorSubsystem.runElevator(0);
