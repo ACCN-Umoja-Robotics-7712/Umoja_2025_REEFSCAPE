@@ -101,7 +101,7 @@ public class CoralIntake extends SubsystemBase {
                     intakeColor = Colors.green;
                 } else {
                     intakeColor = Colors.white;
-                }                
+                }
                 RobotContainer.led.setLEDColor(intakeColor);
             }
             hasCoral = intakeState;

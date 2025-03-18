@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -22,9 +25,24 @@ public class LEDs extends SubsystemBase {
     }
 
     public void setLEDColor(Color color){
-        for (int i = 0; i < LEDBuffer.getLength(); i++) {
-            LEDBuffer.setRGB(i, (int)(color.red*255), (int)(color.green*255), (int)(color.blue*255));
-        }
+        // Create an LED pattern that sets the entire strip to solid red
+        LEDPattern pattern = LEDPattern.solid(color);
+
+        // Apply the LED pattern to the data buffer
+        pattern.applyTo(LEDBuffer);
+        
+        // Write the data to the LED strip
+        LED.setData(LEDBuffer);
+    }
+
+    public void setHalfColors(Color leftColor, Color rightColor) {
+        // Create an LED pattern that sets the entire strip to solid red
+        LEDPattern pattern = LEDPattern.steps(Map.of(0, leftColor, 0.5, rightColor));
+
+        // Apply the LED pattern to the data buffer
+        pattern.applyTo(LEDBuffer);
+        
+        // Write the data to the LED strip
         LED.setData(LEDBuffer);
     }
 

@@ -37,6 +37,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -335,8 +336,17 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         }
 
-        if ((isDisabled || isNonGameTeleop || isAuto) && (hasTargetsLeft || hasTargetsRight)) {
-            RobotContainer.led.setLEDColor(Colors.green);
+        if (isDisabled || isNonGameTeleop || isAuto) {
+            if (hasTargetsLeft && hasTargetsRight) {
+                RobotContainer.led.setHalfColors(Colors.green, Colors.green);
+            } else if (hasTargetsLeft) {
+                RobotContainer.led.setHalfColors(Colors.green, Colors.red);
+            } else if (hasTargetsRight) {
+                RobotContainer.led.setHalfColors(Colors.red, Colors.green);
+            } else {
+                RobotContainer.led.setLEDColor(Colors.red);
+            }
+            // RobotContainer.led.setUmojaColors();
             // Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
             // Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
             // Double targetX = targetPose3d.getX();
@@ -354,8 +364,6 @@ public class SwerveSubsystem extends SubsystemBase {
             // } else {
             //     RobotContainer.led.setLEDColor(Colors.red);
             // }
-        } else {
-            RobotContainer.led.setLEDColor(Colors.red);
         }
     
         posePublisher.set(poseEstimator.getEstimatedPosition());
