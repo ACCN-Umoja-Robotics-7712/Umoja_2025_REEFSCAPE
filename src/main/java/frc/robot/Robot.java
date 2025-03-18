@@ -108,8 +108,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
- 
-    RobotContainer.led.setUmojaColors();
+
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kCoast);
 
     RobotContainer.gameState = GameConstants.Robot;
@@ -129,6 +128,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autoStartTimer = Timer.getTimestamp();
+
+    RobotContainer.led.setUmojaColors(); // IT DOESNT WORK IN DISABLED INIT SO ADD TO EITHER AUTONOMOUS OR FIND A WAY FOR DISPLAY
 
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
 
