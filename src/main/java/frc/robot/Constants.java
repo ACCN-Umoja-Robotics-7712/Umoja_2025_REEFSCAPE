@@ -186,7 +186,7 @@ public final class Constants {
         
         public static final double NONE = -1;
         public static final double PICKUP = 56.31459;
-        public static final double L1 = 8;  
+        public static final double L1 = 8;
         public static final double L23 = 36;
         public static final double L4 = 36; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
@@ -264,8 +264,8 @@ public final class Constants {
                 kMaxAngularSpeedRadiansPerSecond,
                 kMaxAngularAccelerationRadiansPerSecondSquared);
 
-        public static final double firstWait = 0.8;
-        public static final double stationWait = 3.0;
+        public static final double firstWait = 1.0;
+        public static final double stationWait = 1.0;
     }
 
     public static final class XBoxConstants {

@@ -335,7 +335,7 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         }
 
-        if ((hasTargetsLeft || hasTargetsRight) && (isDisabled || isNonGameTeleop || isAuto)) {
+        if ((isDisabled || isNonGameTeleop || isAuto) && (hasTargetsLeft || hasTargetsRight)) {
             RobotContainer.led.setLEDColor(Colors.green);
             // Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
             // Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
@@ -497,5 +497,4 @@ public class SwerveSubsystem extends SubsystemBase {
         Transform2d transform = new Transform2d(forwardOffset, sideOffset, new Rotation2d(Math.toDegrees(rotationOffset)));
         return pose.transformBy(transform);
     }
-
 }
