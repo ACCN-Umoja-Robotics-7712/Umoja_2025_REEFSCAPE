@@ -47,9 +47,11 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
 import frc.robot.LimelightHelpers;
@@ -93,9 +95,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
     private TrajectoryConfig trajectoryConfig;
-    private PIDController xController;
-    private PIDController yController;
-    private ProfiledPIDController thetaController;
+    public PIDController xController;
+    public PIDController yController;
+    public ProfiledPIDController thetaController;
     public HolonomicDriveController holonomicDriveController;
     public final Timer timer = new Timer();
     
@@ -281,42 +283,26 @@ public class SwerveSubsystem extends SubsystemBase {
         );
         
         String tagLeftLimelightName = Constants.LimelightConstants.tagName;
+        String driverLimelightName = Constants.LimelightConstants.driverName;
         String tagRightLimelightName = Constants.LimelightConstants.gamePieceName;
-        // String tagRightLimelightName = Constants.LimelightConstants.driverName;
-        if (LimelightHelpers.getTargetCount(tagLeftLimelightName) != 0 && RobotContainer.gameState == GameConstants.Robot) {
-            Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
-            Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
-            Double targetX = targetPose3d.getX();
-    
-            SmartDashboard.putNumber("target yaw", targetYaw);
-            SmartDashboard.putNumber("target x", targetX);
-
-            // lined up angle perfectly (turn off limelight)
-            // TODO: Move this number to constants file
-            Boolean alignedYaw = targetYaw <= 0.25 || (targetYaw >= 59.75 && targetYaw <= 60.25);
-            // Boolean alignedX = Math.abs(targetX) <= 0.1;
-            Boolean alignedX = true;
-            if (alignedX && alignedYaw){
-                // TODO: Replace with LEDs ready for game
-                LimelightHelpers.setLEDMode_ForceOff(tagRightLimelightName);
-            } else {
-                // TODO: Replace with LEDs not game ready
-                LimelightHelpers.setLEDMode_ForceOn(tagRightLimelightName);
-            }
-        } else {
-            // TODO: Replace with LEDs not game ready
-            LimelightHelpers.setLEDMode_ForceOn(tagRightLimelightName);
-        }
+        boolean hasTargetsLeft = LimelightHelpers.getTargetCount(tagLeftLimelightName) != 0;
+        boolean hasTargetsRight = LimelightHelpers.getTargetCount(tagRightLimelightName) != 0;
+        boolean isDisabled = RobotContainer.gameState == GameConstants.Robot;
+        boolean isNonGameTeleop = RobotContainer.gameState == GameConstants.TeleOp && DriverStation.getMatchType() == MatchType.None;
+        boolean isAuto = RobotContainer.gameState == GameConstants.Auto;
        
         LimelightHelpers.SetRobotOrientation(tagLeftLimelightName, poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(tagRightLimelightName, poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate leftMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(tagLeftLimelightName);
         LimelightHelpers.PoseEstimate rightMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(tagRightLimelightName);
 
-        boolean doRejectUpdate = false;
+        boolean doRejectLeftUpdate = false;
+        boolean doRejectRightUpdate = false;
 
         if (Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
         {
-            doRejectUpdate = true;
+            doRejectLeftUpdate = true;
+            doRejectRightUpdate = true;
         }
         double visionTrustValue = 0.1;
         if (RobotContainer.gameState == GameConstants.Robot) {
@@ -325,9 +311,9 @@ public class SwerveSubsystem extends SubsystemBase {
         if (leftMT2 != null) {
             if (leftMT2.tagCount == 0)
             {
-                doRejectUpdate = true;
+                doRejectLeftUpdate = true;
             }
-            if (!doRejectUpdate)
+            if (!doRejectLeftUpdate)
             {
                 poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTrustValue,visionTrustValue,9999999));
                 poseEstimator.addVisionMeasurement(
@@ -338,15 +324,38 @@ public class SwerveSubsystem extends SubsystemBase {
         if (rightMT2 != null) {
             if (rightMT2.tagCount == 0)
             {
-                doRejectUpdate = true;
+                doRejectRightUpdate = true;
             }
-            if (!doRejectUpdate)
+            if (!doRejectRightUpdate)
             {
-                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTrustValue+0.1,visionTrustValue+0.1,9999999));
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTrustValue+0.5,visionTrustValue+0.5,9999999));
                 poseEstimator.addVisionMeasurement(
                     rightMT2.pose,
                     rightMT2.timestampSeconds);
             }
+        }
+
+        if ((isDisabled || isNonGameTeleop || isAuto) && (hasTargetsLeft || hasTargetsRight)) {
+            RobotContainer.led.setLEDColor(Colors.green);
+            // Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
+            // Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
+            // Double targetX = targetPose3d.getX();
+    
+            // SmartDashboard.putNumber("target yaw", targetYaw);
+            // SmartDashboard.putNumber("target x", targetX);
+
+            // // lined up angle perfectly (turn off limelight)
+            // // TODO: Move this number to constants file
+            // Boolean alignedYaw = targetYaw <= 0.25 || (targetYaw >= 59.75 && targetYaw <= 60.25);
+            // // Boolean alignedX = Math.abs(targetX) <= 0.1;
+            // Boolean alignedX = true;
+            // if (alignedX && alignedYaw){
+            //     RobotContainer.led.setLEDColor(Colors.green);
+            // } else {
+            //     RobotContainer.led.setLEDColor(Colors.red);
+            // }
+        } else {
+            RobotContainer.led.setLEDColor(Colors.red);
         }
     
         posePublisher.set(poseEstimator.getEstimatedPosition());
@@ -382,6 +391,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // offset is -1 for left, 1 for right, and 0 for center
     public Trajectory getNearestTagTrajectory(boolean faceReef, boolean faceProcessor, int offset) {
         Pose2d nearestPoint = nearestPoint(faceReef, faceProcessor, offset);
+        RobotContainer.goalPose = nearestPoint;
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
             List.of(),
@@ -478,9 +488,13 @@ public class SwerveSubsystem extends SubsystemBase {
         return offsetPoint(nearestPose, trueOffset);
     }
 
-    public Pose2d offsetPoint(Pose2d pose, double offset) {
-        Transform2d transform = new Transform2d(0, offset, new Rotation2d(0));
+    public Pose2d offsetPoint(Pose2d pose, double sideOffset) {
+        Transform2d transform = new Transform2d(0, sideOffset, new Rotation2d(0));
         return pose.transformBy(transform);
     }
 
+    public Pose2d offsetPoint(Pose2d pose, double sideOffset, double forwardOffset, double rotationOffset) {
+        Transform2d transform = new Transform2d(forwardOffset, sideOffset, new Rotation2d(Math.toDegrees(rotationOffset)));
+        return pose.transformBy(transform);
+    }
 }

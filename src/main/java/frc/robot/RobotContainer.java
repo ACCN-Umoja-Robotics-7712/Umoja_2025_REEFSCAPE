@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.RobotState;
@@ -18,9 +19,11 @@ import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.RobotPositions;
 import frc.robot.Constants.USB;
 import frc.robot.commands.autonomous.Autos;
+import frc.robot.commands.autonomous.Intake;
 import frc.robot.commands.autonomous.MoveArm;
 import frc.robot.commands.autonomous.MoveElevator;
 import frc.robot.commands.autonomous.Shoot;
+import frc.robot.commands.autonomous.Intake;
 
 import java.util.List;
 
@@ -43,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -64,12 +68,9 @@ public class RobotContainer {
   public final static CoralArm coralArmSubsystem = new CoralArm();
   public final static CoralIntake coralIntakeSubsystem = new CoralIntake();
   public final static DeepClimb deepClimbSubsystem = new DeepClimb();
+  public final static LEDs led = new LEDs();
   public final static RobotState robotState = new RobotState(swerveSubsystem, elevatorSubsystem, coralArmSubsystem, coralIntakeSubsystem, deepClimbSubsystem);
-  
-  private boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red); 
-
   public static final Autos auto = new Autos();
-
   public static double wantedAngle = -1;
   public static int shouldAutoFixDrift = 1; // 1 = auto drift, 2 = auto align, 0 = none
   public static int gameState = GameConstants.Robot;
@@ -98,90 +99,5 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-  }
-
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-  //  return new PathPlannerAuto("Test Auto");
-    // 1. Create trajectory settings
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(DriveConstants.kDriveKinematics);
-    
-        
-        
-        // 2. Generate trajectory
-        Trajectory redCenter = TrajectoryGenerator.generateTrajectory(
-            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-            List.of(),
-            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, -Constants.Measurements.branchOffset),
-            trajectoryConfig);
-
-        Trajectory blueCenter = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, -Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory blueRightTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory redRightTrajectory = TrajectoryGenerator.generateTrajectory(
-            RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-            List.of(),
-            swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset),
-            trajectoryConfig);
-
-        Trajectory redLeftTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset),
-          trajectoryConfig);
-
-        Trajectory blueLeftTrajectory = TrajectoryGenerator.generateTrajectory(
-          RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
-          List.of(),
-          swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset),
-          trajectoryConfig);
-      
-        // 3. Define PID controllers for tracking trajectory
-        PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-        PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-        ProfiledPIDController thetaController = new ProfiledPIDController(
-                AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-        thetaController.enableContinuousInput(0, 360);
-
-        // 4. Construct command to follow trajectory 
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                blueLeftTrajectory, //Swap auto trajectory here
-                swerveSubsystem::getPose,
-                DriveConstants.kDriveKinematics,
-                xController,
-                yController,
-                thetaController,
-                swerveSubsystem::setModuleStates,
-                swerveSubsystem);
-
-        // 5. Add some init and wrap-up, and return everything
-        return new SequentialCommandGroup(
-                // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
-                swerveControllerCommand,
-                new InstantCommand(() -> swerveSubsystem.stopModules()),
-                new ParallelCommandGroup(
-                  new MoveElevator(elevatorSubsystem, ElevatorStates.L4),
-                  new MoveArm(coralArmSubsystem, CoralArmStates.L4)
-                ),
-                new InstantCommand(() -> coralIntakeSubsystem.runIntake(-1))
-              );
   }
 }

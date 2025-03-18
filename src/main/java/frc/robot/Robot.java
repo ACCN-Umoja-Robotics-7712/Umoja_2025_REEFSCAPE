@@ -4,24 +4,25 @@
 
 package frc.robot;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import choreo.Choreo;
-import choreo.auto.AutoChooser;
-import choreo.trajectory.SwerveSample;
-import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,6 +31,7 @@ import frc.robot.commands.TeleCommandGroup;
 import frc.robot.subsystems.CoralArm;
 // import frc.robot.commands.autonomous.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
@@ -41,17 +43,13 @@ import frc.robot.Constants.GameConstants;
  * project.
  */
 public class Robot extends TimedRobot {
-  
-  // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
-  private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("Simple Auto");
-
   private final Timer timer = new Timer();
 
   private Command m_autonomousCommand;
 
   private RobotContainer robotContainer;
   
-  private AutoChooser autoChooser;
+  // private AutoChooser autoChooser;
 
   private double autoStartTimer = 0;
 
@@ -64,17 +62,19 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
+    
+    // 2. Generate trajectory
+    Pose2d blueRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset);
+    Pose2d blueCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, Constants.Measurements.branchOffset);
+    Pose2d blueRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset);
+    Pose2d redRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset);
+    Pose2d redCenter = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, Constants.Measurements.branchOffset);
+    Pose2d redRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset);
 
-    // // Create the auto chooser
-    // autoChooser = new AutoChooser();
-
-    // // Add options to the chooser
     // autoChooser.addCmd("simple auto", RobotContainer.auto::simpleAuto);
     // // autoChooser.addRoutine("auto2", RobotContainer.auto::auto2);
     // autoChooser.addRoutine("NONE", RobotContainer.auto::noneAuto);
 
-    // // Put the auto chooser on the dashboard
-    // SmartDashboard.putData("AUTOS", autoChooser);
 
     // Schedule the selected auto during the autonomous period
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
- 
+
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kCoast);
 
     RobotContainer.gameState = GameConstants.Robot;
@@ -140,18 +140,10 @@ public class Robot extends TimedRobot {
 
     autoStartTimer = Timer.getTimestamp();
 
+    RobotContainer.led.setUmojaColors(); // IT DOESNT WORK IN DISABLED INIT SO ADD TO EITHER AUTONOMOUS OR FIND A WAY FOR DISPLAY
+
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
 
-    
-    // if (trajectory.isPresent()) {
-    //     // Get the initial pose of the trajectory
-    //     Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
-
-    //     if (initialPose.isPresent()) {
-    //         // Reset odometry to the start of the trajectory
-
-    //     }
-    // }
     RobotContainer.swerveSubsystem.zeroHeading();
     // RobotContainer.swerveSubsystem.resetOdometry(RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition());
     //     }
@@ -160,7 +152,7 @@ public class Robot extends TimedRobot {
     // Reset and start the timer when the autonomous period begins
     timer.restart();
     
-    m_autonomousCommand = robotContainer.getAutonomousCommand();
+    m_autonomousCommand = RobotContainer.auto.getAuto();
 
     // // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -185,15 +177,6 @@ public class Robot extends TimedRobot {
       //     RobotContainer.swerveSubsystem.setModuleStates(stopState);
       //   }
       // }
-      
-    // if (trajectory.isPresent()) {
-    //   // 
-    //   Optional<SwerveSample> sample = trajectory.get().sampleAt(timer.get(), isRedAlliance());
-
-    //   if (sample.isPresent()) {
-    //     RobotContainer.swerveSubsystem.followTrajectory(sample.get());
-    //   }
-    // }
   }
 
   @Override
@@ -203,6 +186,11 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    if (RobotContainer.coralIntakeSubsystem.hasCoralSensor()) {
+      RobotContainer.led.setLEDColor(Colors.green);
+    } else {
+      RobotContainer.led.setLEDColor(Colors.white);
+    }
 
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
 
