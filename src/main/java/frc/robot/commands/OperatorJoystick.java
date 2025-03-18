@@ -48,7 +48,7 @@ public class OperatorJoystick extends Command {
     @Override
     public void execute(){
 
-        if (DriverStation.getMatchType() != MatchType.None && DriverStation.getMatchTime() <= 30 && DriverStation.getMatchTime() >= 20) {
+        if (DriverStation.getMatchType() != MatchType.None && DriverStation.getMatchTime() <= 35 && DriverStation.getMatchTime() >= 10) {
             j.setRumble(RumbleType.kBothRumble, 1);
         } else {
             j.setRumble(RumbleType.kBothRumble, 0);
@@ -56,7 +56,7 @@ public class OperatorJoystick extends Command {
 
         // manual controls
         double elevatorSpeed = Math.abs(j.getRawAxis(XBoxConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LY) * 1 : 0.0;
-        double coralArmSpeed = Math.abs(j.getRawAxis(XBoxConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.RY) * 0.6 : 0.0;
+        double coralArmSpeed = Math.abs(j.getRawAxis(XBoxConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.RY) * 0.7 : 0.0;
         double climbSpeed = Math.abs(j.getRawAxis(XBoxConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(XBoxConstants.RT) * 1 : 0.0;
         double declimbSpeed = Math.abs(j.getRawAxis(XBoxConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LT) * 1 : 0.0;
 
@@ -84,7 +84,7 @@ public class OperatorJoystick extends Command {
         if (intake) {
             coralIntakeSubsystem.runIntake(1);
         } else if (shoot) {
-            coralIntakeSubsystem.runIntake(-0.8);
+            coralIntakeSubsystem.runIntake(-1);
         } else {
             coralIntakeSubsystem.runIntake(0);
         }

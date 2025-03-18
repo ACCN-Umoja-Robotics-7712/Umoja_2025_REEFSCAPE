@@ -116,5 +116,4 @@ public class CoralIntake extends SubsystemBase {
     }
 }
 
-
 // Let the rookies try to finish the code

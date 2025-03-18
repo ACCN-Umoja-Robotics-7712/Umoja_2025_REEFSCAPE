@@ -226,10 +226,13 @@ public class Autos {
                 new WaitCommand(waitTime),
                 new ParallelCommandGroup(
                     new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L4),
-                    new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4)
+                    new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4),
+                    new Intake(RobotContainer.coralIntakeSubsystem)
                 )
             )
         ),
+        // keep intaking so if we hit branch, it'll center the coral
+        new WaitCommand(0.3),
         // shoot for 1 second then stop
         new ParallelCommandGroup(
             new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(-1)),
