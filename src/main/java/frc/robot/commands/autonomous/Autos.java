@@ -86,6 +86,9 @@ public class Autos {
     Pose2d redStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupRight2,  0*Constants.Measurements.coralStationDivotOffset);
     Pose2d redStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupLeft1,  -0
     *Constants.Measurements.coralStationDivotOffset);
+
+    PathPlannerPath B_to_station, C_to_station, D_to_station, E_to_station, K_to_station, L_to_station,
+    station_to_B, station_to_C, station_to_D, station_to_A, station_to_K, station_to_L, G_to_driver_right, G_to_driver_left;
     
     public enum AUTO {
         BLUE_DRIVER_LEFT, BLUE_CENTER, BLUE_DRIVER_RIGHT,
@@ -97,6 +100,26 @@ public class Autos {
     StructPublisher<Pose2d> stationPosePublisher = NetworkTableInstance.getDefault().getStructTopic("Auto Station Pose", Pose2d.struct).publish();
     
     public Autos(){
+
+    try {
+        B_to_station = PathPlannerPath.fromChoreoTrajectory("B_to_station");
+        C_to_station = PathPlannerPath.fromChoreoTrajectory("C_to_station");
+        D_to_station = PathPlannerPath.fromChoreoTrajectory("D_to_station");
+        E_to_station = PathPlannerPath.fromChoreoTrajectory("E_to_station");
+        K_to_station = PathPlannerPath.fromChoreoTrajectory("K_to_station");
+        L_to_station = PathPlannerPath.fromChoreoTrajectory("L_to_station");
+        station_to_B = PathPlannerPath.fromChoreoTrajectory("station_to_B");
+        station_to_C = PathPlannerPath.fromChoreoTrajectory("station_to_C");
+        station_to_D = PathPlannerPath.fromChoreoTrajectory("station_to_D");
+        station_to_A = PathPlannerPath.fromChoreoTrajectory("station_to_A");
+        station_to_K = PathPlannerPath.fromChoreoTrajectory("station_to_K");
+        station_to_L = PathPlannerPath.fromChoreoTrajectory("station_to_L");
+        G_to_driver_right = PathPlannerPath.fromChoreoTrajectory("G_to_driver_right");
+        G_to_driver_left = PathPlannerPath.fromChoreoTrajectory("G_to_driver_left");
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    }
+
         // Create the auto chooser
         chooser = new SendableChooser<AUTO>();
     
@@ -143,10 +166,11 @@ public class Autos {
     public Command getBlueDriverLeft() {
         return new SequentialCommandGroup(
             getScoreCommand(swerveSubsystem.getPose(), blueReefRobotRight, AutoConstants.firstWait),
-            getStationCommand(blueReefRobotRight, blueStationRobotRight),
-            getScoreCommand(swerveSubsystem.offsetPoint(blueStationRobotRight, 0, -1, 0), blueReefDriverLeftLeftBranch, AutoConstants.stationWait),
-            getStationCommand(blueReefDriverLeftLeftBranch, blueStationRobotRight),
-            getScoreCommand(swerveSubsystem.offsetPoint(blueStationRobotRight, 0, -1, 0), blueReefDriverLeftRightBranch, AutoConstants.stationWait)
+            getStationCommmand(E_to_station),
+            getScoreCommand(station_to_C, AutoConstants.firstWait),
+            getStationCommmand(C_to_station),
+            getScoreCommand(station_to_D, AutoConstants.firstWait),
+            getStationCommmand(D_to_station)
         );
     }
 
@@ -157,18 +181,18 @@ public class Autos {
     public Command getBlueCenter() {
         return new SequentialCommandGroup(
             getScoreCommand(swerveSubsystem.getPose(), blueCenter, AutoConstants.firstWait),
-            getStationCommmand("G_to_driver_right")
+            getStationCommmand(G_to_driver_right)
         );
     }
 
     public Command getBlueDriverRight() {
         return new SequentialCommandGroup(
             getScoreCommand(swerveSubsystem.getPose(), blueReefRobotLeft, AutoConstants.firstWait),
-            getStationCommmand("E_to_station"),
-            getScoreCommand("station_to_C", AutoConstants.firstWait),
-            getStationCommmand("C_to_station"),
-            getScoreCommand("station_to_D", AutoConstants.firstWait),
-            getStationCommmand("C_to_station")
+            getStationCommmand(E_to_station),
+            getScoreCommand(station_to_C, AutoConstants.firstWait),
+            getStationCommmand(C_to_station),
+            getScoreCommand(station_to_D, AutoConstants.firstWait),
+            getStationCommmand(C_to_station)
         );
     }
 
@@ -189,11 +213,11 @@ public class Autos {
     public Command getRedDriverRight() {
         return new SequentialCommandGroup(
             getScoreCommand(swerveSubsystem.getPose(), redReefRobotLeft, AutoConstants.firstWait),
-            getStationCommmand("E_to_station"),
-            getScoreCommand("station_to_C", AutoConstants.firstWait),
-            getStationCommmand("C_to_station"),
-            getScoreCommand("station_to_D", AutoConstants.firstWait),
-            getStationCommmand("C_to_station")
+            getStationCommmand(E_to_station),
+            getScoreCommand(station_to_C, AutoConstants.firstWait),
+            getStationCommmand(C_to_station),
+            getScoreCommand(station_to_D, AutoConstants.firstWait),
+            getStationCommmand(C_to_station)
         );
     }
 
@@ -210,23 +234,24 @@ public class Autos {
     }
     reefPosePublisher.set(endPose);
 
-    edu.wpi.first.math.trajectory.Trajectory traj = TrajectoryGenerator.generateTrajectory(
-      startPose,
-      List.of(),
-      endPose,
-      trajectoryConfig);
+    // edu.wpi.first.math.trajectory.Trajectory traj = TrajectoryGenerator.generateTrajectory(
+    //   startPose,
+    //   List.of(),
+    //   endPose,
+    //   trajectoryConfig);
 
     // 4. Construct command to follow trajectory
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      traj,
-      swerveSubsystem::getPose,
-      DriveConstants.kDriveKinematics,
-      xController,
-      yController,
-      thetaController,
-      swerveSubsystem::setModuleStates,
-      swerveSubsystem);
+    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+    //   traj,
+    //   swerveSubsystem::getPose,
+    //   DriveConstants.kDriveKinematics,
+    //   xController,
+    //   yController,
+    //   thetaController,
+    //   swerveSubsystem::setModuleStates,
+    //   swerveSubsystem);
 
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, null);
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
@@ -261,14 +286,12 @@ public class Autos {
    *
    * @return the command to run in autonomous
    */
-  public Command getScoreCommand(String choreoPathName, double waitTime) {
+  public Command getScoreCommand(PathPlannerPath path, double waitTime) {
     // An example command will be run in autonomous
     Command followChoreoPath;
     try {
-        PathPlannerPath choreoTrajectory = PathPlannerPath.fromChoreoTrajectory(choreoPathName);
-
         // Create a path following command using AutoBuilder. This will also trigger event markers.
-        followChoreoPath = AutoBuilder.followPath(choreoTrajectory);
+        followChoreoPath = AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         followChoreoPath = Commands.none();
@@ -354,13 +377,11 @@ public class Autos {
    *
    * @return the command to run in autonomous
    */
-  public Command getStationCommmand(String choreoPathName) {
+  public Command getStationCommmand(PathPlannerPath path) {
     Command followChoreoPath;
     try {
-        PathPlannerPath choreoTrajectory = PathPlannerPath.fromChoreoTrajectory(choreoPathName);
-
         // Create a path following command using AutoBuilder. This will also trigger event markers.
-        followChoreoPath = AutoBuilder.followPath(choreoTrajectory);
+        followChoreoPath = AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         followChoreoPath = Commands.none();

@@ -279,13 +279,8 @@ public class SwerveJoystick extends Command {
           SmartDashboard.putBoolean("Auto Fix Align", RobotContainer.shouldAutoFixDrift == 2);
           SmartDashboard.putBoolean("Auto Fix Drift", RobotContainer.shouldAutoFixDrift == 1);
         }
-      
-        private double Estimate_Distance() {
-          // TODO Auto-generated method stub
-          throw new UnsupportedOperationException("Unimplemented method 'Estimate_Distance'");
-        }
-      
-        // Called once the command ends or is interrupted.
+        
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     swerveSubsystem.stopModules();
