@@ -107,10 +107,14 @@ public final class Constants {
         // OFFSETS
         // If robot is positively off, subtract
         // Else, add
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetDegree = 61.645715;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetDegree = 212.642091;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetDegree = 163.585028;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetDegree = 89.405267;
+        // public static final double kFrontLeftDriveAbsoluteEncoderOffsetDegree = 61.645715;
+        // public static final double kFrontRightDriveAbsoluteEncoderOffsetDegree = 212.642091;
+        // public static final double kBackLeftDriveAbsoluteEncoderOffsetDegree = 163.585028;
+        // public static final double kBackRightDriveAbsoluteEncoderOffsetDegree = 89.405267;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetDegree = 60.9;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetDegree = 214.55;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetDegree = 163.1;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetDegree = 198.4;
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 4.0;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -126,8 +130,8 @@ public final class Constants {
         public static final double kPDrive = 1;
         public static final double kPTurning = 0.6;
 
-        public static final double kPDrift = 0.05;
-        public static final double kIDrift = 0.007; //Changed before test
+        public static final double kPDrift = 0.035;
+        public static final double kIDrift = 0.005; //Changed before test
     }
 
 
@@ -188,7 +192,7 @@ public final class Constants {
         public static final double PICKUP = 56.31459;
         public static final double L1 = 8;
         public static final double L23 = 36;
-        public static final double L4 = 36; // TODO: Fix value
+        public static final double L4 = 33; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
         public static final double REMOVE = 50;
     }
@@ -206,15 +210,15 @@ public final class Constants {
         public static final int leftMotorID = 50;
         public static final int rightMotorID = 51;
 
-        public static final double elevatorTopLimit = 245.0; 
-        public static final double elevatorBottomLimit = 15.0;
+        public static final double elevatorTopLimit = 152.0; 
+        public static final double elevatorBottomLimit = 12.0;
 
-        public static final double kP =  0.1;
-        public static final double kI =  0.0; 
+        public static final double kP = 0.1;
+        public static final double kI = 0.0; 
 
         public static final double slowDown = 0.8;
 
-        public static final double elevatorArmLimit = 55;
+        public static final double elevatorArmLimit = 42;
 
         public static final int elevatorMotor1ID = 8;
         public static final int elevatorMotor2ID = 9;
@@ -224,10 +228,10 @@ public final class Constants {
     public static final class ElevatorStates {
 
         public static final double NONE = -1;
-        public static final double L1 = 15;
-        public static final double L2 = 15;
-        public static final double L3 = 105;
-        public static final double L4 = 241;
+        public static final double L1 = 12;
+        public static final double L2 = 12;
+        public static final double L3 = 67;
+        public static final double L4 = 148;
         public static final double CLIMB = 0;
     };
 

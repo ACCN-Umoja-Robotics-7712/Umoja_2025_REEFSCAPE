@@ -340,9 +340,9 @@ public class SwerveSubsystem extends SubsystemBase {
             if (hasTargetsLeft && hasTargetsRight) {
                 RobotContainer.led.setHalfColors(Colors.green, Colors.green);
             } else if (hasTargetsLeft) {
-                RobotContainer.led.setHalfColors(Colors.green, Colors.red);
-            } else if (hasTargetsRight) {
                 RobotContainer.led.setHalfColors(Colors.red, Colors.green);
+            } else if (hasTargetsRight) {
+                RobotContainer.led.setHalfColors(Colors.green, Colors.red);
             } else {
                 RobotContainer.led.setLEDColor(Colors.red);
             }

@@ -55,7 +55,7 @@ public class OperatorJoystick extends Command {
         }
 
         // manual controls
-        double elevatorSpeed = Math.abs(j.getRawAxis(XBoxConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LY) * 1 : 0.0;
+        double elevatorSpeed = Math.abs(j.getRawAxis(XBoxConstants.LY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LY) * 0.8 : 0.0;
         double coralArmSpeed = Math.abs(j.getRawAxis(XBoxConstants.RY)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.RY) * 0.7 : 0.0;
         double climbSpeed = Math.abs(j.getRawAxis(XBoxConstants.RT)) > OIConstants.kDeadband ? j.getRawAxis(XBoxConstants.RT) * 1 : 0.0;
         double declimbSpeed = Math.abs(j.getRawAxis(XBoxConstants.LT)) > OIConstants.kDeadband ? -j.getRawAxis(XBoxConstants.LT) * 1 : 0.0;
