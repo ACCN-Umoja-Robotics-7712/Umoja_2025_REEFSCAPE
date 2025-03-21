@@ -290,6 +290,7 @@ public class SwerveSubsystem extends SubsystemBase {
         boolean hasTargetsRight = LimelightHelpers.getTargetCount(tagRightLimelightName) != 0;
         boolean isDisabled = RobotContainer.gameState == GameConstants.Robot;
         boolean isNonGameTeleop = RobotContainer.gameState == GameConstants.TeleOp && DriverStation.getMatchType() == MatchType.None;
+        
         boolean isAuto = RobotContainer.gameState == GameConstants.Auto;
        
         LimelightHelpers.SetRobotOrientation(tagLeftLimelightName, poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
@@ -337,14 +338,16 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         if (isDisabled || isNonGameTeleop || isAuto) {
-            if (hasTargetsLeft && hasTargetsRight) {
-                RobotContainer.led.setHalfColors(Colors.green, Colors.green);
-            } else if (hasTargetsLeft) {
-                RobotContainer.led.setHalfColors(Colors.red, Colors.green);
-            } else if (hasTargetsRight) {
-                RobotContainer.led.setHalfColors(Colors.green, Colors.red);
-            } else {
-                RobotContainer.led.setLEDColor(Colors.red);
+            if (!RobotContainer.coralIntakeSubsystem.isRunning()) {
+                if (hasTargetsLeft && hasTargetsRight) {
+                    RobotContainer.led.setHalfColors(Colors.green, Colors.green);
+                } else if (hasTargetsLeft) {
+                    RobotContainer.led.setHalfColors(Colors.green, Colors.red);
+                } else if (hasTargetsRight) {
+                    RobotContainer.led.setHalfColors(Colors.red, Colors.green);
+                } else {
+                    RobotContainer.led.setLEDColor(Colors.red);
+                }
             }
             // RobotContainer.led.setUmojaColors();
             // Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);

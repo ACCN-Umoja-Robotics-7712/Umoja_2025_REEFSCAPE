@@ -213,7 +213,7 @@ public final class Constants {
         public static final double elevatorTopLimit = 152.0; 
         public static final double elevatorBottomLimit = 12.0;
 
-        public static final double kP = 0.1;
+        public static final double kP = 0.1; // TODO: Change/test to 0.13
         public static final double kI = 0.0; 
 
         public static final double slowDown = 0.8;

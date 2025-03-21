@@ -82,9 +82,10 @@ public class SwerveJoystick extends Command {
           j.setRumble(RumbleType.kBothRumble, 0);
       }
 
-      Boolean xButtonPressed = j.getRawButton(XBoxConstants.X);
       Boolean aButtonPressed = j.getRawButton(XBoxConstants.A);
       Boolean bButtonPressed = j.getRawButton(XBoxConstants.B);
+      Boolean xButtonPressed = j.getRawButton(XBoxConstants.X);
+      Boolean yButtonPressed = j.getRawButton(XBoxConstants.Y);
       if (xButtonPressed || aButtonPressed || bButtonPressed) {
         if (RobotContainer.currentTrajectory == null) {
             swerveSubsystem.holonomicDriveController.getThetaController().reset(0);
@@ -177,17 +178,17 @@ public class SwerveJoystick extends Command {
           }
       
           // set current angle
-          if (RobotContainer.wantedAngle == -1 || RobotContainer.shouldAutoFixDrift == 2) {
+          if (RobotContainer.wantedAngle == -1 || RobotContainer.shouldAutoFixDrift == 2 || yButtonPressed) {
             // auto fix drift
-            if (RobotContainer.shouldAutoFixDrift == 1) {
+            if (RobotContainer.shouldAutoFixDrift == 2 || yButtonPressed) {
+              // change hasCoral to be based on intake hasCoral
+              boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
+              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
+            } else if (RobotContainer.shouldAutoFixDrift == 1) {
               RobotContainer.wantedAngle = swerveSubsystem.getHeading();
               // RobotContainer.wantedAngle = 0; 
 
               // align
-            } else if (RobotContainer.shouldAutoFixDrift == 2) {
-              // change hasCoral to be based on intake hasCoral
-              boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
             } else {
               RobotContainer.wantedAngle = -1;
             }

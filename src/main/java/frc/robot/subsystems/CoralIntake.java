@@ -32,7 +32,8 @@ public class CoralIntake extends SubsystemBase {
     private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
     private double prevHasCoral = -1;
     private Color intakeColor;
-    public boolean hasCoral, intakeState;
+    public boolean hasCoral;
+    public double intakePercent = 0;
     
     public CoralIntake(){
 
@@ -48,6 +49,7 @@ public class CoralIntake extends SubsystemBase {
     }
     
     public void runIntake(double percent){
+        this.intakePercent = percent;
         if (hasCoralSensor()) {
             if (percent > 0) {
                 coralIntakeMotor.set(percent * 0.05);
@@ -74,6 +76,10 @@ public class CoralIntake extends SubsystemBase {
         return hasCoral;
     }
 
+    public boolean isRunning() {
+        return intakePercent != 0;
+    }
+
     public double getState(){
         return state;
     }
@@ -92,19 +98,14 @@ public class CoralIntake extends SubsystemBase {
         SmartDashboard.putNumber("Coral diff", diff);
         SmartDashboard.putBoolean("hasCoral", hasCoralSensor());
         SmartDashboard.putNumber("hasCoral color sensor", colorSensor.getProximity());
-        
-        intakeState = hasCoralSensor();
 
-        if(hasCoral!=intakeState){
-            if(RobotContainer.gameState==GameConstants.TeleOp){
-                if(intakeState){
-                    intakeColor = Colors.green;
-                } else {
-                    intakeColor = Colors.white;
-                }
-                RobotContainer.led.setLEDColor(intakeColor);
+        if(isRunning() && RobotContainer.gameState==GameConstants.TeleOp){
+            if(hasCoralSensor()){
+                intakeColor = Colors.green;
+            } else {
+                intakeColor = Colors.white;
             }
-            hasCoral = intakeState;
+            RobotContainer.led.setLEDColor(intakeColor);
         }
         // if (state == Constants.CoralIntakeStates.INTAKE) {
         //     runIntake(0.05); 

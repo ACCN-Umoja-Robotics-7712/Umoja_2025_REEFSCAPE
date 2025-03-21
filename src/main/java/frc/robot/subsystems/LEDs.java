@@ -37,7 +37,7 @@ public class LEDs extends SubsystemBase {
 
     public void setHalfColors(Color leftColor, Color rightColor) {
         // Create an LED pattern that sets the entire strip to solid red
-        LEDPattern pattern = LEDPattern.steps(Map.of(0, leftColor, 0.5, rightColor));
+        LEDPattern pattern = LEDPattern.steps(Map.of(0, rightColor, 0.5, leftColor));
 
         // Apply the LED pattern to the data buffer
         pattern.applyTo(LEDBuffer);
