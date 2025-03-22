@@ -253,15 +253,20 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
 
-        // public static final double kPXController = 2;
-        // public static final double kPYController = 2;
-        public static final double kPXController = 5;
-        public static final double kPYController = 5;
+        // public static final double kPXController = 5;
+        // public static final double kPYController = 5;
+        // public static final double kPThetaController = 2.5;
+
+        // public static final double kIXController = 0.35; //0.06
+        // public static final double kIYController = 0.35; // 0.06
+        // public static final double kIThetaController = 0.2;
+        public static final double kPXController = 2;
+        public static final double kPYController = 2;
         public static final double kPThetaController = 2.5;
 
-        public static final double kIXController = 0.35; //0.06
-        public static final double kIYController = 0.35; // 0.06
-        public static final double kIThetaController = 0.2;
+        public static final double kIXController = 0.02; //0.06
+        public static final double kIYController = 0.02; // 0.06
+        public static final double kIThetaController = 0.05;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
