@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import choreo.Choreo;
@@ -88,12 +89,13 @@ public class Autos {
     *Constants.Measurements.coralStationDivotOffset);
 
     PathPlannerPath B_to_station, C_to_station, D_to_station, E_to_station, K_to_station, L_to_station,
-    station_to_B, station_to_C, station_to_D, station_to_A, station_to_K, station_to_L, G_to_driver_right, G_to_driver_left;
+    station_to_B, station_to_C, station_to_D, station_to_A, station_to_K, station_to_L, G_to_driver_right, G_to_driver_left,
+    simple_auto;
     
     public enum AUTO {
         BLUE_DRIVER_LEFT, BLUE_CENTER, BLUE_DRIVER_RIGHT,
         RED_DRIVER_LEFT, RED_CENTER, RED_DRIVER_RIGHT,
-        PRACTICE_FIELD
+        PRACTICE_FIELD, SIMPLE_AUTO
     }
     private SendableChooser<AUTO> chooser;
     StructPublisher<Pose2d> reefPosePublisher = NetworkTableInstance.getDefault().getStructTopic("Auto Reef Pose", Pose2d.struct).publish();
@@ -116,6 +118,7 @@ public class Autos {
         station_to_L = PathPlannerPath.fromChoreoTrajectory("station_to_L");
         G_to_driver_right = PathPlannerPath.fromChoreoTrajectory("G_to_driver_right");
         G_to_driver_left = PathPlannerPath.fromChoreoTrajectory("G_to_driver_left");
+        simple_auto = PathPlannerPath.fromChoreoTrajectory("simple_auto");
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
     }
@@ -131,6 +134,7 @@ public class Autos {
         chooser.addOption("Red Center", AUTO.RED_CENTER);
         chooser.addOption("Red Driver Right", AUTO.RED_DRIVER_RIGHT);
         chooser.addOption("Practice field center", AUTO.PRACTICE_FIELD);
+        chooser.addOption("simple", AUTO.SIMPLE_AUTO);
         chooser.setDefaultOption("Default", null);
         // // Put the auto chooser on the dashboard
         SmartDashboard.putData("AUTOS", chooser);
@@ -159,8 +163,13 @@ public class Autos {
             case RED_CENTER -> getRedCenter();
             case RED_DRIVER_RIGHT -> getRedDriverRight();
             case PRACTICE_FIELD -> getPracticeField();
+            case SIMPLE_AUTO -> getSimpleAuto();
             default -> new InstantCommand();
         };
+    }
+
+    public Command getSimpleAuto() {
+        return getStationCommmand(simple_auto);
     }
 
     public Command getBlueDriverLeft() {
@@ -234,24 +243,24 @@ public class Autos {
     }
     reefPosePublisher.set(endPose);
 
-    // edu.wpi.first.math.trajectory.Trajectory traj = TrajectoryGenerator.generateTrajectory(
-    //   startPose,
-    //   List.of(),
-    //   endPose,
-    //   trajectoryConfig);
+    edu.wpi.first.math.trajectory.Trajectory traj = TrajectoryGenerator.generateTrajectory(
+      startPose,
+      List.of(),
+      endPose,
+      trajectoryConfig);
 
     // 4. Construct command to follow trajectory
-    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-    //   traj,
-    //   swerveSubsystem::getPose,
-    //   DriveConstants.kDriveKinematics,
-    //   xController,
-    //   yController,
-    //   thetaController,
-    //   swerveSubsystem::setModuleStates,
-    //   swerveSubsystem);
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+      traj,
+      swerveSubsystem::getPose,
+      DriveConstants.kDriveKinematics,
+      xController,
+      yController,
+      thetaController,
+      swerveSubsystem::setModuleStates,
+      swerveSubsystem);
 
-    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, null);
+    // Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, PathConstraints.unlimitedConstraints(12));
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(

@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -91,8 +92,8 @@ public class SwerveJoystick extends Command {
       Boolean xButtonPressed = j.getRawButton(XBoxConstants.X);
       Boolean yButtonPressed = j.getRawButton(XBoxConstants.Y);
       if (xButtonPressed || aButtonPressed || bButtonPressed) {
-        if (RobotContainer.currentTrajectory == null) {
-            swerveSubsystem.holonomicDriveController.getThetaController().reset(Units.degreesToRadians(swerveSubsystem.getHeading()));
+        if (RobotContainer.currentTrajectory == null || RobotContainer.goalPose == null) {
+            swerveSubsystem.holonomicDriveController.getThetaController().reset(0);
             swerveSubsystem.holonomicDriveController.getXController().reset();
             swerveSubsystem.holonomicDriveController.getYController().reset();
             boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
@@ -117,11 +118,12 @@ public class SwerveJoystick extends Command {
         // var desiredRotation = desiredState.poseMeters.getRotation();
         // SmartDashboard.putNumber("ROTATION", desiredRotation.getDegrees());
         // var targetChassisSpeeds =
-        //     swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), desiredState, desiredRotation);
+        // swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), desiredState, desiredRotation);
+        var speeds = swerveSubsystem.holonomicDriveController.calculate(swerveSubsystem.getPose(), RobotContainer.goalPose, 0, RobotContainer.goalPose.getRotation());
         // var targetModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         // Get the current pose of the robot
-        Pose2d pose = swerveSubsystem.getPose();
+        // Pose2d pose = swerveSubsystem.getPose();
 
         // Generate the next speeds for the robot
         // ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -130,11 +132,11 @@ public class SwerveJoystick extends Command {
         //     swerveSubsystem.thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(RobotContainer.goalPose.getRotation().getDegrees())),
         //     swerveSubsystem.getRotation2d()
         // );
-        ChassisSpeeds speeds = new ChassisSpeeds(
-            swerveSubsystem.xController.calculate(pose.getX(), RobotContainer.goalPose.getX()),
-            swerveSubsystem.yController.calculate(pose.getY(), RobotContainer.goalPose.getY()),
-            swerveSubsystem.thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(RobotContainer.goalPose.getRotation().getDegrees()))
-        );
+        // ChassisSpeeds speeds = new ChassisSpeeds(
+        //     swerveSubsystem.xController.calculate(pose.getX(), RobotContainer.goalPose.getX()),
+        //     swerveSubsystem.yController.calculate(pose.getY(), RobotContainer.goalPose.getY()),
+        //     swerveSubsystem.thetaController.calculate(pose.getRotation().getDegrees(), Math.toDegrees(RobotContainer.goalPose.getRotation().getDegrees()))
+        // );
 
         // Apply the generated speeds
         swerveSubsystem.setModuleStatesFromSpeeds(speeds);

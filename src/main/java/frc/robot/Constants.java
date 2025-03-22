@@ -127,11 +127,12 @@ public final class Constants {
         public static final double kSlowButtonDriveModifier = 0.3;
         public static final double kSlowButtonTurnModifier = 0.25;
 
-        public static final double kPDrive = 1;
-        public static final double kPTurning = 0.6;
+        public static final double kPDrive = 5;
+        public static final double kPTurning = 5;
 
-        public static final double kPDrift = 0.035;
-        public static final double kIDrift = 0.005; //Changed before test
+
+        public static final double kPDrift = 0.045;
+        public static final double kIDrift = 0.0065; //Changed before test
     }
 
 
