@@ -40,7 +40,7 @@ public class CoralArm extends SubsystemBase {
         
         coralArmEncoder = coralArmMotor.getEncoder();
         
-        coralArmPID.setTolerance(0.3);
+        coralArmPID.setTolerance(0.35);
     }
     
     public void runArm(double percent){

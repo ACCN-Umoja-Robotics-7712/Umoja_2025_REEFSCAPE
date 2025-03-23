@@ -202,12 +202,12 @@ public class Autos {
 
     public Command getBlueDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), swerveSubsystem.offsetPoint(blueReefRobotLeft, 0,0, 0), AutoConstants.firstWait),
-            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0, -0.2, 0)),
-            getScoreCommand(blueReefDriverRightRightBranch, AutoConstants.firstWait),
-            getStationCommmand(blueStationDriverRight),
-            getScoreCommand(blueReefDriverRightLeftBranch, AutoConstants.firstWait),
-            getStationCommmand(blueStationDriverRight)
+            getScoreCommand(swerveSubsystem.getPose(), swerveSubsystem.offsetPoint(blueReefRobotLeft,/*for practice */ -0.08,0, 0), AutoConstants.firstWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.0, 0), AutoConstants.stationWait),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueReefDriverRightLeftBranch, 0), AutoConstants.secondWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.03), AutoConstants.stationWait),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueReefDriverRightRightBranch, 0.03), AutoConstants.secondWait),
+            getStationCommmand(blueStationDriverRight, AutoConstants.stationWait)
         );
     }
 
@@ -281,7 +281,7 @@ public class Autos {
                 new ParallelCommandGroup(
                     new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L4),
                     new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4),
-                    new Intake(RobotContainer.coralIntakeSubsystem)
+                    new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(1))
                 )
             )
         ),
@@ -468,8 +468,9 @@ public class Autos {
    *
    * @return the command to run in autonomous
    */
-  public Command getStationCommmand(Pose2d endPose) {
-    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, new PathConstraints(3.0, 1.3, 540, 720));
+  public Command getStationCommmand(Pose2d endPose, double waitTime) {
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), new PathConstraints(3.0, 1.3, 540, 720), 1.0);
+    // Command swerveControllerCommand2 = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0.3, 0), new PathConstraints(1.0, 1.0, 540, 720));
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
@@ -480,10 +481,11 @@ public class Autos {
                 new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.PICKUP)
             ),
             new SequentialCommandGroup(
-                new WaitCommand(1.1),
+                new WaitCommand(waitTime),
+
                 new ParallelCommandGroup(
-                    new Intake(RobotContainer.coralIntakeSubsystem),
-                    swerveControllerCommand
+                    swerveControllerCommand,
+                    new Intake(RobotContainer.coralIntakeSubsystem)
                 )
             )
         )

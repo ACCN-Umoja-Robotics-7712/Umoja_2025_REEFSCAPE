@@ -183,7 +183,7 @@ public final class Constants {
         public static final double shootPositionL23 = 0;
         public static final double shootPositionL4 = 0;
 
-        public static final double hasCoralProximity = 120;
+        public static final double hasCoralProximity = 130;
 
         public static final double coralCurrentDiff = 0.05;
 
@@ -217,7 +217,7 @@ public final class Constants {
         public static final double elevatorBottomLimit = 12.0;
 
         public static final double kP = 0.1; // TODO: Change/test to 0.13
-        public static final double kI = 0.0; 
+        public static final double kI = 0.0005; 
 
         public static final double slowDown = 0.8;
 
@@ -276,8 +276,9 @@ public final class Constants {
                 kMaxAngularSpeedRadiansPerSecond,
                 kMaxAngularAccelerationRadiansPerSecondSquared);
 
-        public static final double firstWait = 1.0;
-        public static final double stationWait = 1.0;
+        public static final double firstWait = 0.4;
+        public static final double secondWait = 2;
+        public static final double stationWait = 0.7;
     }
 
     public static final class XBoxConstants {
