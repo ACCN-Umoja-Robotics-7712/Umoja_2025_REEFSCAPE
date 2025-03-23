@@ -145,8 +145,8 @@ public class SwerveSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> setModuleStatesFromSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(Constants.DriveConstants.kPDrive, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(Constants.DriveConstants.kPTurning, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(Constants.AutoConstants.kPXController, Constants.AutoConstants.kIXController, 0), // Translation PID constants
+                        new PIDConstants(Constants.AutoConstants.kPThetaController, Constants.AutoConstants.kIThetaController, 0.0) // Rotation PID constants
                 ), // TODO: Auto PID
                 config,
                 () -> {
@@ -350,11 +350,17 @@ public class SwerveSubsystem extends SubsystemBase {
                 }
             }
             // RobotContainer.led.setUmojaColors();
-            // Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
-            // Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
+            Pose3d targetPose3d = LimelightHelpers.getTargetPose3d_RobotSpace(tagLeftLimelightName);
+            Double targetYaw = Math.toDegrees(targetPose3d.getRotation().getAngle());
             // Double targetX = targetPose3d.getX();
     
-            // SmartDashboard.putNumber("target yaw", targetYaw);
+            SmartDashboard.putNumber("target yaw tag", targetYaw);
+
+            Pose3d targetPose3dr = LimelightHelpers.getTargetPose3d_RobotSpace(tagRightLimelightName);
+            Double targetYawr = Math.toDegrees(targetPose3d.getRotation().getAngle());
+            // Double targetX = targetPose3d.getX();
+    
+            SmartDashboard.putNumber("target yaw right", targetYawr);
             // SmartDashboard.putNumber("target x", targetX);
 
             // // lined up angle perfectly (turn off limelight)
@@ -388,10 +394,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void setModuleStates(SwerveModuleState[] desiredStates){
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
-        frontRight.setDesiredState(desiredStates[0]);
-        frontLeft.setDesiredState(desiredStates[1]);
-        backRight.setDesiredState(desiredStates[2]);
-        backLeft.setDesiredState(desiredStates[3]);
+        
+        frontLeft.setDesiredState(desiredStates[0]);
+        frontRight.setDesiredState(desiredStates[1]);
+        backLeft.setDesiredState(desiredStates[2]);
+        backRight.setDesiredState(desiredStates[3]);
     }
 
     public void setModuleStatesFromSpeeds(ChassisSpeeds speeds){

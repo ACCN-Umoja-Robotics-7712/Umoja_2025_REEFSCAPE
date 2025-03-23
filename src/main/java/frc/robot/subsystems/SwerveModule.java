@@ -97,11 +97,11 @@ public class SwerveModule {
     }
 
     public double getDriveVelocity() {
-        return driveMotor.getVelocity().getValueAsDouble()*ModuleConstants.kDriveEncoderRPM2MeterPerSec;
+        return driveMotor.getVelocity().getValueAsDouble()*ModuleConstants.kDriveEncoderRot2Meter;
     }
 
     public double getTurningVelocity() {
-        return turnMotor.getVelocity().getValueAsDouble()*ModuleConstants.kTurnEncoderRPM2RadPerSec;
+        return turnMotor.getVelocity().getValueAsDouble()*ModuleConstants.kTurnEncoderRot2Rad;
     }
 
     public double getAbsoluteEncoderDegree() {

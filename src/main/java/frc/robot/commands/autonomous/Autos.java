@@ -82,8 +82,8 @@ public class Autos {
     Pose2d redReefDriverRightLeftBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, Constants.Measurements.branchOffset);
     Pose2d redReefDriverRightRightBranch = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, -Constants.Measurements.branchOffset);
 
-    Pose2d blueStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, 0*Constants.Measurements.coralStationDivotOffset);
-    Pose2d blueStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13,  -0*Constants.Measurements.coralStationDivotOffset);
+    Pose2d blueStationDriverRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, 0*Constants.Measurements.coralStationDivotOffset);
+    Pose2d blueStationDriverLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13,  -0*Constants.Measurements.coralStationDivotOffset);
     Pose2d redStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupRight2,  0*Constants.Measurements.coralStationDivotOffset);
     Pose2d redStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupLeft1,  -0
     *Constants.Measurements.coralStationDivotOffset);
@@ -98,6 +98,7 @@ public class Autos {
         PRACTICE_FIELD, SIMPLE_AUTO
     }
     private SendableChooser<AUTO> chooser;
+    private SendableChooser<Command> ppChooser;
     StructPublisher<Pose2d> reefPosePublisher = NetworkTableInstance.getDefault().getStructTopic("Auto Reef Pose", Pose2d.struct).publish();
     StructPublisher<Pose2d> stationPosePublisher = NetworkTableInstance.getDefault().getStructTopic("Auto Station Pose", Pose2d.struct).publish();
     
@@ -136,8 +137,12 @@ public class Autos {
         chooser.addOption("Practice field center", AUTO.PRACTICE_FIELD);
         chooser.addOption("simple", AUTO.SIMPLE_AUTO);
         chooser.setDefaultOption("Default", null);
+        
+        
+        ppChooser = AutoBuilder.buildAutoChooser();
         // // Put the auto chooser on the dashboard
         SmartDashboard.putData("AUTOS", chooser);
+        SmartDashboard.putData("PP AUTOS", ppChooser);
         
         // 1. Create trajectory settings
         this.trajectoryConfig = new TrajectoryConfig(
@@ -149,6 +154,7 @@ public class Autos {
     }
 
     public Command getAuto() {
+        // return ppChooser.getSelected();
         AUTO auto = chooser.getSelected();
         if (auto == null) {
             System.out.println("auto is null");
@@ -189,19 +195,19 @@ public class Autos {
 
     public Command getBlueCenter() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), blueCenter, AutoConstants.firstWait),
+            getScoreCommand(swerveSubsystem.getPose(), swerveSubsystem.offsetPoint(blueCenter, 0,0, 0), AutoConstants.firstWait),
             getStationCommmand(G_to_driver_right)
         );
     }
 
     public Command getBlueDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), blueReefRobotLeft, AutoConstants.firstWait),
-            getStationCommmand(E_to_station),
-            getScoreCommand(station_to_C, AutoConstants.firstWait),
-            getStationCommmand(C_to_station),
-            getScoreCommand(station_to_D, AutoConstants.firstWait),
-            getStationCommmand(C_to_station)
+            getScoreCommand(swerveSubsystem.getPose(), swerveSubsystem.offsetPoint(blueReefRobotLeft, 0,-0.2, 0), AutoConstants.firstWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0, -0.2, 0)),
+            getScoreCommand(blueReefDriverRightRightBranch, AutoConstants.firstWait),
+            getStationCommmand(blueStationDriverRight),
+            getScoreCommand(blueReefDriverRightLeftBranch, AutoConstants.firstWait),
+            getStationCommmand(blueStationDriverRight)
         );
     }
 
@@ -243,24 +249,67 @@ public class Autos {
     }
     reefPosePublisher.set(endPose);
 
-    edu.wpi.first.math.trajectory.Trajectory traj = TrajectoryGenerator.generateTrajectory(
-      startPose,
-      List.of(),
-      endPose,
-      trajectoryConfig);
+    // edu.wpi.first.math.trajectory.Trajectory traj = TrajectoryGenerator.generateTrajectory(
+    //   startPose,
+    //   List.of(),
+    //   endPose,
+    //   trajectoryConfig);
 
-    // 4. Construct command to follow trajectory
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      traj,
-      swerveSubsystem::getPose,
-      DriveConstants.kDriveKinematics,
-      xController,
-      yController,
-      thetaController,
-      swerveSubsystem::setModuleStates,
-      swerveSubsystem);
+    // // 4. Construct command to follow trajectory
+    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+    //   traj,
+    //   swerveSubsystem::getPose,
+    //   DriveConstants.kDriveKinematics,
+    //   xController,
+    //   yController,
+    //   thetaController,
+    //   swerveSubsystem::setModuleStates,
+    //   swerveSubsystem);
 
-    // Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, PathConstraints.unlimitedConstraints(12));
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, new PathConstraints(3.0, 1.3, 540, 720));
+
+    // 5. Add some init and wrap-up, and return everything
+    return new SequentialCommandGroup(
+        // Drive then move elevator after 1 second
+        new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                swerveControllerCommand,
+                new InstantCommand(() -> swerveSubsystem.stopModules())
+            ),
+            new SequentialCommandGroup(
+                new WaitCommand(waitTime),
+                new ParallelCommandGroup(
+                    new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L4),
+                    new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4),
+                    new Intake(RobotContainer.coralIntakeSubsystem)
+                )
+            )
+        ),
+        new WaitCommand(0.4),
+        // shoot for 1 second then stop
+        new ParallelCommandGroup(
+            new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(-1)),
+            new WaitCommand(1.0)
+        ),
+        new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(0))
+    );
+  }
+  
+
+   /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getScoreCommand(Pose2d endPose, double waitTime) {
+    // An example command will be run in autonomous
+
+    if (endPose == null) {
+      return new InstantCommand();
+    }
+    reefPosePublisher.set(endPose);
+
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, new PathConstraints(3.0, 1.3, 540, 720));
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
@@ -288,7 +337,6 @@ public class Autos {
         new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(0))
     );
   }
-  
 
    /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -409,6 +457,33 @@ public class Autos {
                 new ParallelCommandGroup(
                     new Intake(RobotContainer.coralIntakeSubsystem),
                     followChoreoPath
+                )
+            )
+        )
+    );
+  }
+  
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getStationCommmand(Pose2d endPose) {
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, new PathConstraints(3.0, 1.3, 540, 720));
+
+    // 5. Add some init and wrap-up, and return everything
+    return new SequentialCommandGroup(
+        // Move elevator then drive after 1.5 seconds
+        new ParallelCommandGroup(
+            new ParallelCommandGroup(
+                new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L1),
+                new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.PICKUP)
+            ),
+            new SequentialCommandGroup(
+                new WaitCommand(1.1),
+                new ParallelCommandGroup(
+                    new Intake(RobotContainer.coralIntakeSubsystem),
+                    swerveControllerCommand
                 )
             )
         )

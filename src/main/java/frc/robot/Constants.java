@@ -45,26 +45,28 @@ public final class Constants {
         public static final double kTurningMotorGearRatio = 1 / 21.42857142857143;//(12*14)/(72*50) based on #of teeth
         public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
         public static final double kTurnEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
-        public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
+        public static final double 
+        kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
         public static final double kTurnEncoderRPM2RadPerSec = kTurnEncoderRot2Rad / 60;
         public static final double kPTurning = 0.6;
     }
 
     public static final class DriveConstants {
-        public static final double kTrackWidth = Units.inchesToMeters(23.5);
+        public static final double kTrackWidth = Units.inchesToMeters(26);
         // Distance between right and left wheels
-        public static final double kWheelBase = Units.inchesToMeters(22);
+        public static final double kWheelBase = Units.inchesToMeters(26);
         // Distance between front and back wheels
 
         public static final double teleSpeed = 0.7;
 
         public static final double kRobotRadius = Math.sqrt(Math.pow(kTrackWidth, 2) + Math.pow(kWheelBase, 2)) / 2;
 
+        //TODO: Update to positive left positive forward FL, Fr, BL, BR
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+                new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+                new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
         public static final int kFrontLeftDriveMotorPort = 16;
         public static final int kFrontLeftTurningMotorPort = 15;
@@ -261,13 +263,13 @@ public final class Constants {
         // public static final double kIXController = 0.35; //0.06
         // public static final double kIYController = 0.35; // 0.06
         // public static final double kIThetaController = 0.2;
-        public static final double kPXController = 2;
-        public static final double kPYController = 2;
-        public static final double kPThetaController = 2.5;
+        public static final double kPXController = 4.8;// 1.5
+        public static final double kPYController = 4.8; // 1.5
+        public static final double kPThetaController = 1.0; // 2.5
 
-        public static final double kIXController = 0.02; //0.06
-        public static final double kIYController = 0.02; // 0.06
-        public static final double kIThetaController = 0.05;
+        public static final double kIXController = 0.01; //0.01 
+        public static final double kIYController = 0.01; // 0.01
+        public static final double kIThetaController = 0.01;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
