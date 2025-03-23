@@ -265,7 +265,7 @@ public final class Constants {
         // public static final double kIThetaController = 0.2;
         public static final double kPXController = 4.8;// 1.5
         public static final double kPYController = 4.8; // 1.5
-        public static final double kPThetaController = 1.0; // 2.5
+        public static final double kPThetaController = 2.5; // 2.5
 
         public static final double kIXController = 0.01; //0.01 
         public static final double kIYController = 0.01; // 0.01
