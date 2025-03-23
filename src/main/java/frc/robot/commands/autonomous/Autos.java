@@ -84,8 +84,8 @@ public class Autos {
 
     Pose2d blueStationDriverRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, 0*Constants.Measurements.coralStationDivotOffset);
     Pose2d blueStationDriverLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13,  -0*Constants.Measurements.coralStationDivotOffset);
-    Pose2d redStationRobotLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupRight2,  0*Constants.Measurements.coralStationDivotOffset);
-    Pose2d redStationRobotRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupLeft1,  -0
+    Pose2d redStationDriverRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupRight2,  0*Constants.Measurements.coralStationDivotOffset);
+    Pose2d redStationDriverLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupLeft1,  -0
     *Constants.Measurements.coralStationDivotOffset);
 
     PathPlannerPath B_to_station, C_to_station, D_to_station, E_to_station, K_to_station, L_to_station,
@@ -205,7 +205,7 @@ public class Autos {
             getScoreCommand(swerveSubsystem.getPose(), swerveSubsystem.offsetPoint(blueReefRobotLeft,/*for practice */ -0.08,0, 0), AutoConstants.firstWait),
             getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.0, 0), AutoConstants.stationWait),
             getScoreCommand(swerveSubsystem.offsetPoint(blueReefDriverRightLeftBranch, 0), AutoConstants.secondWait),
-            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.03), AutoConstants.stationWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.01, -0.03, 0), AutoConstants.stationWait),
             getScoreCommand(swerveSubsystem.offsetPoint(blueReefDriverRightRightBranch, 0.03), AutoConstants.secondWait),
             getStationCommmand(blueStationDriverRight, AutoConstants.stationWait)
         );
@@ -214,10 +214,10 @@ public class Autos {
     public Command getRedDriverLeft() {
         return new SequentialCommandGroup(
             getScoreCommand(swerveSubsystem.getPose(), redReefRobotRight, AutoConstants.firstWait),
-            getStationCommand(redReefRobotRight, redStationRobotRight),
-            getScoreCommand(swerveSubsystem.offsetPoint(redStationRobotRight, 0, -1, 0), redReefDriverLeftLeftBranch, AutoConstants.stationWait),
-            getStationCommand(redReefDriverLeftLeftBranch, redStationRobotRight),
-            getScoreCommand(swerveSubsystem.offsetPoint(redStationRobotRight, 0, -1, 0), redReefDriverLeftRightBranch, AutoConstants.stationWait)
+            getStationCommand(redReefRobotRight, redStationDriverLeft),
+            getScoreCommand(swerveSubsystem.offsetPoint(redStationDriverLeft, 0, -1, 0), redReefDriverLeftLeftBranch, AutoConstants.stationWait),
+            getStationCommand(redReefDriverLeftLeftBranch, redStationDriverLeft),
+            getScoreCommand(swerveSubsystem.offsetPoint(redStationDriverLeft, 0, -1, 0), redReefDriverLeftRightBranch, AutoConstants.stationWait)
         );
     }
 
@@ -227,12 +227,12 @@ public class Autos {
 
     public Command getRedDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), redReefRobotLeft, AutoConstants.firstWait),
-            getStationCommmand(E_to_station),
-            getScoreCommand(station_to_C, AutoConstants.firstWait),
-            getStationCommmand(C_to_station),
-            getScoreCommand(station_to_D, AutoConstants.firstWait),
-            getStationCommmand(C_to_station)
+            getScoreCommand(swerveSubsystem.getPose(), swerveSubsystem.offsetPoint(redReefRobotLeft,/*for practice */ -0.08,0, 0), AutoConstants.firstWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, /* for practice */ 0.05, 0.0, 0), AutoConstants.stationWait),
+            getScoreCommand(swerveSubsystem.offsetPoint(redReefDriverRightLeftBranch, 0), AutoConstants.secondWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, 0.01, -0.03, 0), AutoConstants.stationWait),
+            getScoreCommand(swerveSubsystem.offsetPoint(redReefDriverRightRightBranch, 0.03), AutoConstants.secondWait),
+            getStationCommmand(redStationDriverRight, AutoConstants.stationWait)
         );
     }
 
