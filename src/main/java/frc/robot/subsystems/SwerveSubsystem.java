@@ -466,16 +466,13 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         List<Point> pointsToCheck;
-        double offsetDistance = 0;
         if (faceReef) {
-            offsetDistance = Constants.Measurements.branchOffset;
             if (isBlue) {
                 pointsToCheck = RobotContainer.auto.blueReef;
             } else {
                 pointsToCheck = RobotContainer.auto.redReef;
             }
         } else {
-            offsetDistance = 3*Constants.Measurements.coralStationDivotOffset;
             if (isBlue) {
                 pointsToCheck = RobotContainer.auto.blueStation;
             } else {
@@ -495,13 +492,12 @@ public class SwerveSubsystem extends SubsystemBase {
         if (shouldFlipBlue || shouldFlipRed) {
             offsetDirection *= -1;
         }
-        double trueOffset = offsetDirection*offsetDistance;
-        if (trueOffset == 0) {
-            return nearestPoint.center;
-        } else if (trueOffset < 0) {
+        if (offsetDirection < 0) {
             return nearestPoint.left;
-        } else {
+        } else if (offsetDirection > 0) {
             return nearestPoint.right;
+        } else {
+            return nearestPoint.center;
         }
     }
 
