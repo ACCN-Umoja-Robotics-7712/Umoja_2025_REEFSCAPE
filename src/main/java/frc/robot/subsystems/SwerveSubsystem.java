@@ -51,6 +51,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.objects.Point;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
@@ -377,9 +378,9 @@ public class SwerveSubsystem extends SubsystemBase {
     
         posePublisher.set(poseEstimator.getEstimatedPosition());
         boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-        nearestPosePublisher.set(nearestPoint(hasCoral, false));
-        nearestReefPublisher.set(nearestPoint(true, false));
-        nearestStationPublisher.set(nearestPoint(false, false));
+        nearestPosePublisher.set(nearestPoint(hasCoral));
+        nearestReefPublisher.set(nearestPoint(true));
+        nearestStationPublisher.set(nearestPoint(false));
 
 
         // publishRobotPositions();
@@ -407,8 +408,8 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     // offset is -1 for left, 1 for right, and 0 for center
-    public Trajectory getNearestTagTrajectory(boolean faceReef, boolean faceProcessor, int offset) {
-        Pose2d nearestPoint = nearestPoint(faceReef, faceProcessor, offset);
+    public Trajectory getNearestTagTrajectory(boolean faceReef, int offset) {
+        Pose2d nearestPoint = nearestPoint(faceReef, offset);
         RobotContainer.goalPose = nearestPoint;
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             RobotContainer.swerveSubsystem.poseEstimator.getEstimatedPosition(),
@@ -451,11 +452,11 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     
 
-    public Pose2d nearestPoint(boolean faceReef, boolean faceProcessor) {
-        return nearestPoint(faceReef, faceProcessor, 0);
+    public Pose2d nearestPoint(boolean faceReef) {
+        return nearestPoint(faceReef, 0);
     }
 
-    public Pose2d nearestPoint(boolean faceReef, boolean faceProcessor, double offsetDirection) {
+    public Pose2d nearestPoint(boolean faceReef, double offsetDirection) {
         boolean isBlue = true;
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
@@ -464,34 +465,26 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         }
 
-        if (faceProcessor) {
-            if (isBlue) {
-                return Constants.blueProcessorPosition;
-            } else {
-                return Constants.redProcessorPosition;
-            }
-        }
-
-        List<Pose2d> pointsToCheck;
+        List<Point> pointsToCheck;
         double offsetDistance = 0;
         if (faceReef) {
             offsetDistance = Constants.Measurements.branchOffset;
             if (isBlue) {
-                pointsToCheck = List.of(Constants.blueReefPositions);
+                pointsToCheck = RobotContainer.auto.blueReef;
             } else {
-                pointsToCheck = List.of(Constants.redReefPositions);
+                pointsToCheck = RobotContainer.auto.redReef;
             }
         } else {
             offsetDistance = 3*Constants.Measurements.coralStationDivotOffset;
             if (isBlue) {
-                pointsToCheck = List.of(Constants.bluePickUpPositions);
+                pointsToCheck = RobotContainer.auto.blueStation;
             } else {
-                pointsToCheck = List.of(Constants.redPickUpPositions);
+                pointsToCheck = RobotContainer.auto.redStation;
             }
         }
 
-        Pose2d nearestPose = poseEstimator.getEstimatedPosition().nearest(pointsToCheck);
-        double poseAngle = nearestPose.getRotation().getDegrees();
+        Point nearestPoint = Point.nearest(getPose(), pointsToCheck);
+        double poseAngle = nearestPoint.center.getRotation().getDegrees();
         if (poseAngle < 0) {
             poseAngle += 360;
         }
@@ -503,7 +496,13 @@ public class SwerveSubsystem extends SubsystemBase {
             offsetDirection *= -1;
         }
         double trueOffset = offsetDirection*offsetDistance;
-        return offsetPoint(nearestPose, trueOffset);
+        if (trueOffset == 0) {
+            return nearestPoint.center;
+        } else if (trueOffset < 0) {
+            return nearestPoint.left;
+        } else {
+            return nearestPoint.right;
+        }
     }
 
     public Pose2d offsetPoint(Pose2d pose, double sideOffset) {

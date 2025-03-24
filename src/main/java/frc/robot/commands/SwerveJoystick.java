@@ -105,7 +105,7 @@ public class SwerveJoystick extends Command {
             } else {
               offset = 0;
             }
-            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(hasCoral, false, offset);
+            RobotContainer.currentTrajectory = swerveSubsystem.getNearestTagTrajectory(hasCoral, offset);
         }
         // if (!swerveSubsystem.timer.isRunning()) {
         //   swerveSubsystem.timer.start();
@@ -189,7 +189,7 @@ public class SwerveJoystick extends Command {
             if (RobotContainer.shouldAutoFixDrift == 2 || yButtonPressed) {
               // change hasCoral to be based on intake hasCoral
               boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
-              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral, false).getRotation().getDegrees();
+              RobotContainer.wantedAngle = swerveSubsystem.nearestPoint(hasCoral).getRotation().getDegrees();
             } else if (RobotContainer.shouldAutoFixDrift == 1) {
               RobotContainer.wantedAngle = swerveSubsystem.getHeading();
               // RobotContainer.wantedAngle = 0; 
