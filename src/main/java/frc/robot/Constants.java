@@ -465,4 +465,33 @@ public final class Constants {
     public static final Pose2d[] redPickUpPositions = { RobotPositions.redPickupLeft1, RobotPositions.redPickupRight2};
     public static final Pose2d[] redReefPositions = { RobotPositions.redReefLeft6, RobotPositions.redReefCenter7, RobotPositions.redReefRight8, RobotPositions.redReefBackRight9, RobotPositions.redReefBackCenter10, RobotPositions.redReefBackLeft11};
     public static final Pose2d redProcessorPosition = RobotPositions.redProcessor3;
+
+    // TODO: Update at comp
+    public static final class BranchOffsets {
+        public static final double blueBranchAOffset = 0;
+        public static final double blueBranchBOffset = 0;
+        public static final double blueBranchCOffset = 0;
+        public static final double blueBranchDOffset = 0.03;
+        public static final double blueBranchEOffset = -0.08;
+        public static final double blueBranchFOffset = 0;
+        public static final double blueBranchGOffset = 0;
+        public static final double blueBranchHOffset = 0;
+        public static final double blueBranchIOffset = 0;
+        public static final double blueBranchJOffset = 0;
+        public static final double blueBranchKOffset = 0;
+        public static final double blueBranchLOffset = 0;
+        
+        public static final double redBranchAOffset = 0;
+        public static final double redBranchBOffset = 0;
+        public static final double redBranchCOffset = 0;
+        public static final double redBranchDOffset = 0.03;
+        public static final double redBranchEOffset = -0.08;
+        public static final double redBranchFOffset = 0;
+        public static final double redBranchGOffset = 0;
+        public static final double redBranchHOffset = 0;
+        public static final double redBranchIOffset = 0;
+        public static final double redBranchJOffset = 0;
+        public static final double redBranchKOffset = 0;
+        public static final double redBranchLOffset = 0;
+    }
 }
