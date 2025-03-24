@@ -23,26 +23,13 @@ public class Point {
    * @return The nearest Pose2d from the list.
    */
   public static Point nearest(Pose2d pose, List<Point> points) {
-    Point closestPoint = null;
-    double closestDistance = Double.POSITIVE_INFINITY, closestAngle = Double.POSITIVE_INFINITY;
-    for (Point point:points) {
-        if (closestPoint == null) {
-            closestPoint = point;
-            closestDistance = point.center.getTranslation().getDistance(pose.getTranslation());
-            closestAngle = Math.abs(point.center.getRotation().minus(pose.getRotation()).getRadians());
-        } else {
-            double newDistance = point.center.getTranslation().getDistance(pose.getTranslation());
-            double newAngle = Math.abs(point.center.getRotation().minus(pose.getRotation()).getRadians());
-            Boolean isDistanceCloser = newDistance < closestDistance;
-            Boolean isDistanceEqual = newDistance == closestDistance;
-            Boolean isAngleCloser = newAngle < closestAngle;
-            if (isDistanceCloser || (isDistanceEqual && isAngleCloser)) {
-                closestPoint = point;
-                closestDistance = newDistance;
-                closestAngle = newAngle;
-            }
-        }
-    }
-    return closestPoint;
+    
+    return Collections.min(
+        points,
+        Comparator.comparing(
+                (Point point) -> pose.getTranslation().getDistance(point.center.getTranslation()))
+            .thenComparing(
+                (Point point) ->
+                    Math.abs(pose.getRotation().minus(point.center.getRotation()).getRadians())));
   }
 }
