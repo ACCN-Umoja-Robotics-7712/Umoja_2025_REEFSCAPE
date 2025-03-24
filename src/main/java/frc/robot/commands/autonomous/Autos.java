@@ -44,11 +44,10 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.USB;
+import frc.robot.objects.Reef;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.CoralIntake;
-// Pass in robot states
-
 
 public class Autos {
     private final SwerveSubsystem swerveSubsystem = RobotContainer.swerveSubsystem;
@@ -81,6 +80,13 @@ public class Autos {
     Pose2d blueBranchJ = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchJOffset);
     Pose2d blueBranchK = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchKOffset);
     Pose2d blueBranchL = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchLOffset);
+
+    Reef blueReefCenter18 = new Reef(Constants.RobotPositions.blueReefCenter18, blueBranchA, blueBranchB);
+    Reef blueReefRight17 = new Reef(Constants.RobotPositions.blueReefRight17, blueBranchC, blueBranchD);
+    Reef blueReefBackRight22 = new Reef(Constants.RobotPositions.blueReefBackRight22, blueBranchE, blueBranchF);
+    Reef blueReefBackCenter21 = new Reef(Constants.RobotPositions.blueReefBackCenter21, blueBranchG, blueBranchH);
+    Reef blueReefBackLeft20 = new Reef(Constants.RobotPositions.blueReefBackLeft20, blueBranchI, blueBranchJ);
+    Reef blueReefLeft19 = new Reef(Constants.RobotPositions.blueReefLeft19, blueBranchK, blueBranchL);
     
     Pose2d redBranchA = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefCenter7, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchAOffset);
     Pose2d redBranchB = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefCenter7, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchBOffset);
@@ -94,6 +100,13 @@ public class Autos {
     Pose2d redBranchJ = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchJOffset);
     Pose2d redBranchK = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchKOffset);
     Pose2d redBranchL = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchLOffset);
+    
+    Reef redReefCenter7 = new Reef(Constants.RobotPositions.redReefCenter7, redBranchA, redBranchB);
+    Reef redReefRight8 = new Reef(Constants.RobotPositions.redReefRight8, redBranchC, redBranchD);
+    Reef redReefBackRight9 = new Reef(Constants.RobotPositions.redReefBackRight9, redBranchE, redBranchF);
+    Reef redReefBackCenter10 = new Reef(Constants.RobotPositions.redReefBackCenter10, redBranchG, redBranchH);
+    Reef redReefBackLeft11 = new Reef(Constants.RobotPositions.redReefBackLeft11, redBranchI, redBranchJ);
+    Reef redReefLeft6 = new Reef(Constants.RobotPositions.redReefLeft6, redBranchK, redBranchL);
 
     PathPlannerPath B_to_station, C_to_station, D_to_station, E_to_station, K_to_station, L_to_station,
     station_to_B, station_to_C, station_to_D, station_to_A, station_to_K, station_to_L, G_to_driver_right, G_to_driver_left,
