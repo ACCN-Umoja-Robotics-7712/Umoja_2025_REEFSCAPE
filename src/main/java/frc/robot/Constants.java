@@ -162,6 +162,7 @@ public final class Constants {
     public static final class DeepClimbConstants{
 
         public static final int climbMotorID = 3;
+        public static final double deepClimbBottomLimit = 0;
         public static final double kP = 0;
         public static final double kI = 0;
     }
@@ -195,7 +196,7 @@ public final class Constants {
         public static final double PICKUP = 56.31459;
         public static final double L1 = 8;
         public static final double L23 = 36;
-        public static final double L4 = 33 +1; // TODO: Fix value
+        public static final double L4 = 33; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
         public static final double REMOVE = 50;
     }
@@ -226,15 +227,20 @@ public final class Constants {
         public static final int elevatorMotor1ID = 8;
         public static final int elevatorMotor2ID = 9;
 
+        public static final TrapezoidProfile.Constraints kElevatorConstraints =
+            new TrapezoidProfile.Constraints(
+                115,
+                80);
+
     }
 
     public static final class ElevatorStates {
 
         public static final double NONE = -1;
-        public static final double L1 = 12;
-        public static final double L2 = 12 +1;
-        public static final double L3 = 67 +1;
-        public static final double L4 = 149+2;
+        public static final double L1 = 12-1;
+        public static final double L2 = 12-1;
+        public static final double L3 = 67-1;
+        public static final double L4 = 149 -1;
         public static final double CLIMB = 0;
     };
 

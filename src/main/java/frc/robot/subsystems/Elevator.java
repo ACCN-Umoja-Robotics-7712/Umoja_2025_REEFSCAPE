@@ -18,6 +18,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.GameConstants;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 
 public class Elevator extends SubsystemBase {
     private final SparkMax elevatorMotor1 = new SparkMax(Constants.ElevatorConstants.elevatorMotor1ID, MotorType.kBrushless);
@@ -25,7 +26,8 @@ public class Elevator extends SubsystemBase {
 
     private final RelativeEncoder elevator1Encoder = elevatorMotor1.getEncoder();
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(3);
-    PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, 0);
+    ProfiledPIDController elevatorPID = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI, 0, ElevatorConstants.kElevatorConstraints);
+    // PIDController elevatorPID = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI, 0);
 
     private double state = Constants.ElevatorStates.NONE;
     
@@ -46,7 +48,7 @@ public class Elevator extends SubsystemBase {
         elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
         elevatorMotor2.configure(elevator2Config, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
-        elevatorPID.setTolerance(0.4);
+        elevatorPID.setTolerance(0.3, 1);
     }
 
     public void runElevator(double percent){
@@ -67,7 +69,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setState(double state) {
-        elevatorPID.reset();
+        elevatorPID.reset(elevator1Encoder.getPosition());
         this.state = state;
     }
 
@@ -76,7 +78,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean didReachState() {
-        return elevatorPID.atSetpoint();
+        return elevatorPID.atGoal();
     }
 
     public boolean isDangerous(double percent) {
@@ -112,5 +114,6 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("Elevator State", state);
         SmartDashboard.putNumber("ELEVATOR ENCODER", elevator1Encoder.getPosition());
         SmartDashboard.putNumber("ELEVATOR ABSOLUTE ENCODER", absoluteEncoder.get());
+        // SmartDashboard.putNumber("Elevator Velocity", elevatorMotor1;
     }
 }

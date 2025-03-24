@@ -285,7 +285,7 @@ public class Autos {
                 )
             )
         ),
-        new WaitCommand(0.4),
+        new WaitCommand(0.4), //TODO: Change wait time
         // shoot for 1 second then stop
         new ParallelCommandGroup(
             new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(-1)),
@@ -469,7 +469,7 @@ public class Autos {
    * @return the command to run in autonomous
    */
   public Command getStationCommmand(Pose2d endPose, double waitTime) {
-    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), new PathConstraints(3.0, 1.3, 540, 720), 1.0);
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), new PathConstraints(3.0, 1.3, 540, 720));
     // Command swerveControllerCommand2 = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0.3, 0), new PathConstraints(1.0, 1.0, 540, 720));
 
     // 5. Add some init and wrap-up, and return everything

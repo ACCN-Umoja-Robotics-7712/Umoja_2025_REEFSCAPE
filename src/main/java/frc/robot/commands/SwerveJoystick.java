@@ -93,7 +93,7 @@ public class SwerveJoystick extends Command {
       Boolean yButtonPressed = j.getRawButton(XBoxConstants.Y);
       if (xButtonPressed || aButtonPressed || bButtonPressed) {
         if (RobotContainer.currentTrajectory == null || RobotContainer.goalPose == null) {
-            swerveSubsystem.holonomicDriveController.getThetaController().reset(0);
+            swerveSubsystem.holonomicDriveController.getThetaController().reset(swerveSubsystem.getPose().getRotation().getRadians());
             swerveSubsystem.holonomicDriveController.getXController().reset();
             swerveSubsystem.holonomicDriveController.getYController().reset();
             boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();

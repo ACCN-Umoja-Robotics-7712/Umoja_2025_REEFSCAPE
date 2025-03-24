@@ -25,7 +25,7 @@ public class MoveElevator extends Command{
 
     @Override
     public void end(boolean isInterrupted){
-        System.out.println("ELEVATOR END");
+        System.out.println("ELEVATOR END interrupted: " + isInterrupted);
     }
 
     @Override
