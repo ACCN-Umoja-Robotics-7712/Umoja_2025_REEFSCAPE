@@ -26,6 +26,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -376,11 +377,19 @@ public class SwerveSubsystem extends SubsystemBase {
             // }
         }
     
-        posePublisher.set(poseEstimator.getEstimatedPosition());
+        posePublisher.set(getPose());
         boolean hasCoral = RobotContainer.coralIntakeSubsystem.hasCoralSensor();
         nearestPosePublisher.set(nearestPoint(hasCoral));
         nearestReefPublisher.set(nearestPoint(true));
         nearestStationPublisher.set(nearestPoint(false));
+        Pose2d nearestLeftPose = nearestPoint(true, -1);
+        Pose2d nearestRightPose = nearestPoint(true, 1);
+        Transform2d distanceToLeftPose = getPose().minus(nearestLeftPose);
+        Transform2d distanceToRightPose = getPose().minus(nearestRightPose);
+        SmartDashboard.putNumber("Left branch x offset", distanceToLeftPose.getX());
+        SmartDashboard.putNumber("Left branch y offset", distanceToLeftPose.getY());
+        SmartDashboard.putNumber("Right branch x offset", distanceToRightPose.getX());
+        SmartDashboard.putNumber("Right branch y offset", distanceToRightPose.getY());
 
 
         // publishRobotPositions();
