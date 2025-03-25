@@ -16,6 +16,7 @@ import frc.robot.Constants.Colors;
 import frc.robot.Constants.CoralIntakeStates;
 import frc.robot.Constants.GameConstants;
 import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,9 +28,8 @@ public class CoralIntake extends SubsystemBase {
 
     SparkMax coralIntakeMotor;
     RelativeEncoder coralIntakeEncoder;  
-    private final I2C.Port i2cPort = I2C.Port.kMXP;
     private double state = Constants.CoralIntakeStates.NONE;
-    private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+    public static final DigitalInput intakeSensor = new DigitalInput(1);
     private double prevHasCoral = -1;
     private Color intakeColor;
     public boolean hasCoral;
@@ -62,7 +62,7 @@ public class CoralIntake extends SubsystemBase {
     }
 
     public boolean hasCoralSensor(){
-        boolean hasCoral = colorSensor.getProximity() > Constants.CoralConstants.hasCoralProximity;
+        boolean hasCoral = !intakeSensor.get();
         // dropped/shoot coral
         if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 1.5) {
             return true;
@@ -97,7 +97,7 @@ public class CoralIntake extends SubsystemBase {
         double diff = Math.abs(coralIntakeMotor.getAppliedOutput() - coralIntakeMotor.getOutputCurrent()); //TODO: Check if applied is in amps
         SmartDashboard.putNumber("Coral diff", diff);
         SmartDashboard.putBoolean("hasCoral", hasCoralSensor());
-        SmartDashboard.putNumber("hasCoral color sensor", colorSensor.getProximity());
+        SmartDashboard.putBoolean("hasCoral color sensor", !intakeSensor.get());
 
         if(isRunning() && RobotContainer.gameState==GameConstants.TeleOp){
             if(hasCoralSensor()){
