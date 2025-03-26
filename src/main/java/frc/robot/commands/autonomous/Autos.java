@@ -205,7 +205,7 @@ public class Autos {
         return new SequentialCommandGroup(
             getScoreCommand(swerveSubsystem.getPose(), swerveSubsystem.offsetPoint(blueReefRobotLeft,/*for practice */ -0.08,0, 0), AutoConstants.firstWait),
             getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.0, 0), AutoConstants.stationWait),
-            getScoreCommand(swerveSubsystem.offsetPoint(blueReefDriverRightLeftBranch, 0), AutoConstants.secondWait),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueReefDriverRightLeftBranch, 0, 0.01, 0), AutoConstants.secondWait),
             getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.01, -0.03, 0), AutoConstants.stationWait),
             getScoreCommand(swerveSubsystem.offsetPoint(blueReefDriverRightRightBranch, 0.03), AutoConstants.secondWait),
             getStationCommmand(blueStationDriverRight, AutoConstants.stationWait)
