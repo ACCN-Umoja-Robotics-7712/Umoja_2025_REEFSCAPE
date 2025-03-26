@@ -229,16 +229,16 @@ public final class Constants {
 
         public static final TrapezoidProfile.Constraints kElevatorConstraints =
             new TrapezoidProfile.Constraints(
-                115,
-                80);
+                125,
+                100);
 
     }
 
     public static final class ElevatorStates {
 
         public static final double NONE = -1;
-        public static final double L1 = 12-1;
-        public static final double L2 = 12-1;
+        public static final double L1 = 12;
+        public static final double L2 = 12;
         public static final double L3 = 67-1;
         public static final double L4 = 149 -1;
         public static final double CLIMB = 0;
