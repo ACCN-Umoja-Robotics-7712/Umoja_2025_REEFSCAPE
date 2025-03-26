@@ -171,10 +171,10 @@ public class SwerveSubsystem extends SubsystemBase {
                         .setKinematics(DriveConstants.kDriveKinematics);
 
         // 3. Define PID controllers for tracking trajectory
-        xController = new PIDController(AutoConstants.kPXController, AutoConstants.kIXController, 0);
-        yController = new PIDController(AutoConstants.kPYController, AutoConstants.kIYController, 0);
+        xController = new PIDController(DriveConstants.kPDrive, DriveConstants.kIDrive, 0);
+        yController = new PIDController(DriveConstants.kPDrive, DriveConstants.kIDrive, 0);
         thetaController = new ProfiledPIDController(
-                AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0, AutoConstants.kThetaControllerConstraints);
+                DriveConstants.kPTurning, DriveConstants.kITurning, 0, AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(0,360);
         
         holonomicDriveController = new HolonomicDriveController(xController, yController, thetaController);
@@ -323,6 +323,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 poseEstimator.addVisionMeasurement(
                     leftMT2.pose,
                     leftMT2.timestampSeconds);
+                doRejectRightUpdate = true;
             }
         }
         if (rightMT2 != null) {
@@ -332,7 +333,7 @@ public class SwerveSubsystem extends SubsystemBase {
             }
             if (!doRejectRightUpdate)
             {
-                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTrustValue+0.5,visionTrustValue+0.5,9999999));
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTrustValue+1,visionTrustValue+1,9999999));
                 poseEstimator.addVisionMeasurement(
                     rightMT2.pose,
                     rightMT2.timestampSeconds);
@@ -340,7 +341,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         if (isDisabled || isNonGameTeleop || isAuto) {
-            if (!RobotContainer.coralIntakeSubsystem.isRunning()) {
+            if (!RobotContainer.coralIntakeSubsystem.isRunning() || isAuto) {
                 if (hasTargetsLeft && hasTargetsRight) {
                     RobotContainer.led.setHalfColors(Colors.green, Colors.green);
                 } else if (hasTargetsLeft) {

@@ -101,11 +101,12 @@ public class CoralIntake extends SubsystemBase {
 
         if(isRunning() && RobotContainer.gameState==GameConstants.TeleOp){
             if(hasCoralSensor()){
-                intakeColor = Color.kPurple;
+                // intakeColor = Color.kPurple;
+                RobotContainer.led.setUmojaColors();
             } else {
                 intakeColor = Colors.white;
+                RobotContainer.led.setLEDColor(intakeColor);
             }
-            RobotContainer.led.setLEDColor(intakeColor);
         }
         // if (state == Constants.CoralIntakeStates.INTAKE) {
         //     runIntake(0.05); 

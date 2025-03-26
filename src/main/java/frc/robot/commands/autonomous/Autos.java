@@ -232,9 +232,9 @@ public class Autos {
         return new SequentialCommandGroup(
             getScoreCommand(swerveSubsystem.getPose(), blueBranchE, AutoConstants.firstWait),
             getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.0, 0), AutoConstants.stationWait),
-            getScoreCommand(blueBranchC, AutoConstants.secondWait),
+            getScoreCommand(swerveSubsystem.offsetPoint(blueBranchC, 0, 0.01, 0), AutoConstants.secondWait),
             getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.01, -0.03, 0), AutoConstants.stationWait),
-            getScoreCommand(blueBranchD, AutoConstants.secondWait),
+            getScoreCommand(blueBranchA, AutoConstants.secondWait),
             getStationCommmand(blueStationDriverRight, AutoConstants.stationWait)
         );
     }
@@ -317,7 +317,7 @@ public class Autos {
         // shoot for 1 second then stop
         new ParallelCommandGroup(
             new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(-1)),
-            new WaitCommand(1.0)
+            new WaitCommand(1.0) //This somehow makes intake not work
         ),
         new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(0))
     );
@@ -511,11 +511,8 @@ public class Autos {
             new SequentialCommandGroup(
                 new WaitCommand(waitTime),
 
-                new ParallelRaceGroup(
-                    new SequentialCommandGroup(
-                        swerveControllerCommand,
-                        new WaitCommand(15)
-                    ),
+                new ParallelCommandGroup(
+                    swerveControllerCommand,
                     new Intake(RobotContainer.coralIntakeSubsystem)
                 )
             )

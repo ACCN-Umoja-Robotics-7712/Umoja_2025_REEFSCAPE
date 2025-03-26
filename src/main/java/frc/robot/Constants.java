@@ -129,8 +129,12 @@ public final class Constants {
         public static final double kSlowButtonDriveModifier = 0.3;
         public static final double kSlowButtonTurnModifier = 0.25;
 
-        public static final double kPDrive = 5;
+        public static final double kPDrive = 1.5;
+        public static final double kIDrive = 0.01;
+
         public static final double kPTurning = 5;
+        public static final double kITurning = 0.05;
+
 
 
         public static final double kPDrift = 0.045;
@@ -240,7 +244,7 @@ public final class Constants {
         public static final double L1 = 12;
         public static final double L2 = 12;
         public static final double L3 = 67-1;
-        public static final double L4 = 149 -1;
+        public static final double L4 = 150;
         public static final double CLIMB = 0;
     };
 
@@ -468,11 +472,11 @@ public final class Constants {
 
     // TODO: Update at comp
     public static final class BranchOffsets {
-        public static final double blueBranchAOffset = 0;
+        public static final double blueBranchAOffset = -0.03;
         public static final double blueBranchBOffset = 0;
-        public static final double blueBranchCOffset = 0;
+        public static final double blueBranchCOffset = -0.05;
         public static final double blueBranchDOffset = 0.03;
-        public static final double blueBranchEOffset = -0.08;
+        public static final double blueBranchEOffset = -0.1; // Add forward offset
         public static final double blueBranchFOffset = 0;
         public static final double blueBranchGOffset = 0;
         public static final double blueBranchHOffset = 0;
