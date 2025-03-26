@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -469,7 +470,7 @@ public class Autos {
    * @return the command to run in autonomous
    */
   public Command getStationCommmand(Pose2d endPose, double waitTime) {
-    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), new PathConstraints(3.0, 1.3, 540, 720));
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), new PathConstraints(3.0, 1.3, 540, 720), 0.5);
     // Command swerveControllerCommand2 = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0.3, 0), new PathConstraints(1.0, 1.0, 540, 720));
 
     // 5. Add some init and wrap-up, and return everything
@@ -483,8 +484,11 @@ public class Autos {
             new SequentialCommandGroup(
                 new WaitCommand(waitTime),
 
-                new ParallelCommandGroup(
-                    swerveControllerCommand,
+                new ParallelRaceGroup(
+                    new SequentialCommandGroup(
+                        swerveControllerCommand,
+                        new WaitCommand(15)
+                    ),
                     new Intake(RobotContainer.coralIntakeSubsystem)
                 )
             )
