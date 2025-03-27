@@ -515,9 +515,15 @@ public class SwerveSubsystem extends SubsystemBase {
         Transform2d transform = new Transform2d(0, sideOffset, new Rotation2d(0));
         return pose.transformBy(transform);
     }
+    
+    public Pose2d offsetPoint(Pose2d pose, double sideOffset, double forwardOffset) {
+        Transform2d transform = new Transform2d(forwardOffset, sideOffset, new Rotation2d(0));
+        return pose.transformBy(transform);
+    }
 
+    // rotation in degrees
     public Pose2d offsetPoint(Pose2d pose, double sideOffset, double forwardOffset, double rotationOffset) {
-        Transform2d transform = new Transform2d(forwardOffset, sideOffset, new Rotation2d(Math.toDegrees(rotationOffset)));
+        Transform2d transform = new Transform2d(forwardOffset, sideOffset, new Rotation2d(Math.toRadians(rotationOffset)));
         return pose.transformBy(transform);
     }
 }

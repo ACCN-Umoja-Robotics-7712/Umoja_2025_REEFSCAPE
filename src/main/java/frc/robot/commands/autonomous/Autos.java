@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.AutoConstants;
@@ -71,18 +72,18 @@ public class Autos {
     Pose2d redStationDriverRight = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupRight2,  0*Constants.Measurements.coralStationDivotOffset);
     Pose2d redStationDriverLeft = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redPickupLeft1,  -0*Constants.Measurements.coralStationDivotOffset);
     
-    Pose2d blueBranchA = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefCenter18, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchAOffset);
-    Pose2d blueBranchB = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefCenter18, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchBOffset);
-    Pose2d blueBranchC = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefRight17, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchCOffset);
-    Pose2d blueBranchD = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefRight17, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchDOffset);
-    Pose2d blueBranchE = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchEOffset);
-    Pose2d blueBranchF = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchFOffset);
-    Pose2d blueBranchG = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchGOffset);
-    Pose2d blueBranchH = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchHOffset);
-    Pose2d blueBranchI = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchIOffset);
-    Pose2d blueBranchJ = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchJOffset);
-    Pose2d blueBranchK = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchKOffset);
-    Pose2d blueBranchL = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchLOffset);
+    Pose2d blueBranchA = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefCenter18, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchAOffset.getFirst(), Constants.BranchOffsets.blueBranchAOffset.getSecond());
+    Pose2d blueBranchB = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefCenter18, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchBOffset.getFirst(), Constants.BranchOffsets.blueBranchBOffset.getSecond());
+    Pose2d blueBranchC = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefRight17, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchCOffset.getFirst(), Constants.BranchOffsets.blueBranchCOffset.getSecond());
+    Pose2d blueBranchD = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefRight17, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchDOffset.getFirst(), Constants.BranchOffsets.blueBranchDOffset.getSecond());
+    Pose2d blueBranchE = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchEOffset.getFirst(), Constants.BranchOffsets.blueBranchEOffset.getSecond());
+    Pose2d blueBranchF = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackRight22, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchFOffset.getFirst(), Constants.BranchOffsets.blueBranchFOffset.getSecond());
+    Pose2d blueBranchG = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchGOffset.getFirst(), Constants.BranchOffsets.blueBranchGOffset.getSecond());
+    Pose2d blueBranchH = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackCenter21, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchHOffset.getFirst(), Constants.BranchOffsets.blueBranchHOffset.getSecond());
+    Pose2d blueBranchI = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchIOffset.getFirst(), Constants.BranchOffsets.blueBranchIOffset.getSecond());
+    Pose2d blueBranchJ = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefBackLeft20, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchJOffset.getFirst(), Constants.BranchOffsets.blueBranchJOffset.getSecond());
+    Pose2d blueBranchK = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchKOffset.getFirst(), Constants.BranchOffsets.blueBranchKOffset.getSecond());
+    Pose2d blueBranchL = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.blueReefLeft19, -Constants.Measurements.branchOffset + Constants.BranchOffsets.blueBranchLOffset.getFirst(), Constants.BranchOffsets.blueBranchLOffset.getSecond());
 
     public Point blueReefCenter18 = new Point(Constants.RobotPositions.blueReefCenter18, blueBranchA, blueBranchB);
     public Point blueReefRight17 = new Point(Constants.RobotPositions.blueReefRight17, blueBranchC, blueBranchD);
@@ -91,18 +92,18 @@ public class Autos {
     public Point blueReefBackLeft20 = new Point(Constants.RobotPositions.blueReefBackLeft20, blueBranchI, blueBranchJ);
     public Point blueReefLeft19 = new Point(Constants.RobotPositions.blueReefLeft19, blueBranchK, blueBranchL);
     
-    Pose2d redBranchA = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefCenter7, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchAOffset);
-    Pose2d redBranchB = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefCenter7, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchBOffset);
-    Pose2d redBranchC = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchCOffset);
-    Pose2d redBranchD = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchDOffset);
-    Pose2d redBranchE = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchEOffset);
-    Pose2d redBranchF = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchFOffset);
-    Pose2d redBranchG = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchGOffset);
-    Pose2d redBranchH = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchHOffset);
-    Pose2d redBranchI = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchIOffset);
-    Pose2d redBranchJ = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchJOffset);
-    Pose2d redBranchK = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchKOffset);
-    Pose2d redBranchL = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchLOffset);
+    Pose2d redBranchA = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefCenter7, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchAOffset.getFirst(), Constants.BranchOffsets.blueBranchAOffset.getSecond());
+    Pose2d redBranchB = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefCenter7, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchBOffset.getFirst(), Constants.BranchOffsets.blueBranchBOffset.getSecond());
+    Pose2d redBranchC = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchCOffset.getFirst(), Constants.BranchOffsets.blueBranchCOffset.getSecond());
+    Pose2d redBranchD = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefRight8, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchDOffset.getFirst(), Constants.BranchOffsets.blueBranchDOffset.getSecond());
+    Pose2d redBranchE = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchEOffset.getFirst(), Constants.BranchOffsets.blueBranchEOffset.getSecond());
+    Pose2d redBranchF = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackRight9, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchFOffset.getFirst(), Constants.BranchOffsets.blueBranchFOffset.getSecond());
+    Pose2d redBranchG = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchGOffset.getFirst(), Constants.BranchOffsets.blueBranchGOffset.getSecond());
+    Pose2d redBranchH = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackCenter10, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchHOffset.getFirst(), Constants.BranchOffsets.blueBranchHOffset.getSecond());
+    Pose2d redBranchI = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchIOffset.getFirst(), Constants.BranchOffsets.blueBranchIOffset.getSecond());
+    Pose2d redBranchJ = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefBackLeft11, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchJOffset.getFirst(), Constants.BranchOffsets.blueBranchJOffset.getSecond());
+    Pose2d redBranchK = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchKOffset.getFirst(), Constants.BranchOffsets.blueBranchKOffset.getSecond());
+    Pose2d redBranchL = RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.redReefLeft6, -Constants.Measurements.branchOffset + Constants.BranchOffsets.redBranchLOffset.getFirst(), Constants.BranchOffsets.blueBranchLOffset.getSecond());
     
     public Point redReefCenter7 = new Point(Constants.RobotPositions.redReefCenter7, redBranchA, redBranchB);
     public Point redReefRight8 = new Point(Constants.RobotPositions.redReefRight8, redBranchC, redBranchD);
@@ -129,7 +130,7 @@ public class Autos {
     public enum AUTO {
         BLUE_DRIVER_LEFT, BLUE_CENTER, BLUE_DRIVER_RIGHT,
         RED_DRIVER_LEFT, RED_CENTER, RED_DRIVER_RIGHT,
-        PRACTICE_FIELD, SIMPLE_AUTO
+        PRACTICE_FIELD, SIMPLE_AUTO, TUNE_AUTO
     }
     private SendableChooser<AUTO> chooser;
     private SendableChooser<Command> ppChooser;
@@ -170,8 +171,8 @@ public class Autos {
         chooser.addOption("Red Driver Right", AUTO.RED_DRIVER_RIGHT);
         chooser.addOption("Practice field center", AUTO.PRACTICE_FIELD);
         chooser.addOption("simple", AUTO.SIMPLE_AUTO);
+        chooser.addOption("tune", AUTO.TUNE_AUTO);
         chooser.setDefaultOption("Default", null);
-        
         
         ppChooser = AutoBuilder.buildAutoChooser();
         // // Put the auto chooser on the dashboard
@@ -204,8 +205,14 @@ public class Autos {
             case RED_DRIVER_RIGHT -> getRedDriverRight();
             case PRACTICE_FIELD -> getPracticeField();
             case SIMPLE_AUTO -> getSimpleAuto();
+            case TUNE_AUTO -> getTuneAuto();
             default -> new InstantCommand();
         };
+    }
+
+    public Command getTuneAuto() {
+        // drive forward/side 1 meter, turn 60 degrees
+        return AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(swerveSubsystem.getPose(), 1, 1, 60), Constants.pathConstraints);
     }
 
     public Command getSimpleAuto() {
@@ -214,34 +221,34 @@ public class Autos {
 
     public Command getBlueDriverLeft() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), blueBranchI, AutoConstants.firstWait)
+            getScoreCommand(blueBranchI, AutoConstants.firstWait)
         );
     }
 
     public Command getPracticeField() {
-        return getScoreCommand(swerveSubsystem.getPose(), redBranchK, AutoConstants.firstWait);
+        return getScoreCommand(redBranchK, AutoConstants.firstWait);
     }
 
     public Command getBlueCenter() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), blueBranchG, AutoConstants.firstWait)
+            getScoreCommand(blueBranchG, AutoConstants.firstWait)
         );
     }
 
     public Command getBlueDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), blueBranchE, AutoConstants.firstWait),
-            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.0, 0), AutoConstants.stationWait),
-            getScoreCommand(swerveSubsystem.offsetPoint(blueBranchC, 0, 0.01, 0), AutoConstants.secondWait),
-            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.01, -0.03, 0), AutoConstants.stationWait),
+            getScoreCommand(blueBranchE, AutoConstants.firstWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.0), AutoConstants.stationWait),
+            getScoreCommand(blueBranchC, AutoConstants.secondWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.01, -0.03), AutoConstants.stationWait),
             getScoreCommand(blueBranchA, AutoConstants.secondWait),
-            getStationCommmand(blueStationDriverRight, AutoConstants.stationWait)
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0, -0.1), AutoConstants.stationWait)
         );
     }
 
     public Command getRedDriverLeft() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), redBranchI, AutoConstants.firstWait),
+            getScoreCommand(redBranchI, AutoConstants.firstWait),
             getStationCommand(redStationDriverLeft, redStationDriverLeft),
             getScoreCommand(redBranchK, AutoConstants.stationWait),
             getStationCommand(redStationDriverLeft, redStationDriverLeft),
@@ -250,12 +257,12 @@ public class Autos {
     }
 
     public Command getRedCenter() {
-        return getScoreCommand(swerveSubsystem.getPose(), redBranchG, AutoConstants.firstWait);
+        return getScoreCommand(redBranchG, AutoConstants.firstWait);
     }
 
     public Command getRedDriverRight() {
         return new SequentialCommandGroup(
-            getScoreCommand(swerveSubsystem.getPose(), redBranchE, AutoConstants.firstWait),
+            getScoreCommand(redBranchE, AutoConstants.firstWait),
             getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, /* for practice */ 0.05, 0.0, 0), AutoConstants.stationWait),
             getScoreCommand(redBranchC, AutoConstants.secondWait),
             getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, 0.01, -0.03, 0), AutoConstants.stationWait),
@@ -263,65 +270,6 @@ public class Autos {
             getStationCommmand(redStationDriverRight, AutoConstants.stationWait)
         );
     }
-
-   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getScoreCommand(Pose2d startPose, Pose2d endPose, double waitTime) {
-    // An example command will be run in autonomous
-
-    if (endPose == null) {
-      return new InstantCommand();
-    }
-    reefPosePublisher.set(endPose);
-
-    // edu.wpi.first.math.trajectory.Trajectory traj = TrajectoryGenerator.generateTrajectory(
-    //   startPose,
-    //   List.of(),
-    //   endPose,
-    //   trajectoryConfig);
-
-    // // 4. Construct command to follow trajectory
-    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-    //   traj,
-    //   swerveSubsystem::getPose,
-    //   DriveConstants.kDriveKinematics,
-    //   xController,
-    //   yController,
-    //   thetaController,
-    //   swerveSubsystem::setModuleStates,
-    //   swerveSubsystem);
-
-    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, new PathConstraints(3.0, 1.3, 540, 720));
-
-    // 5. Add some init and wrap-up, and return everything
-    return new SequentialCommandGroup(
-        // Drive then move elevator after 1 second
-        new ParallelCommandGroup(
-            new SequentialCommandGroup(
-                swerveControllerCommand,
-                new InstantCommand(() -> swerveSubsystem.stopModules())
-            ),
-            new SequentialCommandGroup(
-                new WaitCommand(waitTime),
-                new ParallelCommandGroup(
-                    new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L4),
-                    new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4),
-                    new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(1))
-                )
-            )
-        ),
-        new WaitCommand(0.4), //TODO: Change wait time
-        // shoot for 1 second then stop
-        new ParallelCommandGroup(
-            new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(-1)),
-            new WaitCommand(1.0) //This somehow makes intake not work
-        ),
-        new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(0))
-    );
-  }
   
 
    /**
@@ -337,7 +285,7 @@ public class Autos {
     }
     reefPosePublisher.set(endPose);
 
-    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, new PathConstraints(3.0, 1.3, 540, 720));
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(endPose, Constants.pathConstraints);
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
@@ -356,13 +304,8 @@ public class Autos {
                 )
             )
         ),
-        new WaitCommand(0.3),
-        // shoot for 1 second then stop
-        new ParallelCommandGroup(
-            new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(-1)),
-            new WaitCommand(1.0)
-        ),
-        new InstantCommand(() -> RobotContainer.coralIntakeSubsystem.runIntake(0))
+        new WaitCommand(0.4), //TODO: Change wait time
+        new Shoot(RobotContainer.coralIntakeSubsystem)
     );
   }
 
@@ -483,7 +426,7 @@ public class Autos {
             new SequentialCommandGroup(
                 new WaitCommand(1.1),
                 new ParallelCommandGroup(
-                    new Intake(RobotContainer.coralIntakeSubsystem),
+                    new Intake(RobotContainer.coralIntakeSubsystem).andThen(new Intake(RobotContainer.coralIntakeSubsystem)),
                     followChoreoPath
                 )
             )
@@ -497,7 +440,7 @@ public class Autos {
    * @return the command to run in autonomous
    */
   public Command getStationCommmand(Pose2d endPose, double waitTime) {
-    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), new PathConstraints(3.0, 1.3, 540, 720), 0.5);
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), Constants.pathConstraints, 0.5);
     // Command swerveControllerCommand2 = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0.3, 0), new PathConstraints(1.0, 1.0, 540, 720));
 
     // 5. Add some init and wrap-up, and return everything

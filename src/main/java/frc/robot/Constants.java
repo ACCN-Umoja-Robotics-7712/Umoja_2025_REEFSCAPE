@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -287,8 +290,8 @@ public final class Constants {
                 kMaxAngularAccelerationRadiansPerSecondSquared);
 
         public static final double firstWait = 0.4;
-        public static final double secondWait = 2;
-        public static final double stationWait = 0.7;
+        public static final double secondWait = 0.9;
+        public static final double stationWait = 0.4;
     }
 
     public static final class XBoxConstants {
@@ -471,31 +474,33 @@ public final class Constants {
     public static final Pose2d redProcessorPosition = RobotPositions.redProcessor3;
 
     // TODO: Update at comp
-    public static final class BranchOffsets {
-        public static final double blueBranchAOffset = -0.03;
-        public static final double blueBranchBOffset = 0;
-        public static final double blueBranchCOffset = -0.05;
-        public static final double blueBranchDOffset = 0.03;
-        public static final double blueBranchEOffset = -0.1; // Add forward offset
-        public static final double blueBranchFOffset = 0;
-        public static final double blueBranchGOffset = 0;
-        public static final double blueBranchHOffset = 0;
-        public static final double blueBranchIOffset = 0;
-        public static final double blueBranchJOffset = 0;
-        public static final double blueBranchKOffset = 0;
-        public static final double blueBranchLOffset = 0;
+    public static final class BranchOffsets { // (Side offset -ve right, forward offset -ve back)
+        public static final Pair<Double, Double> blueBranchAOffset = new Pair<Double, Double>(-0.03, 0.0);
+        public static final Pair<Double, Double> blueBranchBOffset =  new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchCOffset =  new Pair<Double, Double>(-0.07, 0.01);
+        public static final Pair<Double, Double> blueBranchDOffset =  new Pair<Double, Double>(0.03, 0.0);
+        public static final Pair<Double, Double> blueBranchEOffset =  new Pair<Double, Double>(-0.1, 0.0); // Add forward offset
+        public static final Pair<Double, Double> blueBranchFOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchGOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchHOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchIOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchJOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchKOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchLOffset = new Pair<Double, Double>(0.0, 0.0);
         
-        public static final double redBranchAOffset = 0;
-        public static final double redBranchBOffset = 0;
-        public static final double redBranchCOffset = 0;
-        public static final double redBranchDOffset = 0.03;
-        public static final double redBranchEOffset = -0.08;
-        public static final double redBranchFOffset = 0;
-        public static final double redBranchGOffset = 0;
-        public static final double redBranchHOffset = 0;
-        public static final double redBranchIOffset = 0;
-        public static final double redBranchJOffset = 0;
-        public static final double redBranchKOffset = 0;
-        public static final double redBranchLOffset = 0;
+        public static final Pair<Double, Double> redBranchAOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchBOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchCOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchDOffset = new Pair<Double, Double>(0.03, 0.0);
+        public static final Pair<Double, Double> redBranchEOffset = new Pair<Double, Double>(-0.08, 0.0);
+        public static final Pair<Double, Double> redBranchFOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchGOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchHOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchIOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchJOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchKOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchLOffset = new Pair<Double, Double>(0.0, 0.0);
     }
+
+    public static final PathConstraints pathConstraints = new PathConstraints(4.8, 1.3, 540, 720);
 }

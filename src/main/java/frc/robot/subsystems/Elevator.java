@@ -48,7 +48,7 @@ public class Elevator extends SubsystemBase {
         elevator2Config.follow(elevatorMotor1.getDeviceId(), true);
         elevatorMotor2.configure(elevator2Config, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
-        elevatorPID.setTolerance(0.3, 1);
+        elevatorPID.setTolerance(1);
     }
 
     public void runElevator(double percent){

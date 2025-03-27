@@ -14,7 +14,7 @@ public class Intake extends Command{
 
     @Override
     public void initialize(){
-        System.out.println("Initialized");
+        System.out.println("Intake Initialized");
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Intake extends Command{
 
     @Override
     public void end(boolean isInterrupted){
-        System.out.println("Is interrupted:" + isInterrupted);
+        System.out.println("Intake end is interrupted:" + isInterrupted);
     }
 
     @Override
