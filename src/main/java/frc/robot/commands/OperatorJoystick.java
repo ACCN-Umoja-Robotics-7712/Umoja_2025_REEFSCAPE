@@ -84,7 +84,15 @@ public class OperatorJoystick extends Command {
         if (intake) {
             coralIntakeSubsystem.runIntake(1);
         } else if (shoot) {
-            coralIntakeSubsystem.runIntake(-1);
+            if (!(coralArmSubsystem.getState() == CoralArmStates.L1)) {
+                coralIntakeSubsystem.runIntake(-1);
+            } else {
+                coralIntakeSubsystem.runIntake(-0.7);
+            }
+            // Flicks arm after shooting on l4
+            if (!coralIntakeSubsystem.hasCoralSensor() && (coralArmSubsystem.getState() == CoralArmStates.L4 || coralArmSubsystem.getState() == CoralArmStates.L1) && (elevatorSubsystem.getState() == ElevatorStates.L4 || elevatorSubsystem.getState() == ElevatorStates.L1)) {
+                coralArmSubsystem.setState(Constants.CoralArmStates.PICKUP);
+            }
         } else {
             coralIntakeSubsystem.runIntake(0);
         }
@@ -105,6 +113,10 @@ public class OperatorJoystick extends Command {
             if (j.getRawButtonPressed(XBoxConstants.Y)){
                 elevatorSubsystem.setState(Constants.ElevatorStates.L4);
                 coralArmSubsystem.setState(Constants.CoralArmStates.L4);
+            }
+            if (j.getRawButtonPressed(XBoxConstants.MENU)){
+                elevatorSubsystem.setState(Constants.ElevatorStates.L1);
+                coralArmSubsystem.setState(Constants.CoralArmStates.L1);
             }
         } else {
             if (elevatorSubsystem.getState() != ElevatorStates.NONE) {
