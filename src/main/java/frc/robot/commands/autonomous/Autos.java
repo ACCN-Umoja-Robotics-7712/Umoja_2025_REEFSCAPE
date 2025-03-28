@@ -1,23 +1,11 @@
 package frc.robot.commands.autonomous;
 
-import java.io.ObjectInputFilter.Config;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import choreo.Choreo;
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
-import choreo.trajectory.SwerveSample;
-import choreo.trajectory.Trajectory;
-import choreo.trajectory.TrajectorySample;
-import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,32 +14,24 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CoralArmStates;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorStates;
-import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.RobotPositions;
-import frc.robot.Constants.USB;
-import frc.robot.objects.Point;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.objects.Point;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.CoralIntake;
 
 public class Autos {
     private final SwerveSubsystem swerveSubsystem = RobotContainer.swerveSubsystem;
@@ -231,7 +211,8 @@ public class Autos {
 
     public Command getBlueCenter() {
         return new SequentialCommandGroup(
-            getScoreCommand(blueBranchG, AutoConstants.firstWait)
+            getScoreCommand(blueBranchG, AutoConstants.firstWait),
+            getAlgaeCommmand(blueBranchF, AutoConstants.firstWait)
         );
     }
 
@@ -459,6 +440,27 @@ public class Autos {
                     new Intake(RobotContainer.coralIntakeSubsystem)
                 )
             )
+        )
+    );
+  }
+  public Command getAlgaeCommmand(Pose2d endPose, double waitTime) {
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), Constants.pathConstraints, 0.5);
+    // Command swerveControllerCommand2 = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0.3, 0), new PathConstraints(1.0, 1.0, 540, 720));
+
+    // 5. Add some init and wrap-up, and return everything
+    return new SequentialCommandGroup(
+        // Move elevator then drive after 1.5 seconds
+        new ParallelCommandGroup(
+            
+            new ParallelCommandGroup(
+                new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L1),
+                new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L23)
+            )
+        ),
+        swerveControllerCommand,
+        new ParallelCommandGroup(
+        new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.ALGAE),
+        new TimedShoot(RobotContainer.coralIntakeSubsystem)
         )
     );
   }

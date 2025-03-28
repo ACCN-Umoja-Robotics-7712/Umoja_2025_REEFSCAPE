@@ -205,7 +205,7 @@ public final class Constants {
         public static final double L23 = 36;
         public static final double L4 = 33; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
-        public static final double REMOVE = 50;
+        public static final double ALGAE = 15;
     }
 
     public static final class CoralIntakeStates {
@@ -246,7 +246,8 @@ public final class Constants {
         public static final double NONE = -1;
         public static final double L1 = 12;
         public static final double L2 = 12;
-        public static final double L3 = 67-1;
+        public static final double ALGAE = 44+1;
+        public static final double L3 = 67-2;
         public static final double L4 = 150;
         public static final double CLIMB = 0;
     };
@@ -374,6 +375,8 @@ public final class Constants {
         public static final Color uDarkOrange = new Color(254,17,1);
         public static final Color uGreen = new Color(0, 7, 0);
         public static final Color uOrange = new Color(255, 25, 0);
+        public static final Color uGold = Color.kGold; //new Color(255, 215, 0);
+        public static final Color REEFSCAPE_COLOR = Color.kAliceBlue;
         public static final Color[] uColors = {uRed, uDarkOrange, uGreen, uOrange};
     }
 
@@ -479,9 +482,9 @@ public final class Constants {
         public static final Pair<Double, Double> blueBranchBOffset =  new Pair<Double, Double>(0.0, 0.0);
         public static final Pair<Double, Double> blueBranchCOffset =  new Pair<Double, Double>(-0.07, 0.01);
         public static final Pair<Double, Double> blueBranchDOffset =  new Pair<Double, Double>(0.03, 0.0);
-        public static final Pair<Double, Double> blueBranchEOffset =  new Pair<Double, Double>(-0.1, 0.0); // Add forward offset
+        public static final Pair<Double, Double> blueBranchEOffset =  new Pair<Double, Double>(-0.13, 0.0); // Add forward offset
         public static final Pair<Double, Double> blueBranchFOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> blueBranchGOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchGOffset = new Pair<Double, Double>(-0.06, 0.0);
         public static final Pair<Double, Double> blueBranchHOffset = new Pair<Double, Double>(0.0, 0.0);
         public static final Pair<Double, Double> blueBranchIOffset = new Pair<Double, Double>(0.0, 0.0);
         public static final Pair<Double, Double> blueBranchJOffset = new Pair<Double, Double>(0.0, 0.0);

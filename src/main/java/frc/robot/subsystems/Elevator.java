@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -49,6 +50,7 @@ public class Elevator extends SubsystemBase {
         elevatorMotor2.configure(elevator2Config, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
 
         elevatorPID.setTolerance(1);
+
     }
 
     public void runElevator(double percent){
@@ -69,8 +71,10 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setState(double state) {
-        elevatorPID.reset(elevator1Encoder.getPosition());
-        this.state = state;
+        if (this.state != state) {
+            elevatorPID.reset(elevator1Encoder.getPosition());
+            this.state = state;
+        }
     }
 
     public double getState(){

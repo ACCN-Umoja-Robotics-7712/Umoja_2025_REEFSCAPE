@@ -64,7 +64,7 @@ public class CoralIntake extends SubsystemBase {
     public boolean hasCoralSensor(){
         boolean hasCoral = !intakeSensor.get();
         // dropped/shoot coral
-        if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 0.02) {
+        if (!hasCoral && Math.abs(prevHasCoral - Timer.getTimestamp()) < 0.05) {
             return true;
         } else {
             if (hasCoral) {
@@ -85,7 +85,9 @@ public class CoralIntake extends SubsystemBase {
     }
 
     public void setState(double state){
-        this.state = state; 
+        if (this.state != state) {
+            this.state = state;
+        }
     }
 
     @Override

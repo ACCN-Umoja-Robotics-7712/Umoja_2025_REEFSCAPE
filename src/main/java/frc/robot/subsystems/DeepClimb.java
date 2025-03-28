@@ -46,7 +46,9 @@ public class DeepClimb extends SubsystemBase {
     }
 
     public void setState(double state){
-        this.state = state; 
+        if (this.state != state) {
+            this.state = state;
+        }
     }
 
     @Override

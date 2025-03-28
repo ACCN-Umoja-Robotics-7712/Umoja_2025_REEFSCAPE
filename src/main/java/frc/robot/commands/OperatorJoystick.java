@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.Colors;
 import frc.robot.Constants.CoralArmStates;
 import frc.robot.Constants.ElevatorStates;
 import frc.robot.Constants.GameConstants;
@@ -50,6 +51,7 @@ public class OperatorJoystick extends Command {
 
         if (DriverStation.getMatchType() != MatchType.None && DriverStation.getMatchTime() <= 35 && DriverStation.getMatchTime() >= 10) {
             j.setRumble(RumbleType.kBothRumble, 1);
+            RobotContainer.led.setLEDColor(Colors.uGold);
         } else {
             j.setRumble(RumbleType.kBothRumble, 0);
         }
@@ -116,7 +118,11 @@ public class OperatorJoystick extends Command {
             }
             if (j.getRawButtonPressed(XBoxConstants.MENU)){
                 elevatorSubsystem.setState(Constants.ElevatorStates.L1);
-                coralArmSubsystem.setState(Constants.CoralArmStates.L1);
+                coralArmSubsystem.setState(Constants.CoralArmStates.ALGAE);
+            }
+            if (j.getRawButtonPressed(XBoxConstants.PAGE)){
+                elevatorSubsystem.setState(Constants.ElevatorStates.ALGAE);
+                coralArmSubsystem.setState(Constants.CoralArmStates.L23);
             }
         } else {
             if (elevatorSubsystem.getState() != ElevatorStates.NONE) {
