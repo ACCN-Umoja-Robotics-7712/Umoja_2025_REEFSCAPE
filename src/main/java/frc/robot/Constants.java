@@ -42,11 +42,11 @@ public final class Constants {
     }
 
     public final class ModuleConstants{
-        public static final double kWheelDiameterMeters = 0.10;
+        public static final double kWheelDiameterMeters = 0.1143; // 4.5 inches
         // gear ratio from thrifty swerve https://thethriftybot.com/products/thrify-swerve gear ratio options (pinion size 12 + second stage gear 16t? (only confirmed pinion))
         public static final double kDriveMotorGearRatio = 1/6.0;
         public static final double kTurningMotorGearRatio = 1 / 21.42857142857143;//(12*14)/(72*50) based on #of teeth
-        public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
+        public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters; // Math.PI * kWheelDiameterMeters = Circumference
         public static final double kTurnEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
         public static final double 
         kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;

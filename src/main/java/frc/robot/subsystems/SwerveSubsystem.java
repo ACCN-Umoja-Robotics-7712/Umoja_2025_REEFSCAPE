@@ -12,6 +12,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.studica.frc.AHRS.NavXComType;
+import com.studica.frc.AHRS.NavXUpdateRate;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.apriltag.AprilTag;
@@ -96,7 +97,7 @@ public class SwerveSubsystem extends SubsystemBase {
         DriveConstants.kBackRightDriveAbsoluteEncoderOffsetDegree, 
         DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
-    private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
+    private AHRS gyro = new AHRS(NavXComType.kMXP_SPI, 66);
     private TrajectoryConfig trajectoryConfig;
     public PIDController xController;
     public PIDController yController;
@@ -120,6 +121,7 @@ public class SwerveSubsystem extends SubsystemBase {
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
+                gyro.enableLogging(true);
 
                 zeroHeading();
                 resetEncoders();
@@ -249,6 +251,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
     StructPublisher<Pose2d> nearestPosePublisher = NetworkTableInstance.getDefault().getStructTopic("NearestPose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> nearestLeftPosePublisher = NetworkTableInstance.getDefault().getStructTopic("NearestLeftPose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> nearestRightPosePublisher = NetworkTableInstance.getDefault().getStructTopic("NearestRightPose", Pose2d.struct).publish();
     StructPublisher<Pose2d> nearestReefPublisher = NetworkTableInstance.getDefault().getStructTopic("Nearest Reef", Pose2d.struct).publish();
     StructPublisher<Pose2d> nearestStationPublisher = NetworkTableInstance.getDefault().getStructTopic("Nearest Station", Pose2d.struct).publish();
 
@@ -387,6 +391,8 @@ public class SwerveSubsystem extends SubsystemBase {
         Pose2d nearestRightPose = nearestPoint(true, 1);
         Transform2d distanceToLeftPose = getPose().minus(nearestLeftPose);
         Transform2d distanceToRightPose = getPose().minus(nearestRightPose);
+        nearestLeftPosePublisher.set(nearestLeftPose);
+        nearestRightPosePublisher.set(nearestRightPose);
         SmartDashboard.putNumber("Left branch x offset", distanceToLeftPose.getX());
         SmartDashboard.putNumber("Left branch y offset", distanceToLeftPose.getY());
         SmartDashboard.putNumber("Right branch x offset", distanceToRightPose.getX());

@@ -31,6 +31,7 @@ import frc.robot.Constants.ElevatorStates;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.objects.Point;
+import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class Autos {
@@ -110,6 +111,7 @@ public class Autos {
     public enum AUTO {
         BLUE_DRIVER_LEFT, BLUE_CENTER, BLUE_DRIVER_RIGHT,
         RED_DRIVER_LEFT, RED_CENTER, RED_DRIVER_RIGHT,
+        BLUE_CENTER_DOUBLE,
         PRACTICE_FIELD, SIMPLE_AUTO, TUNE_AUTO
     }
     private SendableChooser<AUTO> chooser;
@@ -149,6 +151,7 @@ public class Autos {
         chooser.addOption("Red Driver Left", AUTO.RED_DRIVER_LEFT);
         chooser.addOption("Red Center", AUTO.RED_CENTER);
         chooser.addOption("Red Driver Right", AUTO.RED_DRIVER_RIGHT);
+        chooser.addOption("Blue Center Double", AUTO.BLUE_CENTER_DOUBLE);
         chooser.addOption("Practice field center", AUTO.PRACTICE_FIELD);
         chooser.addOption("simple", AUTO.SIMPLE_AUTO);
         chooser.addOption("tune", AUTO.TUNE_AUTO);
@@ -183,6 +186,7 @@ public class Autos {
             case RED_DRIVER_LEFT -> getRedDriverLeft();
             case RED_CENTER -> getRedCenter();
             case RED_DRIVER_RIGHT -> getRedDriverRight();
+            case BLUE_CENTER_DOUBLE -> getBlueCenterDouble();
             case PRACTICE_FIELD -> getPracticeField();
             case SIMPLE_AUTO -> getSimpleAuto();
             case TUNE_AUTO -> getTuneAuto();
@@ -212,7 +216,22 @@ public class Autos {
     public Command getBlueCenter() {
         return new SequentialCommandGroup(
             getScoreCommand(blueBranchG, AutoConstants.firstWait),
-            getAlgaeCommmand(blueBranchF, AutoConstants.firstWait)
+            new ParallelCommandGroup(
+                getHighAlgaeCommmand(blueBranchF, AutoConstants.firstWait),
+                new TimedShoot(RobotContainer.coralIntakeSubsystem, 15)
+            )
+            
+        );
+    }
+
+    public Command getBlueCenterDouble() {
+        return new SequentialCommandGroup(
+            getScoreCommand(blueBranchG, AutoConstants.firstWait),
+            new ParallelCommandGroup(
+                getLowAlgaeCommmand(blueBranchH, AutoConstants.firstWait),
+                getHighAlgaeCommmand(blueBranchF, AutoConstants.firstWait),
+                new TimedShoot(RobotContainer.coralIntakeSubsystem, 15)
+            )
         );
     }
 
@@ -443,7 +462,26 @@ public class Autos {
         )
     );
   }
-  public Command getAlgaeCommmand(Pose2d endPose, double waitTime) {
+  public Command getHighAlgaeCommmand(Pose2d endPose, double waitTime) {
+    Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), Constants.pathConstraints, 0.5);
+    // Command swerveControllerCommand2 = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0.3, 0), new PathConstraints(1.0, 1.0, 540, 720));
+
+    // 5. Add some init and wrap-up, and return everything
+    return new SequentialCommandGroup(
+        // Move elevator then drive after 1.5 seconds
+        new ParallelCommandGroup(
+            new ParallelCommandGroup(
+                new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L1),
+                new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L23)
+            )
+        ),
+        swerveControllerCommand,
+        new ParallelCommandGroup(
+        new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.ALGAE)
+        )
+    );
+  }
+  public Command getLowAlgaeCommmand(Pose2d endPose, double waitTime) {
     Command swerveControllerCommand = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0, 0), Constants.pathConstraints, 0.5);
     // Command swerveControllerCommand2 = AutoBuilder.pathfindToPose(swerveSubsystem.offsetPoint(endPose, 0, 0.3, 0), new PathConstraints(1.0, 1.0, 540, 720));
 
@@ -454,13 +492,12 @@ public class Autos {
             
             new ParallelCommandGroup(
                 new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L1),
-                new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L23)
+                new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L1)
             )
         ),
         swerveControllerCommand,
         new ParallelCommandGroup(
-        new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.ALGAE),
-        new TimedShoot(RobotContainer.coralIntakeSubsystem)
+            new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.ALGAE)
         )
     );
   }

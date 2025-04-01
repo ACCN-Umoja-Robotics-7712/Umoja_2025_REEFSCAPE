@@ -7,10 +7,12 @@ import frc.robot.subsystems.CoralIntake;
 public class TimedShoot extends Command{
     CoralIntake intake;
     double time;
+    double shootTime = 1.5; // in seconds
 
 
-    public TimedShoot(CoralIntake intake){
+    public TimedShoot(CoralIntake intake, double shootTime){
         this.intake = intake;
+        this.shootTime = shootTime;
 
         addRequirements(intake);
     }
@@ -32,6 +34,6 @@ public class TimedShoot extends Command{
 
     @Override
     public boolean isFinished() {
-        return Math.abs(time-Timer.getTimestamp()) > 3;
+        return Math.abs(time-Timer.getTimestamp()) > shootTime;
     }
 }
