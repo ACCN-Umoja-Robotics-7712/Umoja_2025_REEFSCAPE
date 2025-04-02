@@ -247,7 +247,7 @@ public final class Constants {
         public static final double L1 = 12;
         public static final double L2 = 12;
         public static final double ALGAE = 44+1;
-        public static final double L3 = 67-2;
+        public static final double L3 = 67-4;
         public static final double L4 = 150;
         public static final double CLIMB = 0;
     };
@@ -486,9 +486,9 @@ public final class Constants {
         public static final Pair<Double, Double> blueBranchFOffset = new Pair<Double, Double>(0.0, 0.0);
         public static final Pair<Double, Double> blueBranchGOffset = new Pair<Double, Double>(-0.06, 0.0);
         public static final Pair<Double, Double> blueBranchHOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> blueBranchIOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchIOffset = new Pair<Double, Double>(-0.01, 0.0);
         public static final Pair<Double, Double> blueBranchJOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> blueBranchKOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchKOffset = new Pair<Double, Double>(-0.1, 0.0);
         public static final Pair<Double, Double> blueBranchLOffset = new Pair<Double, Double>(0.0, 0.0);
         
         public static final Pair<Double, Double> redBranchAOffset = new Pair<Double, Double>(0.0, 0.0);

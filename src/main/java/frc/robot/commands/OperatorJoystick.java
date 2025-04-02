@@ -89,11 +89,12 @@ public class OperatorJoystick extends Command {
             if (!(coralArmSubsystem.getState() == CoralArmStates.L1)) {
                 coralIntakeSubsystem.runIntake(-1);
             } else {
-                coralIntakeSubsystem.runIntake(-0.7);
+                coralIntakeSubsystem.runIntake(-0.6);
             }
-            // Flicks arm after shooting on l4
-            if (!coralIntakeSubsystem.hasCoralSensor() && (coralArmSubsystem.getState() == CoralArmStates.L4 || coralArmSubsystem.getState() == CoralArmStates.L1) && (elevatorSubsystem.getState() == ElevatorStates.L4 || elevatorSubsystem.getState() == ElevatorStates.L1)) {
+            // Flicks arm after shooting on l4 or l1
+            if (!coralIntakeSubsystem.hasCoralSensor() && ((coralArmSubsystem.getState() == CoralArmStates.L4 && elevatorSubsystem.getState() == ElevatorStates.L4) || (coralArmSubsystem.getState() == CoralArmStates.L1 && elevatorSubsystem.getState() == ElevatorStates.L1))) {
                 coralArmSubsystem.setState(Constants.CoralArmStates.PICKUP);
+                elevatorSubsystem.setState(Constants.ElevatorStates.L1);
             }
         } else {
             coralIntakeSubsystem.runIntake(0);

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -205,7 +206,12 @@ public class Autos {
 
     public Command getBlueDriverLeft() {
         return new SequentialCommandGroup(
-            getScoreCommand(blueBranchI, AutoConstants.firstWait)
+            getScoreCommand(blueBranchI, AutoConstants.firstWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverLeft, -0.05, 0.3), AutoConstants.stationWait),
+            getScoreCommand(blueBranchK, AutoConstants.secondWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverLeft, 0.01, -0.03), AutoConstants.stationWait),
+            getScoreCommand(blueBranchA, AutoConstants.secondWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverLeft, 0, -0.1), AutoConstants.stationWait)
         );
     }
 
@@ -227,8 +233,12 @@ public class Autos {
     public Command getBlueCenterDouble() {
         return new SequentialCommandGroup(
             getScoreCommand(blueBranchG, AutoConstants.firstWait),
-            new ParallelCommandGroup(
+            getLowAlgaeCommmand(swerveSubsystem.offsetPoint(blueBranchH, 0, -0.4), AutoConstants.firstWait),
+            new ParallelRaceGroup(
                 getLowAlgaeCommmand(blueBranchH, AutoConstants.firstWait),
+                new TimedShoot(RobotContainer.coralIntakeSubsystem, 15)
+            ),
+            new ParallelRaceGroup(
                 getHighAlgaeCommmand(blueBranchF, AutoConstants.firstWait),
                 new TimedShoot(RobotContainer.coralIntakeSubsystem, 15)
             )
@@ -238,7 +248,7 @@ public class Autos {
     public Command getBlueDriverRight() {
         return new SequentialCommandGroup(
             getScoreCommand(blueBranchE, AutoConstants.firstWait),
-            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.0), AutoConstants.stationWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.05, 0.1), AutoConstants.stationWait),
             getScoreCommand(blueBranchC, AutoConstants.secondWait),
             getStationCommmand(swerveSubsystem.offsetPoint(blueStationDriverRight, 0.01, -0.03), AutoConstants.stationWait),
             getScoreCommand(blueBranchA, AutoConstants.secondWait),
@@ -249,10 +259,11 @@ public class Autos {
     public Command getRedDriverLeft() {
         return new SequentialCommandGroup(
             getScoreCommand(redBranchI, AutoConstants.firstWait),
-            getStationCommand(redStationDriverLeft, redStationDriverLeft),
-            getScoreCommand(redBranchK, AutoConstants.stationWait),
-            getStationCommand(redStationDriverLeft, redStationDriverLeft),
-            getScoreCommand(redBranchL, AutoConstants.stationWait)
+            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverLeft, -0.05, 0.3), AutoConstants.stationWait),
+            getScoreCommand(redBranchK, AutoConstants.secondWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverLeft, 0.01, -0.03), AutoConstants.stationWait),
+            getScoreCommand(redBranchA, AutoConstants.secondWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverLeft, 0, -0.1), AutoConstants.stationWait)
         );
     }
 
@@ -263,9 +274,9 @@ public class Autos {
     public Command getRedDriverRight() {
         return new SequentialCommandGroup(
             getScoreCommand(redBranchE, AutoConstants.firstWait),
-            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, /* for practice */ 0.05, 0.0, 0), AutoConstants.stationWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, 0.05, 0.1), AutoConstants.stationWait),
             getScoreCommand(redBranchC, AutoConstants.secondWait),
-            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, 0.01, -0.03, 0), AutoConstants.stationWait),
+            getStationCommmand(swerveSubsystem.offsetPoint(redStationDriverRight, 0.01, -0.03), AutoConstants.stationWait),
             getScoreCommand(redBranchD, AutoConstants.secondWait),
             getStationCommmand(redStationDriverRight, AutoConstants.stationWait)
         );
