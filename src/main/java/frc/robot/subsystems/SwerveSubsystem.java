@@ -393,10 +393,10 @@ public class SwerveSubsystem extends SubsystemBase {
         Transform2d distanceToRightPose = getPose().minus(nearestRightPose);
         nearestLeftPosePublisher.set(nearestLeftPose);
         nearestRightPosePublisher.set(nearestRightPose);
-        SmartDashboard.putNumber("Left branch x offset", distanceToLeftPose.getX());
-        SmartDashboard.putNumber("Left branch y offset", distanceToLeftPose.getY());
-        SmartDashboard.putNumber("Right branch x offset", distanceToRightPose.getX());
-        SmartDashboard.putNumber("Right branch y offset", distanceToRightPose.getY());
+        SmartDashboard.putNumber("Driver Left branch x offset", distanceToLeftPose.getX());
+        SmartDashboard.putNumber("Driver Left branch y offset", distanceToLeftPose.getY());
+        SmartDashboard.putNumber("Driver Right branch x offset", distanceToRightPose.getX());
+        SmartDashboard.putNumber("Driver Right branch y offset", distanceToRightPose.getY());
 
 
         // publishRobotPositions();

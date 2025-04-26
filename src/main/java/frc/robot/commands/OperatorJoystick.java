@@ -86,10 +86,16 @@ public class OperatorJoystick extends Command {
         if (intake) {
             coralIntakeSubsystem.runIntake(1);
         } else if (shoot) {
-            if (!(coralArmSubsystem.getState() == CoralArmStates.L1)) {
+            if (!(coralArmSubsystem.getState() == CoralArmStates.ALGAE)) {
                 coralIntakeSubsystem.runIntake(-1);
             } else {
-                coralIntakeSubsystem.runIntake(-0.6);
+                coralIntakeSubsystem.runIntake(-0.5);
+            }
+            // New Addition, W.I.P.
+            if (!(coralArmSubsystem.getState() == CoralArmStates.Barge_1)) { //j.getRawButton(XboxConstants.L3)
+                coralIntakeSubsystem.runIntake(-1);
+            } else {
+                coralIntakeSubsystem.runIntake(-1);
             }
             // Flicks arm after shooting on l4 or l1
             if (!coralIntakeSubsystem.hasCoralSensor() && ((coralArmSubsystem.getState() == CoralArmStates.L4 && elevatorSubsystem.getState() == ElevatorStates.L4) || (coralArmSubsystem.getState() == CoralArmStates.L1 && elevatorSubsystem.getState() == ElevatorStates.L1))) {
@@ -125,6 +131,17 @@ public class OperatorJoystick extends Command {
                 elevatorSubsystem.setState(Constants.ElevatorStates.ALGAE);
                 coralArmSubsystem.setState(Constants.CoralArmStates.L23);
             }
+            // New Addition, W.I.P.
+            // if (j.getRawButtonPressed(XBoxConstants.L3)){
+            //     coralArmSubsystem.setState(Constants.CoralArmStates.Barge_1);
+            //     elevatorSubsystem.setState(Constants.ElevatorStates.L1);
+            // }
+            // // New Addition, W.I.P.
+            // if (j.getRawButtonPressed(XBoxConstants.R3)){
+            //     coralArmSubsystem.setState(Constants.CoralArmStates.Barge_2);
+                // elevatorSubsystem.setState(Constants.ElevatorStates.BARGE)
+                // RobotContainer.led.setLEDColor(uGold);
+            // }
         } else {
             if (elevatorSubsystem.getState() != ElevatorStates.NONE) {
                 elevatorSubsystem.setState(ElevatorStates.NONE);

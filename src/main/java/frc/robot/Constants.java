@@ -6,15 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.path.PathConstraints;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -200,12 +195,14 @@ public final class Constants {
     public static final class CoralArmStates {
         
         public static final double NONE = -1;
-        public static final double PICKUP = 56.31459;
-        public static final double L1 = 10;
+        public static final double PICKUP = 54.5;
+        public static final double L1 = 10.5;
         public static final double L23 = 36;
         public static final double L4 = 33; // TODO: Fix value
         public static final double CLIMB = 0; // TODO: Find climb value
-        public static final double ALGAE = 15;
+        public static final double ALGAE = 26.5;
+        public static final double Barge_1 = 26; //New Addittion, W.I.P.
+        public static final double Barge_2 = 35; // New Addition, W.I.P.
     }
 
     public static final class CoralIntakeStates {
@@ -222,7 +219,7 @@ public final class Constants {
         public static final int rightMotorID = 51;
 
         public static final double elevatorTopLimit = 152.0; 
-        public static final double elevatorBottomLimit = 12.0;
+        public static final double elevatorBottomLimit = 5.0;
 
         public static final double kP = 0.1; // TODO: Change/test to 0.13
         public static final double kI = 0.0005; 
@@ -244,12 +241,13 @@ public final class Constants {
     public static final class ElevatorStates {
 
         public static final double NONE = -1;
-        public static final double L1 = 12;
+        public static final double L1 = 5;
         public static final double L2 = 12;
-        public static final double ALGAE = 44+1;
+        public static final double ALGAE = 48;
         public static final double L3 = 67-4;
         public static final double L4 = 150;
         public static final double CLIMB = 0;
+        public static final double BARGE = 151;
     };
 
     public static final class LEDConstants {
@@ -480,28 +478,28 @@ public final class Constants {
     public static final class BranchOffsets { // (Side offset -ve right, forward offset -ve back)
         public static final Pair<Double, Double> blueBranchAOffset = new Pair<Double, Double>(-0.03, 0.0);
         public static final Pair<Double, Double> blueBranchBOffset =  new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> blueBranchCOffset =  new Pair<Double, Double>(-0.07, 0.01);
-        public static final Pair<Double, Double> blueBranchDOffset =  new Pair<Double, Double>(0.03, 0.0);
-        public static final Pair<Double, Double> blueBranchEOffset =  new Pair<Double, Double>(-0.13, 0.0); // Add forward offset
+        public static final Pair<Double, Double> blueBranchCOffset =  new Pair<Double, Double>(-0.06 /* -0.1 (to the right) */, 0.0);
+        public static final Pair<Double, Double> blueBranchDOffset =  new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> blueBranchEOffset =  new Pair<Double, Double>(-0.08 /* -0.03 */, 0.0);
         public static final Pair<Double, Double> blueBranchFOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> blueBranchGOffset = new Pair<Double, Double>(-0.06, 0.0);
+        public static final Pair<Double, Double> blueBranchGOffset = new Pair<Double, Double>(-0.07, 0.0);
         public static final Pair<Double, Double> blueBranchHOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> blueBranchIOffset = new Pair<Double, Double>(-0.01, 0.0);
+        public static final Pair<Double, Double> blueBranchIOffset = new Pair<Double, Double>(-0.07, 0.0);
         public static final Pair<Double, Double> blueBranchJOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> blueBranchKOffset = new Pair<Double, Double>(-0.1, 0.0);
+        public static final Pair<Double, Double> blueBranchKOffset = new Pair<Double, Double>(-0.05, 0.0);
         public static final Pair<Double, Double> blueBranchLOffset = new Pair<Double, Double>(0.0, 0.0);
         
         public static final Pair<Double, Double> redBranchAOffset = new Pair<Double, Double>(0.0, 0.0);
         public static final Pair<Double, Double> redBranchBOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> redBranchCOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchCOffset = new Pair<Double, Double>(-0.09, 0.0);
         public static final Pair<Double, Double> redBranchDOffset = new Pair<Double, Double>(0.03, 0.0);
-        public static final Pair<Double, Double> redBranchEOffset = new Pair<Double, Double>(-0.08, 0.0);
+        public static final Pair<Double, Double> redBranchEOffset = new Pair<Double, Double>(-0.04, 0.0);
         public static final Pair<Double, Double> redBranchFOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> redBranchGOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchGOffset = new Pair<Double, Double>(-0.07, 0.0);
         public static final Pair<Double, Double> redBranchHOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> redBranchIOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchIOffset = new Pair<Double, Double>(-0.07, 0.0);
         public static final Pair<Double, Double> redBranchJOffset = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> redBranchKOffset = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> redBranchKOffset = new Pair<Double, Double>(-0.05, 0.0);
         public static final Pair<Double, Double> redBranchLOffset = new Pair<Double, Double>(0.0, 0.0);
     }
 
