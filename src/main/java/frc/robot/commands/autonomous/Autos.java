@@ -314,7 +314,7 @@ public class Autos {
                 new ParallelCommandGroup(
                     new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L4),
                     new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4),
-                    new Intake(RobotContainer.coralIntakeSubsystem)
+                    new IntakeCommand(RobotContainer.coralIntakeSubsystem)
                 )
             )
         ),
@@ -351,7 +351,7 @@ public class Autos {
                 new ParallelCommandGroup(
                     new MoveElevator(RobotContainer.elevatorSubsystem, ElevatorStates.L4),
                     new MoveArm(RobotContainer.coralArmSubsystem, CoralArmStates.L4),
-                    new Intake(RobotContainer.coralIntakeSubsystem)
+                    new IntakeCommand(RobotContainer.coralIntakeSubsystem)
                 )
             )
         ),
@@ -406,7 +406,7 @@ public class Autos {
             new SequentialCommandGroup(
                 new WaitCommand(1.1),
                 new ParallelCommandGroup(
-                    new Intake(RobotContainer.coralIntakeSubsystem),
+                    new IntakeCommand(RobotContainer.coralIntakeSubsystem),
                     swerveControllerCommand
                 )
             )
@@ -440,7 +440,7 @@ public class Autos {
             new SequentialCommandGroup(
                 new WaitCommand(1.1),
                 new ParallelCommandGroup(
-                    new Intake(RobotContainer.coralIntakeSubsystem).andThen(new Intake(RobotContainer.coralIntakeSubsystem)),
+                    new IntakeCommand(RobotContainer.coralIntakeSubsystem).andThen(new IntakeCommand(RobotContainer.coralIntakeSubsystem)),
                     followChoreoPath
                 )
             )
@@ -470,7 +470,7 @@ public class Autos {
 
                 new ParallelCommandGroup(
                     swerveControllerCommand,
-                    new Intake(RobotContainer.coralIntakeSubsystem)
+                    new IntakeCommand(RobotContainer.coralIntakeSubsystem)
                 )
             )
         )

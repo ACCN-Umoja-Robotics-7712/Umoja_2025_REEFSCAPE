@@ -58,6 +58,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
+import frc.robot.commands.autonomous.AlignWithTagCommand;
 import frc.robot.LimelightHelpers;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -531,5 +532,20 @@ public class SwerveSubsystem extends SubsystemBase {
     public Pose2d offsetPoint(Pose2d pose, double sideOffset, double forwardOffset, double rotationOffset) {
         Transform2d transform = new Transform2d(forwardOffset, sideOffset, new Rotation2d(Math.toRadians(rotationOffset)));
         return pose.transformBy(transform);
+    }
+
+    public void alignWithTag(Double targetYaw){
+        double currentYaw = getHeading();
+        double yawError = targetYaw - currentYaw;
+
+        Pose2d pose = getPose();
+
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            xController.calculate(pose.getX(), pose.getX()),
+            yController.calculate(pose.getY(), pose.getY()),
+            thetaController.calculate(yawError, 0)
+        );
+
+        setModuleStatesFromSpeeds(speeds);
     }
 }

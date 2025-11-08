@@ -19,11 +19,11 @@ import frc.robot.Constants.GameConstants;
 import frc.robot.Constants.RobotPositions;
 import frc.robot.Constants.USB;
 import frc.robot.commands.autonomous.Autos;
-import frc.robot.commands.autonomous.Intake;
+import frc.robot.commands.autonomous.AlignWithTagCommand;
 import frc.robot.commands.autonomous.MoveArm;
 import frc.robot.commands.autonomous.MoveElevator;
 import frc.robot.commands.autonomous.Shoot;
-import frc.robot.commands.autonomous.Intake;
+import frc.robot.commands.autonomous.AlignWithTagCommand;
 
 import java.util.List;
 

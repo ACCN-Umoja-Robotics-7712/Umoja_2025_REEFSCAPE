@@ -27,7 +27,8 @@ import frc.robot.commands.ManualArmCommand;
 import frc.robot.commands.ManualElevatorCommand;
 import frc.robot.commands.SwerveJoystick;
 import frc.robot.commands.autonomous.DeepClimbCommand;
-import frc.robot.commands.autonomous.Intake;
+import frc.robot.commands.autonomous.AlignWithTagCommand;
+import frc.robot.commands.autonomous.IntakeCommand;
 import frc.robot.commands.autonomous.MoveArm;
 import frc.robot.commands.autonomous.MoveElevator;
 import frc.robot.commands.autonomous.Shoot;
@@ -225,8 +226,10 @@ public class Robot extends TimedRobot {
     RobotContainer.operatorController.leftTrigger().whileTrue(new DeepClimbCommand(RobotContainer.deepClimbSubsystem,(() -> RobotContainer.operatorController.getLeftTriggerAxis()*0.6)));
     RobotContainer.operatorController.rightTrigger().whileTrue(new DeepClimbCommand(RobotContainer.deepClimbSubsystem,(() -> -RobotContainer.operatorController.getRightTriggerAxis()*0.6)));
    //Intake and Shoot commands
-    RobotContainer.operatorController.leftBumper().whileTrue(new Intake(RobotContainer.coralIntakeSubsystem));
+    RobotContainer.operatorController.leftBumper().whileTrue(new IntakeCommand(RobotContainer.coralIntakeSubsystem));
     RobotContainer.operatorController.rightBumper().whileTrue(new Shoot(RobotContainer.coralIntakeSubsystem));
+
+    RobotContainer.driverController.a().whileTrue(new AlignWithTagCommand(RobotContainer.swerveSubsystem));
 
     //Elevator Positions
     RobotContainer.operatorController.a().onTrue(
@@ -254,7 +257,9 @@ public class Robot extends TimedRobot {
       )
     );
 
-    // RobotContainer.operatorController
+    // TODO: Reset states to NONE only if they were not changed during autonomous (?)
+    // TODO: Figure out the back back buttons for the joystick
+
     
     RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
