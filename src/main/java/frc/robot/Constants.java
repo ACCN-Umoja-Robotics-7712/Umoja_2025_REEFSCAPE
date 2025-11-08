@@ -55,8 +55,6 @@ public final class Constants {
         public static final double kWheelBase = Units.inchesToMeters(26);
         // Distance between front and back wheels
 
-        public static final double teleSpeed = 0.7;
-
         public static final double kRobotRadius = Math.sqrt(Math.pow(kTrackWidth, 2) + Math.pow(kWheelBase, 2)) / 2;
 
         //TODO: Update to positive left positive forward FL, Fr, BL, BR
@@ -124,8 +122,10 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
 
-        public static final double kSlowButtonDriveModifier = 0.3;
-        public static final double kSlowButtonTurnModifier = 0.25;
+        public static final double kSlowButtonDriveModifier = 0.15;
+        public static final double kSlowButtonTurnModifier = 0.10;
+        public static final double teleSpeed = 0.45;
+        public static final double teleTurnSpeed = 0.3;
 
         public static final double kPDrive = 1.5;
         public static final double kIDrive = 0.01;
@@ -406,7 +406,7 @@ public final class Constants {
         // robot l/w 28.5 by 28.5 inches
         // bumper width ~= 3 inches
         // TODO: Need to add potential intake front distance
-        public static final double robotCenterToFront = 0.45085 + 0.03; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
+        public static final double robotCenterToFront = 0.45085 + 0.03 + 0.2; // robot length/2 + bumper width = 14.25 + 3.5 = 17.75 inches  
         // public static final double robotCenterToFront = 0.50085; // Test
         public static final double robotSideOffset = 0.0254; // intake is 1 inch to the left so move robot 1 inch to the right
         public static final double branchOffset = 0.1651; // 6.5 inches

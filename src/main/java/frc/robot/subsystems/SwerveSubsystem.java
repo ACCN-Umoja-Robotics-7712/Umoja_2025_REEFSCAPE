@@ -484,9 +484,9 @@ public class SwerveSubsystem extends SubsystemBase {
         List<Point> pointsToCheck;
         if (faceReef) {
             if (isBlue) {
-                pointsToCheck = RobotContainer.auto.blueReef;
+                pointsToCheck = RobotContainer.auto.allReef;
             } else {
-                pointsToCheck = RobotContainer.auto.redReef;
+                pointsToCheck = RobotContainer.auto.allReef;
             }
         } else {
             if (isBlue) {

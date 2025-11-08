@@ -4,40 +4,33 @@
 
 package frc.robot;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.commands.TeleCommandGroup;
-import frc.robot.subsystems.CoralArm;
-// import frc.robot.commands.autonomous.Autos;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.Constants.AutoConstants;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.Colors;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.GameConstants;
+import frc.robot.Constants.XBoxConstants;
+import frc.robot.commands.ManualArmCommand;
+import frc.robot.commands.ManualElevatorCommand;
+import frc.robot.commands.SwerveJoystick;
+import frc.robot.commands.autonomous.DeepClimbCommand;
+import frc.robot.commands.autonomous.Intake;
+import frc.robot.commands.autonomous.MoveArm;
+import frc.robot.commands.autonomous.MoveElevator;
+import frc.robot.commands.autonomous.Shoot;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -199,18 +192,54 @@ public class Robot extends TimedRobot {
 
     RobotContainer.coralArmSubsystem.setIdleMode(IdleMode.kBrake); 
 
+    // RobotContainer.swerveSubsystem.setDefaultCommand(
+    //   new TeleCommandGroup(
+    //     RobotContainer.robotState,
+    //     RobotContainer.swerveSubsystem,
+    //     RobotContainer.driverController,
+    //     RobotContainer.operatorController,
+    //     RobotContainer.elevatorSubsystem,
+    //     RobotContainer.coralArmSubsystem,
+    //     RobotContainer.coralIntakeSubsystem,
+    //     RobotContainer.deepClimbSubsystem
+    //   )
+    // );
+    
+    boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+    int flip = isBlue ? -1 : 1;
     RobotContainer.swerveSubsystem.setDefaultCommand(
-      new TeleCommandGroup(
-        RobotContainer.robotState,
-        RobotContainer.swerveSubsystem,
-        RobotContainer.driverController,
-        RobotContainer.operatorController,
-        RobotContainer.elevatorSubsystem,
-        RobotContainer.coralArmSubsystem,
-        RobotContainer.coralIntakeSubsystem,
-        RobotContainer.deepClimbSubsystem
+
+      new ParallelCommandGroup(
+        new SwerveJoystick(
+            RobotContainer.swerveSubsystem,
+            () -> flip*RobotContainer.driverController.getLeftY(),
+            () -> flip*RobotContainer.driverController.getLeftX(),
+            () -> -RobotContainer.driverController.getRightX()
+        ),
+        new ManualElevatorCommand(RobotContainer.elevatorSubsystem, () -> -RobotContainer.operatorController.getLeftY()),
+        new ManualArmCommand(RobotContainer.coralArmSubsystem, () -> -RobotContainer.operatorController.getRightY())
       )
     );
+
+    //Climb commands
+    RobotContainer.operatorController.leftTrigger().whileTrue(new DeepClimbCommand(RobotContainer.deepClimbSubsystem,(() -> RobotContainer.operatorController.getLeftTriggerAxis()*0.6)));
+    RobotContainer.operatorController.rightTrigger().whileTrue(new DeepClimbCommand(RobotContainer.deepClimbSubsystem,(() -> -RobotContainer.operatorController.getRightTriggerAxis()*0.6)));
+   //Intake and Shoot commands
+    RobotContainer.operatorController.leftBumper().whileTrue(new Intake(RobotContainer.coralIntakeSubsystem));
+    RobotContainer.operatorController.rightBumper().whileTrue(new Shoot(RobotContainer.coralIntakeSubsystem));
+
+    //Elevator Positions
+    RobotContainer.operatorController.a().onTrue(
+      new ParallelCommandGroup(
+        new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L1),
+        new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.PICKUP)
+      )
+    );
+    RobotContainer.operatorController.x().onTrue(new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L2));
+    RobotContainer.operatorController.b().onTrue(new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L3));
+    RobotContainer.operatorController.y().onTrue(new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L4));
+
+    
     RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
     RobotContainer.coralIntakeSubsystem.setState(Constants.CoralIntakeStates.NONE);

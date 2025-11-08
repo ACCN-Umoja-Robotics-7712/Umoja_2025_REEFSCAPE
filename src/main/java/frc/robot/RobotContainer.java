@@ -41,12 +41,14 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -62,8 +64,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  public final static Joystick driverController = new Joystick(USB.DRIVER_CONTROLLER);
-  public final static Joystick operatorController = new Joystick(USB.OPERATOR_CONTROLLER);
+  public final static CommandXboxController driverController = new CommandXboxController(USB.DRIVER_CONTROLLER);
+  public final static CommandXboxController operatorController = new CommandXboxController(USB.OPERATOR_CONTROLLER);
   public final static Elevator elevatorSubsystem = new Elevator();
   public final static CoralArm coralArmSubsystem = new CoralArm();
   public final static CoralIntake coralIntakeSubsystem = new CoralIntake();

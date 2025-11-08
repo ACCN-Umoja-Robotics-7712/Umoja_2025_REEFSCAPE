@@ -98,6 +98,7 @@ public class Autos {
     
     public List<Point> blueReef = Arrays.asList(blueReefRight17, blueReefCenter18, blueReefLeft19, blueReefBackLeft20, blueReefBackCenter21, blueReefBackRight22);
     public List<Point> redReef = Arrays.asList(redReefLeft6, redReefCenter7, redReefRight8, redReefBackRight9, redReefBackCenter10, redReefBackLeft11);
+    public List<Point> allReef = Arrays.asList(blueReefRight17, blueReefCenter18, blueReefLeft19, blueReefBackLeft20, blueReefBackCenter21, blueReefBackRight22,redReefLeft6, redReefCenter7, redReefRight8, redReefBackRight9, redReefBackCenter10, redReefBackLeft11);
     
     public Point bluePickupLeft13 = new Point(Constants.RobotPositions.bluePickupLeft13, RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13, 2*Constants.Measurements.coralStationDivotOffset), RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupLeft13, -2*Constants.Measurements.coralStationDivotOffset));
     public Point bluePickupRight12 = new Point(Constants.RobotPositions.bluePickupRight12, RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, 2*Constants.Measurements.coralStationDivotOffset), RobotContainer.swerveSubsystem.offsetPoint(Constants.RobotPositions.bluePickupRight12, -2*Constants.Measurements.coralStationDivotOffset));
