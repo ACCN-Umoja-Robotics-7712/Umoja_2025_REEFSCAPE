@@ -235,10 +235,26 @@ public class Robot extends TimedRobot {
         new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.PICKUP)
       )
     );
-    RobotContainer.operatorController.x().onTrue(new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L2));
-    RobotContainer.operatorController.b().onTrue(new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L3));
-    RobotContainer.operatorController.y().onTrue(new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L4));
+    RobotContainer.operatorController.x().onTrue(
+      new ParallelCommandGroup(
+        new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L2),
+        new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.L23)
+      )
+    );
+    RobotContainer.operatorController.b().onTrue(
+      new ParallelCommandGroup(
+        new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L3),
+        new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.L23)
+      )
+    );
+    RobotContainer.operatorController.y().onTrue(
+      new ParallelCommandGroup(
+        new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L4),
+        new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.L4)
+      )
+    );
 
+    // RobotContainer.operatorController
     
     RobotContainer.elevatorSubsystem.setState(Constants.ElevatorStates.NONE);
     RobotContainer.coralArmSubsystem.setState(Constants.CoralArmStates.NONE);
