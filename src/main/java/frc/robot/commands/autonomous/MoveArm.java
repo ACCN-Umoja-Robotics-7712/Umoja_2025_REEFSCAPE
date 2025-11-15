@@ -16,6 +16,7 @@ public class MoveArm extends Command{
 
     @Override
     public void initialize(){
+        System.out.println("State ARM start");
         arm.setState(armState);
     }
 
@@ -25,7 +26,7 @@ public class MoveArm extends Command{
 
     @Override
     public void end(boolean isInterrupted){
-        System.out.println("ARM END");
+        System.out.println("State ARM END interrupted: " + isInterrupted);
     }
 
     @Override

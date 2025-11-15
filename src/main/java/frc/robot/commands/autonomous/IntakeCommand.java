@@ -24,6 +24,7 @@ public class IntakeCommand extends Command{
 
     @Override
     public void end(boolean isInterrupted){
+        intake.runIntake(0);
         System.out.println("Intake end is interrupted:" + isInterrupted);
     }
 

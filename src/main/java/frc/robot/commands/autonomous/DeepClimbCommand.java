@@ -28,6 +28,7 @@ public class DeepClimbCommand extends Command{
 
     @Override
     public void end(boolean isInterrupted){
+        deepClimb.runClimber(0);
         System.out.println("Intake end is interrupted:" + isInterrupted);
     }
 

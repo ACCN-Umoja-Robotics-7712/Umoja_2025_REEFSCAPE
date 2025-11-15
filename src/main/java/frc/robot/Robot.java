@@ -220,7 +220,18 @@ public class Robot extends TimedRobot {
         new ManualElevatorCommand(RobotContainer.elevatorSubsystem, () -> -RobotContainer.operatorController.getLeftY()),
         new ManualArmCommand(RobotContainer.coralArmSubsystem, () -> -RobotContainer.operatorController.getRightY())
       )
+      // new ParallelCommandGroup(
+      //   new SwerveJoystick(
+      //       RobotContainer.swerveSubsystem,
+      //       () -> flip*RobotContainer.driverController.getLeftY(),
+      //       () -> flip*RobotContainer.driverController.getLeftX(),
+      //       () -> -RobotContainer.driverController.getRightX()
+      //   ),
+      //   new ManualElevatorCommand(RobotContainer.elevatorSubsystem, () -> -RobotContainer.operatorController.getLeftY()),
+      //   new ManualArmCommand(RobotContainer.coralArmSubsystem, () -> -RobotContainer.operatorController.getRightY())
+      // )
     );
+    
 
     //Climb commands
     RobotContainer.operatorController.leftTrigger().whileTrue(new DeepClimbCommand(RobotContainer.deepClimbSubsystem,(() -> RobotContainer.operatorController.getLeftTriggerAxis()*0.6)));
@@ -232,12 +243,21 @@ public class Robot extends TimedRobot {
     RobotContainer.driverController.a().whileTrue(new AlignWithTagCommand(RobotContainer.swerveSubsystem));
 
     //Elevator Positions
+    // RobotContainer.operatorController.a().whileTrue(
+    //   new ParallelCommandGroup(
+    //     new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L1),
+    //     new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.PICKUP)
+    //   )
+    // );
     RobotContainer.operatorController.a().onTrue(
       new ParallelCommandGroup(
-        new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L1),
-        new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.PICKUP)
+         new MoveArm(RobotContainer.coralArmSubsystem, Constants.CoralArmStates.PICKUP)
       )
     );
+
+    
+
+
     RobotContainer.operatorController.x().onTrue(
       new ParallelCommandGroup(
         new MoveElevator(RobotContainer.elevatorSubsystem, Constants.ElevatorStates.L2),

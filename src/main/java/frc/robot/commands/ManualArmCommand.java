@@ -18,7 +18,7 @@ public class ManualArmCommand extends Command{
 
     @Override
     public void initialize(){
-        System.out.println("ARM Initialized");
+        System.out.println("Manual Arm Initialized");
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ManualArmCommand extends Command{
 
     @Override
     public void end(boolean isInterrupted){
-        System.out.println("Arm end is interrupted:" + isInterrupted);
+        System.out.println("Manual Arm end interrupted:" + isInterrupted);
     }
 
     // @Override
