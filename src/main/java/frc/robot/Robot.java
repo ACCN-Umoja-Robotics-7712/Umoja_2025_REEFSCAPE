@@ -209,29 +209,19 @@ public class Robot extends TimedRobot {
     boolean isBlue = !DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
     int flip = isBlue ? -1 : 1;
     RobotContainer.swerveSubsystem.setDefaultCommand(
-
-      new ParallelCommandGroup(
         new SwerveJoystick(
             RobotContainer.swerveSubsystem,
             () -> flip*RobotContainer.driverController.getLeftY(),
             () -> flip*RobotContainer.driverController.getLeftX(),
             () -> -RobotContainer.driverController.getRightX()
-        ),
-        new ManualElevatorCommand(RobotContainer.elevatorSubsystem, () -> -RobotContainer.operatorController.getLeftY()),
-        new ManualArmCommand(RobotContainer.coralArmSubsystem, () -> -RobotContainer.operatorController.getRightY())
-      )
-      // new ParallelCommandGroup(
-      //   new SwerveJoystick(
-      //       RobotContainer.swerveSubsystem,
-      //       () -> flip*RobotContainer.driverController.getLeftY(),
-      //       () -> flip*RobotContainer.driverController.getLeftX(),
-      //       () -> -RobotContainer.driverController.getRightX()
-      //   ),
-      //   new ManualElevatorCommand(RobotContainer.elevatorSubsystem, () -> -RobotContainer.operatorController.getLeftY()),
-      //   new ManualArmCommand(RobotContainer.coralArmSubsystem, () -> -RobotContainer.operatorController.getRightY())
-      // )
+        )
     );
-    
+    RobotContainer.elevatorSubsystem.setDefaultCommand(
+      new ManualElevatorCommand(RobotContainer.elevatorSubsystem, () -> -RobotContainer.operatorController.getLeftY())
+    );
+    RobotContainer.coralArmSubsystem.setDefaultCommand(
+      new ManualArmCommand(RobotContainer.coralArmSubsystem, () -> -RobotContainer.operatorController.getRightY())
+    );
 
     //Climb commands
     RobotContainer.operatorController.leftTrigger().whileTrue(new DeepClimbCommand(RobotContainer.deepClimbSubsystem,(() -> RobotContainer.operatorController.getLeftTriggerAxis()*0.6)));
