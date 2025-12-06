@@ -348,13 +348,13 @@ public class SwerveSubsystem extends SubsystemBase {
         if (isDisabled || isNonGameTeleop || isAuto) {
             if (!RobotContainer.coralIntakeSubsystem.isRunning() || isAuto) {
                 if (hasTargetsLeft && hasTargetsRight) {
-                    RobotContainer.led.setHalfColors(Colors.green, Colors.green);
+                    RobotContainer.led.setHalfColors(Colors.green, Colors.uGold);
                 } else if (hasTargetsLeft) {
-                    RobotContainer.led.setHalfColors(Colors.green, Colors.red);
+                    RobotContainer.led.setHalfColors(Colors.green, Colors.blue);
                 } else if (hasTargetsRight) {
-                    RobotContainer.led.setHalfColors(Colors.red, Colors.green);
+                    RobotContainer.led.setHalfColors(Colors.red, Colors.kPurple);
                 } else {
-                    RobotContainer.led.setLEDColor(Colors.red);
+                    RobotContainer.led.setLEDColor(Colors.kBrown);
                 }
             }
             // RobotContainer.led.setUmojaColors();

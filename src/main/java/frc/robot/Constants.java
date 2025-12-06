@@ -375,6 +375,8 @@ public final class Constants {
         public static final Color uOrange = new Color(255, 25, 0);
         public static final Color uGold = Color.kGold; //new Color(255, 215, 0);
         public static final Color REEFSCAPE_COLOR = Color.kAliceBlue;
+        public static final Color kPurple = new Color(128, 0, 128);
+        public static final Color kBrown = new Color(165, 42, 42);
         public static final Color[] uColors = {uRed, uDarkOrange, uGreen, uOrange};
     }
 
